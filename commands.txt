@@ -1,0 +1,15 @@
+# install: postgress, postgis, osm2pgsql, 
+
+# create gis db:
+# createdb -E UTF-8 -O USERNAME gis
+# run postgis SQL scripts, paths on your system may differ:
+# psql -d gis -f /usr/local/share/postgis/postgis.sql
+# psql -d gis -f /usr/local/share/postgis/spatial_ref_sys.sql 
+# psql -d gis -c "CREATE EXTENSION hstore"
+
+# run daily:
+wget http://download.geofabrik.de/europe/romania-latest.osm.pbf
+osm2pgsql --slim -d gis -C 16000 --hstore --number-processes 3 --style osm2pgsql.style  romania-latest.osm.pbf 
+
+psql -t -A -d gis -f smoothness-trunk.sql > main-roads.json
+psql -t -A -d gis -f smoothness-other.sql > other-roads.json
