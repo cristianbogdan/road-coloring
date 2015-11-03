@@ -53,8 +53,8 @@ function loadDoc() {
 	}
     ).addTo(map);
     
-    populate(trunk, "main-roads.json");
-    populate(other, "other-roads.json");
+    populate(trunk, "main-roads.topo.json");
+    populate(other, "other-roads.topo.json");
     populate(control, "radare.js");
 
     var oldZoom= map.getZoom();
@@ -102,8 +102,16 @@ function populate(layer, file){
     xhttp.onreadystatechange = function() {
 	if (xhttp.readyState == 4) {
 	    var content= xhttp.responseText;
-	    if(!endsWith(file, ".js"))
+	    if(!endsWith(file, ".js")){
 		content= JSON.parse(content);
+		if(content.type==="Topology"){
+		    var content1=[];
+		    for (var key in content.objects) {
+			content1.push(topojson.feature(content, content.objects[key]));
+		    }
+		    content=content1[0];
+		}
+	    }
 	    else
 	    {
 		eval(content);
@@ -180,7 +188,7 @@ function render(feature) {
     switch (feature.properties.smoothness) {
     case 'excellent': color='blue'; break;
     case 'good':  color='green'; break;
-    case 'intermediate': color='yellow'; break;
+    case 'intermediate': color='orange'; break;
     }
 
     var weight;
