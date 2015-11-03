@@ -11,5 +11,9 @@
 wget http://download.geofabrik.de/europe/romania-latest.osm.pbf
 osm2pgsql --slim -d gis -C 16000 --hstore --number-processes 3 --style osm2pgsql.style  romania-latest.osm.pbf 
 
+psql -d gis -f cleanup.sql
+psql -d gis -f repeat-cleanup.sql
+psql -d gis -c 'select rep();'
+
 psql -t -A -d gis -f smoothness-trunk.sql > main-roads.json
 psql -t -A -d gis -f smoothness-other.sql > other-roads.json
