@@ -1,5 +1,4 @@
-/*global L */
-    // create a map
+/*global L topojson mainRoads otherRoads radare*/
 var map ;
 
 var params = {};
@@ -53,9 +52,9 @@ function loadDoc() {
 	}
     ).addTo(map);
     
-    populate(trunk, "main-roads.topo.json");
-    populate(other, "other-roads.topo.json");
-    populate(control, "radare.js");
+    trunk.addData(checkTopoJson(mainRoads));
+    trunk.addData(checkTopoJson(otherRoads));
+    control.addData(radare[0]);
 
     var oldZoom= map.getZoom();
 
@@ -95,40 +94,17 @@ function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
-function populate(layer, file){
-    var x= new Date();
-    var xhttp = new XMLHttpRequest();
-
-    xhttp.onreadystatechange = function() {
-	if (xhttp.readyState == 4) {
-	    var content= xhttp.responseText;
-	    if(!endsWith(file, ".js")){
-		content= JSON.parse(content);
-		if(content.type==="Topology"){
-		    var content1=[];
-		    for (var key in content.objects) {
-			content1.push(topojson.feature(content, content.objects[key]));
-		    }
-		    content=content1[0];
-		}
-	    }
-	    else
-	    {
-		eval(content);
-		content=radare[0];
-	    }
-	    //content.features=content.features.slice(0,6000);
-	    console.log(file+": "+(new Date()- x)+" ms "+content.features.length+" objects");
-	    
-	    layer.addData(content);
-
+function checkTopoJson(content){
+    if(content.type==="Topology"){
+	var content1=[];
+	for (var key in content.objects) {
+	    content1.push(topojson.feature(content, content.objects[key]));
 	}
-    };
-    xhttp.open("GET", file+"?x="+new Date(), true);
-    xhttp.send();
-    
+	return content1[0];
+    }
+    return content;
 }
-    
+
 function changeUrl(){
     window.history.pushState("Object", "", "index.html?zoom="+map.getZoom()+"&lat="+ map.getCenter().lat+"&lng="+map.getCenter().lng);
 }

@@ -23,3 +23,5 @@ psql -t -A -d gis -f smoothness-trunk.sql > main-roads.json
 psql -t -A -d gis -f smoothness-other.sql > other-roads.json
 topojson -p -o other-roads.topo.json -- other-roads.json
 topojson -p -o main-roads.topo.json -- main-roads.json
+(echo "mainRoads="; cat main-roads.topo.json ; echo ";";)> main-roads.topo.json.js 
+(echo "otherRoads="; cat other-roads.topo.json ; echo ";";)> other-roads.topo.json.js
