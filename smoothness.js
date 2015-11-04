@@ -1,10 +1,14 @@
 /*global L topojson mainRoads otherRoads radare*/
 var map ;
 
-var params = {};
-window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
-    params[key] = value;
-});
+var params={};
+var x=window.location.href.split('#map=');
+if(x.length==2){
+    var y= x[1].split("/");
+    params.zoom=y[0];
+    params.lat=y[1];
+    params.lng=y[2];
+}
 
 function loadDoc() {      
     map= new L.Map('mymap');
@@ -87,6 +91,32 @@ function loadDoc() {
     map.on('dragend', function(){
 	changeUrl();
     });
+
+    changeUrl();
+
+    /*
+    map.on('click', function (evt) {
+        var latLng = evt.latlng,
+            clickedPoint = evt.layerPoint,
+            nearestMarker = null,
+            minDistance = Infinity,
+            markerClickDistance = 12, // pixels
+            distance;
+        trunk.eachLayer(function (circleMarker) {
+            distance = latLng.distanceTo(circleMarker.getLatLng());
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestMarker = circleMarker;
+            }
+        });
+        if (nearestMarker) {
+            distance = map.latLngToLayerPoint(nearestMarker.getLatLng()).distanceTo(clickedPoint);
+            if (distance <= markerClickDistance) {
+                nearestMarker.openPopup();
+            }
+        }
+        return false;
+    });*/
 }
 
 
@@ -106,7 +136,12 @@ function checkTopoJson(content){
 }
 
 function changeUrl(){
-    window.history.pushState("Object", "", "index.html?zoom="+map.getZoom()+"&lat="+ map.getCenter().lat+"&lng="+map.getCenter().lng);
+    var addr= window.location.href;
+    if(addr.indexOf('#')>-1)
+	addr= addr.substring(0, addr.indexOf('#'));
+
+    addr+="#map="+map.getZoom()+"/"+map.getCenter().lat+"/"+map.getCenter().lng;
+    window.location.href=addr;
 }
 
 function popup(feature, layer){
