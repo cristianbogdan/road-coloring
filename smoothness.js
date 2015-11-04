@@ -136,12 +136,7 @@ function checkTopoJson(content){
 }
 
 function changeUrl(){
-    var addr= window.location.href;
-    if(addr.indexOf('#')>-1)
-	addr= addr.substring(0, addr.indexOf('#'));
-
-    addr+="#map="+map.getZoom()+"/"+map.getCenter().lat+"/"+map.getCenter().lng;
-    window.location.href=addr;
+    window.location.replace("#map="+map.getZoom()+"/"+map.getCenter().lat+"/"+map.getCenter().lng);
 }
 
 function popup(feature, layer){
