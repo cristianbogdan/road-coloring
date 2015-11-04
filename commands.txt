@@ -9,8 +9,8 @@
 
 # run daily:
 wget -N http://download.geofabrik.de/europe/romania-latest.osm.pbf 2> download-status.txt
-grep "not retrieved" download-status.txt
-if [[ $? -ne 0 ]] ; then
+grep "not retrieving" download-status.txt
+if [[ $? -eq 0 ]] ; then
     exit 1
 fi
 osm2pgsql --slim -d gis -C 16000 --hstore --number-processes 3 --style osm2pgsql.style  romania-latest.osm.pbf 
