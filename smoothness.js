@@ -1,98 +1,64 @@
-/*global L topojson mainRoads otherRoads radare*/
-var map ;
+/*global L topojson*/
 
-var params={};
-var x=window.location.href.split('#map=');
-if(x.length==2){
-    var y= x[1].split("/");
-    params.zoom=y[0];
-    params.lat=y[1];
-    params.lng=y[2];
-}
-
-function loadDoc() {      
-    map= new L.Map('mymap');
-    // create the OpenStreetMap layer
-
-    const osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>',
-    thunLink = '<a href="http://thunderforest.com/">Thunderforest</a>';
+function smoothness(theMap, z, lat, long){
+    this.map=theMap;
+    this.layers=[];
+    this.initParams();
+    this.setPosition(z, lat, long);
     
-    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        osmAttrib = '&copy; ' + osmLink + ' Contributors',
-	osmBwUrl= 'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
-        landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
-        thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
-    
-    var osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib}),
-	osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
-        landMap = L.tileLayer(landUrl, {attribution: thunAttrib});
-
-    map.addLayer(osmBwMap);
-    
-    // set the map's starting view
-    map.setView( new L.LatLng((params.lat||46), (params.lng||25)), (params.zoom|| 7) );
-
-    // load from http://roads2.enjoymaps.ro/geo/radare.js
-    
-    var trunk=L.geoJson(null, {style:render, onEachFeature:popup});
-    trunk.addTo(map);
-
-    var other= L.geoJson(null, {style:render, onEachFeature:popup});
-    other.addTo(map);
-
-    var control= L.geoJson(null, {onEachFeature:popupControl});
-    control.addTo(map);
-    
-    L.control.layers(
-	{
-	    "OSM blawk&white": osmBwMap,
-	    "OSM": osmMap,
-	    "OSM Landscape": landMap
-	},
-	{
-	    "A, DN":trunk
-	    ,"DJ, DC": other
-	    , "control (enjoymaps.ro)":control
-	}
-    ).addTo(map);
-    
-    trunk.addData(checkTopoJson(mainRoads));
-    trunk.addData(checkTopoJson(otherRoads));
-    control.addData(radare[0]);
-
-    var oldZoom= map.getZoom();
-
+    var oldZoom= this.map.getZoom();
     var zs;
-    map.on('zoomstart', function(){
+    this.map.on('zoomstart', function(){
 	zs= new Date();
     });
-    map.on('zoomend', function(){
+    var smo= this;
+    this.detailLevel= findDetailLevel(this.map.getZoom());   
+    
+    this.map.on('zoomend', function(){
 	console.log(new Date()-zs);
-	if(oldZoom==map.getZoom())
+	if(oldZoom==smo.map.getZoom())
 	    return;
-	console.log(oldZoom+" "+map.getZoom());
-	changeUrl();
+	smo.changeUrl();
 
-	var max= oldZoom<map.getZoom()? map.getZoom():oldZoom;
-	var min= oldZoom<map.getZoom()? oldZoom:map.getZoom();
+	var x= findDetailLevel(smo.map.getZoom());
+	if(x!=smo.detailLevel){
+	    smo.detailLevel=x;
+	    
+	    smo.layers.forEach(function(e){
+		e.setStyle(smo.render);	
+	    });		      
+	}
+	oldZoom=smo.map.getZoom();
 
-	oldZoom=map.getZoom();
-
+    });
+    
+    this.render= function(feature) {
+	var color='red';
 	
-	for(var i=0;i<weightRules.length;i++){
-	    if(min < weightRules[i].limit && max >=weightRules[i].limit){
-		other.setStyle(render);
-		trunk.setStyle(render);
-		break;
-	    }
-	 }
-	 
-    });
-    map.on('dragend', function(){
-	changeUrl();
+	switch (feature.properties.smoothness) {
+	case 'excellent': color='blue'; break;
+	case 'good':  color='green'; break;
+	case 'intermediate': color='orange'; break;
+	case 'bad':
+	case 'very_bad':
+	case 'horrible':
+	case 'very_horrible':
+	case 'impassable':
+	    color='red'; break;
+	default: color='black';
+	}
+
+	var weight=weightRules[smo.detailLevel].rules[feature.properties.highway]
+	    || weightRules[smo.detailLevel].default;
+	
+	return {color: color, weight:weight, opacity:0.65};
+    };
+
+    this.map.on('dragend', function(){
+	smo.changeUrl();
     });
 
-    changeUrl();
+    this.changeUrl();
 
     /*
     map.on('click', function (evt) {
@@ -101,7 +67,7 @@ function loadDoc() {
             nearestMarker = null,
             minDistance = Infinity,
             markerClickDistance = 12, // pixels
-            distance;
+           distance;
         trunk.eachLayer(function (circleMarker) {
             distance = latLng.distanceTo(circleMarker.getLatLng());
             if (distance < minDistance) {
@@ -116,15 +82,25 @@ function loadDoc() {
             }
         }
         return false;
-    });*/
+     });*/
+
 }
 
-
-function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+function findDetailLevel(zoom){
+    var i=0;
+    for(;i<weightRules.length && zoom>= weightRules[i].limit;i++);
+    return i;
 }
 
-function checkTopoJson(content){
+smoothness.prototype.addLayer=function(data, onEach){
+    var ret=L.geoJson(null, {style:this.render, onEachFeature:onEach});
+    ret.addTo(this.map);
+    this.layers.push(ret);
+    ret.addData(this.checkTopoJson(data));
+    return ret;
+}
+
+smoothness.prototype.checkTopoJson=function(content){
     if(content.type==="Topology"){
 	var content1=[];
 	for (var key in content.objects) {
@@ -133,27 +109,31 @@ function checkTopoJson(content){
 	return content1[0];
     }
     return content;
-}
+};
 
-function changeUrl(){
-    window.location.replace("#map="+map.getZoom()+"/"+map.getCenter().lat+"/"+map.getCenter().lng);
-}
+smoothness.prototype.initParams=function(){
+    this.params={};
+    var x=window.location.href.split('#map=');
+    if(x.length==2){
+	var y= x[1].split("/");
+	this.params.zoom=y[0];
+	this.params.lat=y[1];
+	this.params.lng=y[2];
+    }
+};
 
-function popup(feature, layer){
-    layer.bindPopup((feature.properties.ref?"<b>"+feature.properties.ref+":</b> ":"")+
-		    feature.properties.smoothness+ 
-		    "<br><b>surface survey:</b> " +
-		    (feature.properties.surface_survey ||"") +"<br>", {maxWidth: 200});
+smoothness.prototype.setPosition=function(z, lat, long){
+    this.map.setView( new L.LatLng((this.params.lat||46),
+				   (this.params.lng||25)),
+		      (this.params.zoom|| 7) );
+};
 
-    //layer.on('mouseover', function() { layer.openPopup(); });
-    //layer.on('mouseout', function() { layer.closePopup(); });
-}
+smoothness.prototype.changeUrl=function(){
+    window.location.replace("#map="+this.map.getZoom()+"/"
+			    +this.map.getCenter().lat+"/"
+			    +this.map.getCenter().lng);
+};
 
-function popupControl(feature, layer){
-    layer.bindPopup("<b>Control rovigneta:</b> " +feature.properties.locatie+" ("+feature.properties.drum+")<br>"+
-		    "data from <a href=\"http://enjoymaps.ro\">enjoymaps.ro</a>", {maxWidth: 200});
-    
-}
 
 const weightRules=[
     {
@@ -162,17 +142,17 @@ const weightRules=[
 	    motorway:4,
 	    motorway_link:4,
 	    trunk:3,
-	    primary:2
+	    primary:3
 	},
 	default:1
     },
     {
-	limit:13,
+	limit:11,
 	rules:{
 	    motorway:8,
 	    motorway_link:8,
 	    trunk:6,
-	    primary:4
+	    primary:5
 	},
 	default:2
     },
@@ -188,23 +168,4 @@ const weightRules=[
     }
 ];
 
-function render(feature) {
-    var color='red';
 
-    switch (feature.properties.smoothness) {
-    case 'excellent': color='blue'; break;
-    case 'good':  color='green'; break;
-    case 'intermediate': color='orange'; break;
-    }
-
-    var weight;
-    for(var i=0;;i++){
-	if(map.getZoom() < weightRules[i].limit){
-	    weight=weightRules[i].rules[feature.properties.highway]
-		|| weightRules[i].default;
-	    break;
-	}
-    }
-    
-    return {color: color, weight:weight, opacity:0.65};
-}
