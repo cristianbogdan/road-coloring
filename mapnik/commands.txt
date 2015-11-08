@@ -4,7 +4,4 @@
 
 ./polytiles.py --b 22 44 29 48 -z 5 13
 
-zip -r tiles.war WEB-INF tiles
-curl -T tiles.war ftp://sunset.nada.kth.se:2121/sunset/production-tomcat/ev.csc.kth.se/ --user cristi:testCristi
-
 ./generate_xml.py --dbname gis --host localhost --accept-none   --inc ./mapquest_inc  --symbols ./mapquest_symbols --world_boundaries ./world_boundaries
