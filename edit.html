@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Edit calitatea drumurilor din România @OSM </title>
+     <script src="analytics.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://ev.csc.kth.se:18080/cristi/maps/all-roads.topo.json.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <script src="http://ev.csc.kth.se:18080/cristi/maps/leaflet.js"></script>
+    <script src="smoothness.js" ></script>
+    <script src="edit.js" ></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+  </head>
+  <body onLoad="loadDoc()" style="margin:30;padding:10;">
+      <div id="mymap" style="width:900px;height:630px;margin:auto;" ></div>
+      <div style="width:900px;margin:auto;">
+
+	<b><a href="http://wiki.openstreetmap.org/wiki/Key:smoothness">Legenda:</a>
+	  <font color="blue">excellent</font>
+	  <font color="green">good</font>
+	  <font color="orange">intermediate</font>
+	  <font color="red">bad very_bad horrible very_horrible impassable</font>
+	  neclasificat</b>
+	  <br/>
+	Mod editare. <a href="index.html">Înapoi la modul vizualizare.</a>
+	<h2>Editarea calității drumurilor</h2>
+	<img src= "http://i.imgur.com/OhnlHQn.jpg" height="50%" width="50%" style="float:right;"/>
+      
+      Daca doriți ca drumul preferat (sau detestat) și calitatea de drum preferată (sau nu) să apară pe hartă:
+      <ul>
+	<li>Click pe un drum pe harta de mai sus. Vor apare link-uri la mai multe 'segmente' prin care drumul e reprezentat in OSM.</li>
+        <li> Click pe un segment de drum, se va deschide la OSM într-o altă fereastră de browser</li>
+	<li>apasați Edit (faceți un cont la nevoie)</li>
+	<li>in editorul din stânga, scroll down la "All tags" (vezi imagine)</li>
+	<li>apăsați +, apar două câmpuri de editare noi. În cel din stanga scrieți (sau alegeți) "smoothness".
+	  S-ar putea ca tag-ul smoothness sa existe deja, atunci îi schimbați doar valoarea în câmpul din dreapta</li>
+	<li>in câmpul din dreapta, alegeți "excellent" pentru albastru, "good" pentru verde, "intermediate" pentru galben, "bad" sau si mai rău pentru roșu.</li>
+	<li>pentru a indica data, sursa și detalii, adăugați ca mai sus tag-ul surface_survey, in format 25NOV015_user@email. Alternativ adresa de emal poate fi înlocuită cu nick-ul de pe forum (indicați și forumul), sau cu link la mesajul de pe forum care conține informația sursă. Data și sursa pot fi urmate de orice comentarii. Aceste informații apar pe hartă la click.</li>
+	<li>înapoi la această fereastră, alegeți alt segment și repetați procedura de mai sus</a>
+      </ul>
+
+  </body>
+</html>

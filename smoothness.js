@@ -1,6 +1,6 @@
 /*global L topojson*/
 
-function smoothness(theMap, z, lat, long){
+function smoothness(theMap, z, lat, long, opacity){
     this.map=theMap;
     this.layers=[];
     this.initParams();
@@ -12,6 +12,9 @@ function smoothness(theMap, z, lat, long){
 	zs= new Date();
     });
     var smo= this;
+
+    this.opacity=opacity ||0.65;
+    
     this.detailLevel= findDetailLevel(this.map.getZoom());   
     
     this.map.on('zoomend', function(){
@@ -23,10 +26,11 @@ function smoothness(theMap, z, lat, long){
 	var x= findDetailLevel(smo.map.getZoom());
 	if(x!=smo.detailLevel){
 	    smo.detailLevel=x;
-	    
-	    smo.layers.forEach(function(e){
-		e.setStyle(smo.render);	
-	    });		      
+
+	    if(smo.opacity>0.1)
+		smo.layers.forEach(function(e){
+		    e.setStyle(smo.render);	
+		});
 	}
 	oldZoom=smo.map.getZoom();
 
@@ -50,8 +54,9 @@ function smoothness(theMap, z, lat, long){
 
 	var weight=weightRules[smo.detailLevel].rules[feature.properties.highway]
 	    || weightRules[smo.detailLevel].default;
-	
-	return {color: color, weight:weight, opacity:0.65};
+	if(smo.opacity <0.1)
+	    weight=weightRules[smo.detailLevel].rules['motorway'];
+	return {color: color, weight:weight, opacity:smo.opacity};
     };
 
     this.map.on('dragend', function(){

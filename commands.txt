@@ -15,6 +15,19 @@ if [[ $? -eq 0 ]] ; then
 fi
 osm2pgsql --slim -d gis -C 16000 --hstore --number-processes 3 --style osm2pgsql.style  romania-latest.osm.pbf 
 
+
+psql -t -A -d gis -c "select max(osm_timestamp) from planet_osm_line where highway in ('motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'construction')"> max.txt
+psql -d gis -c "drop table lines_old;"
+psql -d gis -c "select * into lines_old from planet_osm_line ;"
+
+o2p/osm2pgsql/build/osm2pgsql --host localhost --slim -d gis -C 16000 --hstore --number-processes 3 --style osm2pgsql.style  --extra-attributes romania-latest.osm.pbf
+
+#osm2pgsql --slim -d gis -C 16000 --hstore --number-processes 3 --style osm2pgsql.style  romania-latest.osm.pbf
+
+(echo "insert into road_log select * from planet_osm_line where highway in ('motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'construction') and osm_timestamp > '"|cat - max.txt | tr -d '\n'  ; echo "'") | psql -d gis
+
+psql -d gis -c "insert into smoothness_updates select a.osm_timestamp, b.osm_timestamp as old_timestamp, a.ref, a.osm_user, a.osm_changeset, b.osm_changeset as old_changeset, a.smoothness as new_smoothness, b.smoothness as old_smoothness, a.surface_survey as new_survey, b.surface_survey as old_survey from planet_osm_line a, lines_old b where a.osm_id= b.osm_id and (a.smoothness <> b.smoothness or a.surface_survey <> b.surface_survey)"      
+
 psql -d gis -f cleanup.sql
 
 psql -t -A -d gis -f smoothness-trunk.sql > main-roads.json

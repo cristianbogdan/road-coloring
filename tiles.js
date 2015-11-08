@@ -18,7 +18,10 @@
 
 function loadDoc() {
     
-    var map= new L.Map('mymap');
+    var map= new L.Map('mymap',{
+	minZoom:5,
+	maxZoom:13
+    });
     // create the OpenStreetMap layer
 
     const osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>',
@@ -26,7 +29,8 @@ function loadDoc() {
     
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-	osmBwUrl= 'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
+	//	osmBwUrl= 'file:///Users/cristi/Documents/itcwork/maps/mapnik/tiles/{z}/{x}/{y}.png',
+	osmBwUrl= 'http://ev.csc.kth.se:18080/tiles/tiles/{z}/{x}/{y}.png',
         landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
     
@@ -36,33 +40,22 @@ function loadDoc() {
 
     map.addLayer(osmBwMap);
 
-    var smo= new smoothness(map, 7,46,25, 0.65);
-
-    // set the map's starting view
-    var control= L.geoJson(null, {onEachFeature:function(feature, layer){
-	layer.bindPopup("<b>Control rovigneta:</b> "
-			+feature.properties.locatie+" ("
-			+feature.properties.drum+")<br>"+
-			"data from <a href=\"http://enjoymaps.ro\">enjoymaps.ro</a>",
-			{maxWidth: 200});
-    
-    }});
-
-    control.addTo(map);
-    control.addData(radare[0]);
-    
-    L.control.layers(
-	{
-	    "OSM black&white": osmBwMap,
-	    "OSM": osmMap,
-	    "OSM Landscape": landMap
-	},
-	{
-	    "A, DN":smo.addLayer(mainRoads, popup)
-	    ,"DJ, DC": smo.addLayer(otherRoads, popup)
-	    , "control (enjoymaps.ro)":control
-	}
+    var smo;
+    if('smoothness' in window){
+	smo = new smoothness(map, 7,46,25, 0.00001);
+	L.control.layers(
+	    {
+		"OSM + road quality":osmBwUrl
+	    },
+	    {
+		"A, DN details":smo.addLayer(mainRoads, popup)
+		,"DJ, DC details": smo.addLayer(otherRoads, popup)
+		
+	    }
     ).addTo(map);
+    }
+    else
+	map.setView( new L.LatLng(46, 25), 7);
 }
 
 function popup(feature, layer){
@@ -74,5 +67,3 @@ function popup(feature, layer){
     //layer.on('mouseover', function() { layer.openPopup(); });
     //layer.on('mouseout', function() { layer.closePopup(); });
 };
-
-

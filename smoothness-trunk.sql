@@ -6,7 +6,7 @@ SELECT row_to_json(fc)
           (
 	          select row_to_json(t) from (select smoothness, highway, surface_survey, ref) t
 	   ) AS properties
-			     FROM roads As lg WHERE lg.smoothness is not null and lg.highway in ('trunk', 'motorway', 'motorway_link')
+			     FROM roads As lg WHERE lg.smoothness is not null and lg.highway in ('trunk', 'motorway', 'motorway_link', 'primary')
    ) As f
 )  As fc;
 			     
