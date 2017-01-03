@@ -41,3 +41,9 @@ topojson -p -o other-roads.topo.json -- other-roads.json
 psql -t -A -d gis -f all-roads.sql > all-roads.json
 topojson -p -o all-roads.topo.json -- all-roads.json
 (echo "allRoads="; cat all-roads.topo.json ; echo ";";)> all-roads.topo.json.js
+
+-----
+SET client_encoding = 'UTF8';
+
+ psql -d gis -c "SELECT  distinct max(osm_timestamp) as time, ref, osm_user, osm_changeset, old_smoothness, new_smoothness, new_survey from smoothness_updates group by osm_changeset, ref, osm_user, old_smoothness, new_smoothness, new_survey order by time desc"
+

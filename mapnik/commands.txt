@@ -2,6 +2,6 @@
 
 ./generate_xml.py --dbname gis --host localhost --accept-none osm.xml | nik2img.py - image.png  --center 25 46  -z 12 -d 2000 1000 -v
 
-./polytiles.py --b 22 44 29 48 -z 5 13
+./polytiles.py -a 0 -z 5 13 --threads 8
 
 ./generate_xml.py --dbname gis --host localhost --accept-none   --inc ./mapquest_inc  --symbols ./mapquest_symbols --world_boundaries ./world_boundaries

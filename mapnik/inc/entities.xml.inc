@@ -8,30 +8,41 @@
 <!ENTITY % layers SYSTEM "layers.xml.inc">
 %layers;
 <!ENTITY excellent_color "#0000ff">
-<!ENTITY good_color "#00FFFF">
-<!ENTITY intermediate_color "#FFFF1A">
+<!ENTITY good_color "#376f00">
+<!ENTITY intermediate_color "#ff9f00">
 <!ENTITY bad_color "#ff0000">
 
-<!ENTITY motorway56stroke "0.5">
-<!ENTITY motorway78stroke "1">
-<!ENTITY motorway9stroke "1.4">
-<!ENTITY motorway10stroke "2">
-<!ENTITY motorway1113stroke "2.5">
+<!ENTITY original_motorway_color "#809bc0">
+<!ENTITY original_trunk_color "#97d397">
+<!ENTITY original_primary_color "#ec989a">
+<!ENTITY original_secondary_color "#fecc8b">
 
-<!ENTITY trunk56stroke "0.4">
-<!ENTITY trunk78stroke "1">
-<!ENTITY trunk910stroke "2">
-<!ENTITY trunk1113stroke "2.5">
+<!ENTITY motorway_color "#8ca5c6">
+<!ENTITY trunk_color "#a1d7a1">
+<!ENTITY primary_color "#efacae">
+<!ENTITY secondary_color "#fed6a2">
+<!ENTITY tertiary_color "#f1f1f1">
 
-<!ENTITY primary78stroke "0.5">
-<!ENTITY primary9stroke "1.2">
-<!ENTITY primary10stroke "2">
+<!ENTITY motorway56stroke "1.5">
+<!ENTITY motorway78stroke "3.2">
+<!ENTITY motorway9stroke "4.2">
+<!ENTITY motorway10stroke "5.2">
+<!ENTITY motorway1113stroke "5.3">
+
+<!ENTITY trunk56stroke "0.7">
+<!ENTITY trunk78stroke "1.5">
+<!ENTITY trunk910stroke "2.2">
+<!ENTITY trunk1113stroke "2.8">
+
+<!ENTITY primary78stroke "0.7">
+<!ENTITY primary9stroke "1.5">
+<!ENTITY primary10stroke "1.9">
 <!ENTITY primary1113stroke "2.5">
 
-<!ENTITY secondary910stroke "1">
-<!ENTITY secondary1113stroke "1.5">
+<!ENTITY secondary910stroke "1.3">
+<!ENTITY secondary1113stroke "2.2">
 
-<!ENTITY tertiary1113stroke "1.3">
+<!ENTITY tertiary1113stroke "2.1">
 
 
 <!ENTITY maxscale_zoom0 "<MaxScaleDenominator>250000000000</MaxScaleDenominator>">

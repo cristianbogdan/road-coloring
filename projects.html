@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Harta proiectelor de infrastructură din România</title>
+<link rel="stylesheet" href="http://openlayers.org/en/v3.10.1/css/ol.css" type="text/css">
+<script src="ol-debug10.js"></script>
+<style>
+.map {
+background: #f8f4f0;
+height:700px;
+}
+
+</style>
+</head>
+<body>
+  <div>
+    <b>Legenda:</b> In construcție, predare estimată: 
+    <b><font color="#0000ff">2016</font></b>, 
+    <b><font color="78bcff">2017...</font></b>,
+    <b><font color="#809bc0">neatribuit</font></b>
+
+    Predare fără acces trafic:
+    <b><font color="#ff0000">2016</font></b>, 
+    <b><font color="#F08080">2017...</font></b>
+
+    Variante de viteză CF: 
+    <b><font color="#000000">in constructie</font></b>,
+    <b><font color="#787878">neatribuit</font></b>
+  </div>
+  <div id="map" class="map"></div>
+  <div style="height:20px;" id="text"></div>
+    <script src="vector.js">
+
+</script>
+</body>
+</html>

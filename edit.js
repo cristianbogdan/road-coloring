@@ -31,12 +31,13 @@ function loadDoc() {
 	osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
         landMap = L.tileLayer(landUrl, {attribution: thunAttrib});
 
-    map.addLayer(osmBwMap);
+    //map.addLayer(osmBwMap);
 
     var smo= new smoothness(map, 7,46,25);
     
     var all=smo.addLayer(allRoads, popup);
-    
+
+    /*
     L.control.layers(
 	{
 	    "OSM blawk&white": osmBwMap,
@@ -49,17 +50,25 @@ function loadDoc() {
 	    
 	}
     ).addTo(map);
-
+*/
 
 }
 
 
 function popup(feature, layer){
+
+    var surf= feature.properties.surface_survey;
+    surf= surf||"";
+    var i= surf.indexOf("_http://");
+
+    if(i!=-1)
+	surf="<a href="+surf.substring(i+1)+">"+surf.substring(0, i)+"</a>";
+    
     var text=	(feature.properties.ref?"<b>"+feature.properties.ref+":</b> ":"")+
 	    (feature.properties.smoothness?
 	     feature.properties.smoothness+
 	     "<br><b>surface survey:</b> " +
-	     (feature.properties.surface_survey ||""):'')
+	     surf:'')
 	+"<br>";
     var x=0;
     feature.properties.osm_id.split(',').forEach(function(osm_id){

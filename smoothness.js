@@ -128,9 +128,9 @@ smoothness.prototype.initParams=function(){
 };
 
 smoothness.prototype.setPosition=function(z, lat, long){
-    this.map.setView( new L.LatLng((this.params.lat||46),
-				   (this.params.lng||25)),
-		      (this.params.zoom|| 7) );
+    this.map.setView( new L.LatLng((this.params.lat||lat),
+				   (this.params.lng||long)),
+		      (this.params.zoom|| z) );
 };
 
 smoothness.prototype.changeUrl=function(){

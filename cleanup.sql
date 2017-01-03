@@ -38,7 +38,7 @@ ST_EndPoint(a.way) IN (ST_StartPoint(b.way), ST_endPoint(b.way)))
 order by bosm
 ---LIMIT 1000
 LOOP
-     RAISE NOTICE 'joining % with %', pair.aosm, pair.bosm;
+--     RAISE NOTICE 'joining % with %', pair.aosm, pair.bosm;
 
      SELECT COUNT(*) INTO del  FROM roads WHERE id=pair.bosm;
      SELECT COUNT(*) INTO del2  FROM roads WHERE id=pair.aosm;
@@ -49,26 +49,26 @@ LOOP
 	     
              GET DIAGNOSTICS del = ROW_COUNT;	
 	     IF del=0 THEN
-	          RAISE NOTICE 'could not merge  % with % ????', pair.aosm, pair.bosm;
+	          ----RAISE NOTICE 'could not merge  % with % ????', pair.aosm, pair.bosm;
 		  RETURN -1;
 	     ELSE
 	        inserted := inserted +1;
 		DELETE FROM roads WHERE id=pair.bosm;
 		GET DIAGNOSTICS del = ROW_COUNT;	
-		RAISE NOTICE 'deleted %  %', pair.bosm, del;
+--		RAISE NOTICE 'deleted %  %', pair.bosm, del;
 		ret:= ret+del;
 		deleted:=deleted+del;
 	    END IF;
             ELSE	
-    	       	 RAISE NOTICE '% and % could not be merged',pair.aosmid, pair.bosmid;
+---    	       	 RAISE NOTICE '% and % could not be merged',pair.aosmid, pair.bosmid;
 	    END IF;
       ELSE
-	       	 RAISE NOTICE '% % was deleted ',(1-del)*pair.aosm, (1-del2)*pair.bosm;
+--	       	 RAISE NOTICE '% % was deleted ',(1-del)*pair.aosm, (1-del2)*pair.bosm;
       END IF;
       	  
 END LOOP;     
 
-	       	 RAISE NOTICE '%  inserts % deletes ', inserted, deleted;
+--	       	 RAISE NOTICE '%  inserts % deletes ', inserted, deleted;
 return ret;
  END;
  $$

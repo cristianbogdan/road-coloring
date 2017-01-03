@@ -16,10 +16,11 @@
   </head>
 */
 
-function loadDoc() {
+function loadDoc(zoom) {
+    zoom=zoom||7;
     
     var map= new L.Map('mymap',{
-	minZoom:5,
+	minZoom:7,
 	maxZoom:13
     });
     // create the OpenStreetMap layer
@@ -29,8 +30,8 @@ function loadDoc() {
     
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-	//	osmBwUrl= 'file:///Users/cristi/Documents/itcwork/maps/mapnik/tiles/{z}/{x}/{y}.png',
-	osmBwUrl= 'http://ev.csc.kth.se:18080/tiles/tiles/{z}/{x}/{y}.png',
+//	osmBwUrl= 'file:///Users/cristi/Documents/itcwork/maps/mapnik/tiles/{z}/{x}/{y}.png',
+	osmBwUrl= 'http://standup.csc.kth.se/tiles/{z}/{x}/{y}.png',
         landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
     
@@ -42,7 +43,12 @@ function loadDoc() {
 
     var smo;
     if('smoothness' in window){
-	smo = new smoothness(map, 7,46,25, 0.00001);
+	smo = new smoothness(map, zoom,46,25, 0.00001);
+    }
+    else
+	map.setView( new L.LatLng(46, 25), zoom);
+
+    if('mainRoads' in window)
 	L.control.layers(
 	    {
 		"OSM + road quality":osmBwUrl
@@ -52,17 +58,21 @@ function loadDoc() {
 		,"DJ, DC details": smo.addLayer(otherRoads, popup)
 		
 	    }
-    ).addTo(map);
-    }
-    else
-	map.setView( new L.LatLng(46, 25), 7);
+	).addTo(map);
 }
 
 function popup(feature, layer){
+    var surf= feature.properties.surface_survey;
+    surf= surf||"";
+    var x= surf.indexOf("_http://");
+
+    if(x!=-1)
+	surf="<a href="+surf.substring(x+1)+">"+surf.substring(0, x)+"</a>";
+    
     layer.bindPopup((feature.properties.ref?"<b>"+feature.properties.ref+":</b> ":"")+
 		    feature.properties.smoothness+ 
 		    "<br><b>surface survey:</b> " +
-		    (feature.properties.surface_survey ||"") +"<br>", {maxWidth: 200});
+		     surf, {maxWidth: 200});
 
     //layer.on('mouseover', function() { layer.openPopup(); });
     //layer.on('mouseout', function() { layer.closePopup(); });
