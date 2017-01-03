@@ -30,8 +30,8 @@ function loadDoc(zoom) {
     
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-//	osmBwUrl= 'file:///Users/cristi/Documents/itcwork/maps/mapnik/tiles/{z}/{x}/{y}.png',
 	osmBwUrl= 'http://standup.csc.kth.se/tiles/{z}/{x}/{y}.png',
+//	osmBwUrl= 'http://ev.csc.kth.se:18080/tiles/tiles/{z}/{x}/{y}.png',
         landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
     

@@ -28,9 +28,10 @@
       &minscale_zoom6;
       <LineSymbolizer stroke="purple" stroke-width="0.6" stroke-dasharray="4,3" stroke-opacity="0.2"/>
     </Rule>
+-->
     <Rule>
       <Filter>[admin_level]='4'</Filter>
-      &maxscale_zoom7;
+      &maxscale_zoom9;
       &minscale_zoom10;
       <LineSymbolizer stroke="purple" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.2"/>
     </Rule>
@@ -38,8 +39,8 @@
       <Filter>[admin_level]='4'</Filter>
       &maxscale_zoom11;
       <LineSymbolizer stroke="purple" stroke-width="3" stroke-dasharray="4,3" stroke-opacity="0.2"/>
+      <TextSymbolizer size="8" fill="black" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="1">[name]</TextSymbolizer>
     </Rule>
-    -->
 </Style>
 <Style name="admin-5678">
     <Rule>
@@ -78,7 +79,7 @@
     <StyleName>admin-01234</StyleName>
     <Datasource>
       <Parameter name="table">
-      (select way,admin_level
+      (select way,admin_level,name
        from &prefix;_roads
        where "boundary"='administrative'
          and admin_level in ('0','1','2','3','4')
@@ -90,7 +91,7 @@
     <StyleName>admin-5678</StyleName>
     <Datasource>
       <Parameter name="table">
-      (select way,admin_level
+      (select way,admin_level,name
        from &prefix;_roads
        where "boundary"='administrative'
          and admin_level in ('5','6','7','8')
@@ -102,7 +103,7 @@
     <StyleName>admin-other</StyleName>
     <Datasource>
       <Parameter name="table">
-      (select way,admin_level
+      (select way,admin_level,name
        from &prefix;_roads
        where "boundary"='administrative'
          and (admin_level is null or admin_level not in ('0','1','2','3','4','5','6','7','8'))

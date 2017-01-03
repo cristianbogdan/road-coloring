@@ -1,6 +1,6 @@
 drop table roads;
-select concat('', osm_id) as osm_id, ref, way, smoothness, surface_survey, highway into roads from planet_osm_line
-where highway in ('motorway', 'motorway_link', 'trunk', 'primary', 'secondary', 'tertiary')
+select concat('', osm_id) as osm_id, ref, way, smoothness, surface_survey, highway, name into roads from planet_osm_line
+where osm_id>0 and highway in ('motorway', 'motorway_link', 'trunk', 'primary', 'secondary', 'tertiary', 'residential')
 --where smoothness is not null
 ;
 alter table roads add column id serial;
@@ -29,6 +29,7 @@ a.ref =b.ref
 -- and a.highway is not null
 and b.highway=a.highway
 and a.id < b.id
+and a.name is not distinct from b.name
 and (a.smoothness is null and b.smoothness is null or
 a.smoothness=b.smoothness and a.surface_survey=b.surface_survey)
 and

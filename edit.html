@@ -1,46 +1,62 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Edit calitatea drumurilor din România @OSM </title>
-     <script src="analytics.js"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <script src="http://ev.csc.kth.se:18080/cristi/maps/all-roads.topo.json.js"></script>
-    <link rel="stylesheet" href="leaflet.css" />
-    <script src="http://ev.csc.kth.se:18080/cristi/maps/leaflet.js"></script>
-    <script src="smoothness.js" ></script>
-    <script src="edit.js" ></script>
+<head>
+<title>Edit OSM road quality</title>
+<link rel="stylesheet" href="http://openlayers.org/en/v3.10.1/css/ol.css" type="text/css">
+<script src="ol-debug10.js"></script>
+<style>
+.map {
+background: #f8f4f0;
+height:600px;
+}
+.radio{
+padding-RIGHT:10px;
+}
+</style>
+</head>
+<body>
+  <div><a href="https://www.openstreetmap.org/user/new">OSM</a> user:<input name="osm_user" onchange="enableSave()" /> password:<input name="osm_pass" type="password" onchange="enableSave()"/>
+   <br>Zoom in pana drumul vizat apare pe fond galben 
+<!-- (atentie, performanta scade peste nivelul de zoom 12! Vezi nivelul de zoom in bara de adresa a broswer-ului).  -->
+   <br>Click pe o portiune de drum, apoi Shift-click ca sa selectezi mai multe.
+</div>
+  <div id="map" class="map"></div>
+  <div><table border="0" cellpadding="2">
+      <tr><td colspan="2">Selectate: <span id="text"></span></td>
+	<td><span id="current"></span></td>
+      <tr>
+	<td>Calitatea (smoothness):</td>
+	<td>
+	    <span class="radio"><input type="radio" name="quality" value="excellent" onchange="enableSave()"><font size="1" color="blue">excellent</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="good" onchange="enableSave()"><font size="1" color="#376f00">good</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="intermediate" onchange="enableSave()"><font size="1" color="#ff9f00">intermediate</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="bad" onchange="enableSave()"><font size="1" color="red">bad</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="very_bad" onchange="enableSave()"><font size="1" color="red">very_bad</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="horrible" onchange="enableSave()"><font size="1" color="red">horrible</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="very_horrible" onchange="enableSave()"><font size="1" color="red">very_horrible</font>
+	    </span><span class="radio"><input type="radio" name="quality" value="impassable" onchange="enableSave()"><font size="1" color="red">impassable</font>
+</span>
+      </td>
+	<td><span id="current_smoothness"></span></td>
+      </tr>
+      <tr><td>Detalii (surface_survey)</td> <td><input name="surface_survey" onchange="enableSave()" size="40"/> (va contine REHAB pt drumuri in reabilitare)</td>
+	<td><span id="current_survey"></span></td>
+      </tr>
+      <tr><td>Comentarii OSM</td><td> <input name="comment" onchange="onComment()" size="40"/> </td></tr>
+      <tr><td><button id="save" disabled onclick="submit()">Salvare la OSM!</button></td>
+      <td><span style="color:red;" id="error"></span>
+	<span id="success"></span>
+	</td>
+      </tr>
+      <!--tr><td><button onClick="console.log(window.open('http://forum.peundemerg.ro/index.php?action=profile'))" >test</button></tr-->
+</table>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 
-  </head>
-  <body onLoad="loadDoc()" style="margin:30;padding:10;">
-      <div id="mymap" style="width:900px;height:630px;margin:auto;" ></div>
-      <div style="width:900px;margin:auto;">
 
-	<b><a href="http://wiki.openstreetmap.org/wiki/Key:smoothness">Legenda:</a>
-	  <font color="blue">excellent</font>
-	  <font color="green">good</font>
-	  <font color="orange">intermediate</font>
-	  <font color="red">bad very_bad horrible very_horrible impassable</font>
-	  neclasificat</b>
-	  <br/>
-	Mod editare. <a href="index.html">Înapoi la modul vizualizare.</a>
-	<h2>Editarea calității drumurilor</h2>
-	<img src= "http://i.imgur.com/OhnlHQn.jpg" height="50%" width="50%" style="float:right;"/>
-      
-      Daca doriți ca drumul preferat (sau detestat) și calitatea de drum preferată (sau nu) să apară pe hartă:
-      <ul>
-	<li>Click pe un drum pe harta de mai sus. Vor apare link-uri la mai multe 'segmente' prin care drumul e reprezentat in OSM.</li>
-        <li> Click pe un segment de drum, se va deschide la OSM într-o altă fereastră de browser</li>
-	<li>apasați Edit (faceți un cont la nevoie)</li>
-	<li>in editorul din stânga, scroll down la "All tags" (vezi imagine)</li>
-	<li>apăsați +, apar două câmpuri de editare noi. În cel din stanga scrieți (sau alegeți) "smoothness".
-	  S-ar putea ca tag-ul smoothness sa existe deja, atunci îi schimbați doar valoarea în câmpul din dreapta</li>
-	<li>in câmpul din dreapta, alegeți "excellent" pentru albastru, "good" pentru verde, "intermediate" pentru galben, "bad" sau si mai rău pentru roșu.</li>
-	<li>pentru a indica data, sursa și detalii, adăugați ca mai sus tag-ul surface_survey, in format 25NOV015_user@email. Alternativ adresa de emal poate fi înlocuită cu nick-ul de pe forum (indicați și forumul), sau cu link la mesajul de pe forum care conține informația sursă. Data și sursa pot fi urmate de orice comentarii. Aceste informații apar pe hartă la click.</li>
-	<li>înapoi la această fereastră, alegeți alt segment și repetați procedura de mai sus</a>
-      </ul>
-
-  </body>
+<!--http://www.ajaxload.info/cache/FF/FF/FF/00/00/00/1-0.gif
+document.querySelector('input[name="rate"]:checked').value; -->
+    <script src="map-browser-nav.js"></script>
+    <script src="openlayers.js"></script>
+    <script src="edit.js"></script>
+</body>
 </html>

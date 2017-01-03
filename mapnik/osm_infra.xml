@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map [
+<!ENTITY % entities SYSTEM "inc/entities.xml.inc">
+%entities;
+]>
+<Map background-color="transparent" srs="&srs900913;" minimum-version="2.0.0">
+  &fontset-settings;
+
+<Style name="roads-text-name">
+    <Rule>
+      &maxscale_zoom9;
+      &minscale_zoom17;
+      <TextSymbolizer size="11" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      &maxscale_zoom9;
+      &minscale_zoom17;
+      <TextSymbolizer size="11" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[start_date]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <Filter>[delayed]='delayed'</Filter>
+      &maxscale_zoom9;
+      &minscale_zoom17;
+      <TextSymbolizer size="11" fill="red" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
+    </Rule>
+
+    <Rule>
+      &maxscale_zoom7;
+      &minscale_zoom8;
+      <TextSymbolizer size="8" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      &maxscale_zoom7;
+      &minscale_zoom8;
+      <TextSymbolizer size="8" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[start_date]</TextSymbolizer>
+    </Rule>
+    <Rule>
+      <Filter>[delayed]='delayed'</Filter>
+      &maxscale_zoom7;
+      &minscale_zoom8;
+      <TextSymbolizer size="8" fill="red" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
+    </Rule>
+</Style>
+
+
+<Layer name="roads-text-name" status="on" srs="&osm2pgsql_projection;">
+     <StyleName>roads-text-name</StyleName>
+     <Datasource>
+      <Parameter name="table">
+      (select way,highway, opening_date, start_date, case when construction is null and proposed is null  and opening_date> start_date then 'delayed' else '' end as delayed
+       from planet_osm_line
+       where (opening_date is not null or start_date is not null ) and (highway in ('motorway', 'trunk', 'primary') or construction in ('motorway', 'trunk', 'primary') or proposed in ('motorway', 'trunk', 'primary')) 
+      ) as roads
+      </Parameter>
+      &datasource-settings;
+    </Datasource>
+</Layer>
+</Map>
+

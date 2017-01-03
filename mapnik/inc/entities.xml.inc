@@ -13,9 +13,10 @@
 <!ENTITY bad_color "#ff0000">
 
 <!ENTITY original_motorway_color "#809bc0">
-<!ENTITY original_trunk_color "#97d397">
+<!ENTITY original_trunk_color "#a9dba9">
 <!ENTITY original_primary_color "#ec989a">
 <!ENTITY original_secondary_color "#fecc8b">
+<!ENTITY original_tertiary_color "#ffffb3">
 
 <!ENTITY motorway_color "#8ca5c6">
 <!ENTITY trunk_color "#a1d7a1">

@@ -135,8 +135,8 @@ smoothness.prototype.setPosition=function(z, lat, long){
 
 smoothness.prototype.changeUrl=function(){
     window.location.replace("#map="+this.map.getZoom()+"/"
-			    +this.map.getCenter().lat+"/"
-			    +this.map.getCenter().lng);
+			    +Math.round(this.map.getCenter().lat*1000)/1000+"/"
+			    +Math.round(this.map.getCenter().lng*1000)/1000);
 };
 
 
