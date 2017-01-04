@@ -214,7 +214,7 @@ var roads=
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
-		url: 'http://standup.csc.kth.se/maps/motorways.json'
+		url: 'motorways.json'
 		
 	    }),
 	    style: styleFunction
@@ -226,7 +226,7 @@ var roads_tiles=
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
-		url: 'http://standup.csc.kth.se/motorway/{z}/{x}/{y}.json'
+		url: '/motorway/{z}/{x}/{y}.json'
 		
 	    }),
 	    style: styleFunction
@@ -260,7 +260,7 @@ var mapnik= new ol.layer.Tile({
 
 var infra= new ol.layer.Tile({
     source: new ol.source.OSM({
-	url:'http://standup.csc.kth.se/infra/{z}/{x}/{y}.png'
+	url:'/infra/{z}/{x}/{y}.png'
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 

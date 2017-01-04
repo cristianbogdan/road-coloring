@@ -11,6 +11,14 @@
 
 # npm install -g topojson
 
+# brew install python
+# easy_install pip
+# sudo pip install tilestache
+# sudo pip install mapnik and all other tilestache dependencies
+
+#brew install nginx --with-passenger --with-gzip
+# follow Caveats instructions "to activate passenger"...
+
 # run daily
 
 export LC_ALL="en_US.utf-8"
@@ -19,7 +27,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 
 echo `date` reading the map
-cd /home/cristi/maps
+cd /Users/cristi/maps
 cp romania-latest.osm.pbf romania.latest.osm.bak.pbf
 wget -N http://download.geofabrik.de/europe/romania-latest.osm.pbf 2> download-status.txt
 grep "not retrieving" download-status.txt
@@ -68,7 +76,7 @@ topojson -p -o other-roads.topo.json -- other-roads.json
 #./upload.sh all-roads.topo.json.js 
 
 rm -rf /tmp/stache/infra
-cd TileStache-1.49.8/
+cd tilestache/
 
 echo `date` generating raster tiles for zoom levels 7 to 13
 ls -1 template/713-* | xargs -n1 -P4 tilestache-seed.py -c tilestache.cfg -l tiles -e png -q -x --tile-list 

@@ -21,7 +21,7 @@ function loadDoc(zoom) {
     
     var map= new L.Map('mymap',{
 	minZoom:7,
-	maxZoom:13
+	maxZoom:18
     });
     // create the OpenStreetMap layer
 
@@ -30,7 +30,7 @@ function loadDoc(zoom) {
     
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-	osmBwUrl= 'http://standup.csc.kth.se/tiles/{z}/{x}/{y}.png',
+	osmBwUrl= '/tiles/{z}/{x}/{y}.png',
 //	osmBwUrl= 'http://ev.csc.kth.se:18080/tiles/tiles/{z}/{x}/{y}.png',
         landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;

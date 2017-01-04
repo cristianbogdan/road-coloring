@@ -6,7 +6,7 @@ var roadLayer=
 	    format: new ol.format.GeoJSON(),
 	    tileGrid: ol.tilegrid.createXYZ({maxZoom: 14}),
 	    tilePixelRatio: 16,
-	    url: 'http://standup.csc.kth.se/roads/{z}/{x}/{y}.json'
+	    url: '/roads/{z}/{x}/{y}.json'
 	})
 	,style:
 	new ol.style.Style({
@@ -19,7 +19,7 @@ var roadLayer=
 
 var mapnik= new ol.layer.Tile({
     source: new ol.source.OSM({
-	url:'http://standup.csc.kth.se/tiles/{z}/{x}/{y}.png'
+	url:'/tiles/{z}/{x}/{y}.png'
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 
@@ -39,7 +39,7 @@ var map = new ol.Map({
 	zoom: nav.zoom,
 	rotation:nav.rotation,
 	minZoom:7,
-	maxZoom:13
+	maxZoom:17
     })
 });
 

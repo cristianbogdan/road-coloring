@@ -1,3 +1,6 @@
+SELECT UpdateGeometrySRID('planet_osm_line','way',900913);
+SELECT UpdateGeometrySRID('planet_osm_point','way',900913);
+
 create index planet_osm_line_smo on planet_osm_line(smoothness);
 
 update planet_osm_line set highway='trunk' where highway='primary' and ref in ('DN6', 'CB', 'DN1', 'DN4', 'DN14', 'DN15', 'DN18', 'DN19');
@@ -11,3 +14,6 @@ insert into smoothness_updates select a.osm_timestamp, b.osm_timestamp as old_ti
 drop table lines_old;
 drop table max;
 select * into lines_old from planet_osm_line ;
+create index line_smo on lines_old(smoothness);
+create index line_pkey on lines_old(osm_id);
+CREATE INDEX lines_old_way ON lines_old USING gist(way);

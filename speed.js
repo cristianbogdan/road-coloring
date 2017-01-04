@@ -59,7 +59,7 @@ var roads=
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
-		url: 'http://standup.csc.kth.se/roads/{z}/{x}/{y}.json'
+		url: '/roads/{z}/{x}/{y}.json'
 		
 	    }),
 	    style: styleFunction
@@ -71,7 +71,7 @@ var speed=	new ol.layer.Vector({
 	format: new ol.format.GeoJSON(),
 	tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 	tilePixelRatio: 16,
-	url: 'http://standup.csc.kth.se:8081/speed/{z}/{x}/{y}.json'	
+	url: '/speed/{z}/{x}/{y}.json'	
     }),
     style: styleFunction
 });

@@ -1,7 +1,10 @@
+xmllint --noent osm.xml  > osm-noent.xml
+
 ./generate_xml.py --dbname gis --host localhost --accept-none osm.xml > my_osm.xml
 
 ./generate_xml.py --dbname gis --host localhost --accept-none osm.xml | nik2img.py - image.png  --center 25 46  -z 12 -d 2000 1000 -v
 
-./polytiles.py -a 0 -z 5 13 --threads 8
+./polytiles.py -s osm-noent.xml -b 29.726612400000004 43.578847700000004 20.198656500000002 48.4394855 -z 7 14 --threads 8 -q; 
+
 
 ./generate_xml.py --dbname gis --host localhost --accept-none   --inc ./mapquest_inc  --symbols ./mapquest_symbols --world_boundaries ./world_boundaries
