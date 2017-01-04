@@ -1,26 +1,21 @@
 /* global ol */
 
-var roads=
-	new ol.layer.Vector({
-	    source: new ol.source.TileVector({
-		format: new ol.format.TopoJSON(),
-		tileGrid: ol.tilegrid.createXYZ({maxZoom: 13}),
-		tilePixelRatio: 16,
-		url: 'http://standup.csc.kth.se:8081/roads/{z}/{x}/{y}.topojson'
-		
-	    }),
-	    style:
-	    new ol.style.Style({
-		stroke: new ol.style.Stroke({
-		    width: 8,
-		    color: [0xff,0xff,0,0.3]
-		})
+var roadLayer=
+    new ol.layer.Vector({
+	source: new ol.source.TileVector({
+	    format: new ol.format.GeoJSON(),
+	    tileGrid: ol.tilegrid.createXYZ({maxZoom: 14}),
+	    tilePixelRatio: 16,
+	    url: 'http://standup.csc.kth.se/roads/{z}/{x}/{y}.json'
+	})
+	,style:
+	new ol.style.Style({
+	    stroke: new ol.style.Stroke({
+		width: 4,
+		color: [0xff,0xff,0,0.3]
 	    })
-		});
-
-var selectClick = new ol.interaction.Select({
-    condition: ol.events.condition.click
-});
+	})
+    });
 
 var mapnik= new ol.layer.Tile({
     source: new ol.source.OSM({
@@ -30,36 +25,71 @@ var mapnik= new ol.layer.Tile({
     , tileOptions: {crossOriginKeyword: null} 
 });
 
+
+var nav= new MapBrowserNav();
+
 var map = new ol.Map({
     layers: [
 	mapnik,
-	roads
+	roadLayer
     ],
     target: 'map',
     view: new ol.View({
-	center: ol.proj.fromLonLat([25, 46]),
-	zoom: 7,
+	center: ol.proj.fromLonLat(nav.center),
+	zoom: nav.zoom,
+	rotation:nav.rotation,
 	minZoom:7,
-	maxZoom:17
+	maxZoom:13
     })
 });
 
+nav.attachTo(map);
+
+var selectClick = new ol.interaction.Select({
+    condition: ol.events.condition.click
+});
+
+
 map.addInteraction(selectClick);
 
-selectClick.on('select', function(){
-    var segments={};
-    var log= 'Total: '+selectClick.getFeatures().getLength();
+var segments={};
+var ways={};
+var roads={};
+var other=0;
+
+selectClick.on('select', function(e){
+    segments={};
+    ways={};
+    roads={};
+    other=0;
     
     selectClick.getFeatures().forEach(function(rd){
-	var x=segments[rd.getProperties().ref.trim()];
+	var ref= rd.getProperties().ref;
+	if(!ref)
+	    ref=rd.getProperties().name;
+	if(!ref)
+	    ref=rd.getProperties().osm_id.toString();
+	var x=segments[ref];
 	if(!x){
-	    segments[rd.getProperties().ref.trim()]={};
+	    segments[ref]={};
 	}
-	segments[rd.getProperties().ref.trim()][rd.getProperties().osm_id]=1;
+	segments[ref][rd.getProperties().osm_id]=1;
+	ways[rd.getProperties().osm_id]=1;
+	if(!rd.getProperties().ref && ! rd.getProperties().name)
+	    other++;
+	else
+	    roads[ref]=1;
     });
 
+    var log= selectClick.getFeatures().getLength().toString();
+    
     document.getElementById('text').innerHTML=
 	Object.keys(segments).reduce(function(partial, key){
 	    return partial+ ' '+key+':'+Object.keys(segments[key]).length;
 	}, log);
+
+    if(document.querySelector('button[id="save"]'))
+	enableSave(e.selected);
 });
+
+
