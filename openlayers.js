@@ -25,11 +25,20 @@ var mapnik= new ol.layer.Tile({
     , tileOptions: {crossOriginKeyword: null} 
 });
 
+var landscape=  new ol.layer.Tile({
+    source: new ol.source.OSM({
+	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
+	,crossOrigin:null
+    })
+    , tileOptions: {crossOriginKeyword: null} 
+});
+
 
 var nav= new MapBrowserNav();
 
 var map = new ol.Map({
     layers: [
+	landscape,
 	mapnik,
 	roadLayer
     ],

@@ -30,16 +30,23 @@ function loadDoc(zoom) {
     
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-	osmBwUrl= '/tiles/{z}/{x}/{y}.png',
-//	osmBwUrl= 'http://ev.csc.kth.se:18080/tiles/tiles/{z}/{x}/{y}.png',
+	roadQUrl= '/tiles/{z}/{x}/{y}.png',
+	osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
         landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
+	hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
+	
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
     
     var osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib}),
 	osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
-        landMap = L.tileLayer(landUrl, {attribution: thunAttrib});
+        landMap = L.tileLayer(landUrl, {attribution: thunAttrib}),
+	osmHikeBikeMap = L.tileLayer(hikeBikeUrl, {attribution: thunAttrib}),
+	roadQMap= L.tileLayer(roadQUrl);
 
-    map.addLayer(osmBwMap);
+
+// map.addLayer(landMap);
+    map.addLayer(landMap);
+    map.addLayer(roadQMap);
 
     var smo;
     if('smoothness' in window){
@@ -48,16 +55,15 @@ function loadDoc(zoom) {
     else
 	map.setView( new L.LatLng(46, 25), zoom);
 
-    if('mainRoads' in window)
 	L.control.layers(
 	    {
-		"OSM + road quality":osmBwUrl
+		"Landscape":landMap,
+		"Hike & bike": osmHikeBikeMap,
+		"OSM B&W":osmBwMap
 	    },
 	    {
-		"A, DN details":smo.addLayer(mainRoads, popup)
-		,"DJ, DC details": smo.addLayer(otherRoads, popup)
-		
-	    }
+		"Road quality":roadQMap
+	    }	    
 	).addTo(map);
 }
 

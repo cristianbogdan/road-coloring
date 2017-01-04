@@ -5,24 +5,12 @@
 <!ENTITY srs900913 "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
 <!ENTITY srsmercator "+proj=merc +datum=WGS84 +over">
 <!ENTITY srs4326 "+init=epsg:4326">
-<!ENTITY % layers SYSTEM "layers.xml.inc">
-%layers;
+
 <!ENTITY excellent_color "#0000ff">
 <!ENTITY good_color "#376f00">
 <!ENTITY intermediate_color "#ff9f00">
 <!ENTITY bad_color "#ff0000">
-
-<!ENTITY original_motorway_color "#809bc0">
-<!ENTITY original_trunk_color "#a9dba9">
-<!ENTITY original_primary_color "#ec989a">
-<!ENTITY original_secondary_color "#fecc8b">
-<!ENTITY original_tertiary_color "#ffffb3">
-
-<!ENTITY motorway_color "#8ca5c6">
-<!ENTITY trunk_color "#a1d7a1">
-<!ENTITY primary_color "#efacae">
-<!ENTITY secondary_color "#fed6a2">
-<!ENTITY tertiary_color "#f1f1f1">
+<!ENTITY very_bad_color "#ff00ff">
 
 <!ENTITY motorway56stroke "1.5">
 <!ENTITY motorway78stroke "3.2">
@@ -40,6 +28,7 @@
 <!ENTITY primary10stroke "1.9">
 <!ENTITY primary1113stroke "2.5">
 
+<!ENTITY secondary8stroke "1.1">
 <!ENTITY secondary910stroke "1.3">
 <!ENTITY secondary1113stroke "2.2">
 

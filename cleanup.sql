@@ -1,11 +1,14 @@
 drop table roads;
-select concat('', osm_id) as osm_id, ref, way, smoothness, surface_survey, highway, name into roads from planet_osm_line
+select concat('', osm_id) as osm_id, ref, way, smoothness, surface_survey, surface, z_order, highway, name into roads from planet_osm_line
 where osm_id>0 and highway in ('motorway', 'motorway_link', 'trunk', 'primary', 'secondary', 'tertiary', 'residential')
 --where smoothness is not null
 ;
 alter table roads add column id serial;
 create unique index roads_pkey on roads using btree (id);
 create index roads_way on roads using gist (way);
+create index roads_smoothness on roads using btree (smoothness);
+create index roads_surface on roads using btree (surface);
+create index roads_surface_survey on roads using btree (surface_survey);
 
  
 DROP function cleanup();
@@ -32,6 +35,10 @@ and a.id < b.id
 and a.name is not distinct from b.name
 and (a.smoothness is null and b.smoothness is null or
 a.smoothness=b.smoothness and a.surface_survey=b.surface_survey)
+and
+a.surface=b.surface
+and
+a.z_order=b.z_order
 and
 (ST_StartPoint(a.way) IN (ST_StartPoint(b.way), ST_endPoint(b.way))
 or
