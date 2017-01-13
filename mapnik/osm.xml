@@ -197,8 +197,8 @@
 	case when smoothness='excellent' then '&excellent_color;'
 	when smoothness='good' then '&good_color;'
 	when smoothness='intermediate' then '&intermediate_color;'
-	when smoothness='bad' then '&bad_color;'
-	when smoothness='very_bad' or smoothness='horrible' or smoothness='very_horrible' or smoothness='impassable' then '&very_bad_color;'
+	when smoothness='bad' or smoothness='very_bad' then '&bad_color;'
+	when smoothness='horrible' or smoothness='very_horrible' or smoothness='impassable' then '&horrible_color;'
 	end as color,
 	
 	case when highway='motorway' or highway='motorway_link' then &motorway56stroke;
@@ -241,15 +241,15 @@
 	when highway='secondary' or highway='secondary_link' then &secondary1113stroke;
 	else &tertiary1113stroke; end as stroke13,
 
-	case when surface = 'asphalt' then '1,0' else '3,3' end as dash56,
-	case when surface = 'asphalt' then '1,0' else '3,3' end as dash7,
-	case when surface = 'asphalt' then '1,0' else '3,3' end as dash8,
-	case when surface = 'asphalt' then '1,0' else '5,5' end as dash9,
-	case when surface = 'asphalt' then '1,0' else '5,5' end as dash10,
-	case when surface = 'asphalt' then '1,0' else '5,5' end as dash11
+	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '3,3' end as dash56,
+	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '3,3' end as dash7,
+	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '3,3' end as dash8,
+	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '5,5' end as dash9,
+	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '5,5' end as dash10,
+	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '5,5' end as dash11
 	
        from roads
-       where highway is not null and not (highway='construction') and not (highway='proposed') and smoothness is not null
+       where highway is not null and not (highway='construction') and not (highway='proposed') and smoothness is not null and (access is null or access='yes')
        order by z_order
       ) as roads
       </Parameter>
@@ -312,7 +312,7 @@
 	'&excellent_color;' as color
 	
        from roads
-       where highway is not null and not (highway='construction') and not (highway='proposed') and surface_survey like '%REHAB%'
+       where highway is not null and not (highway='construction') and not (highway='proposed') and surface_survey like '%REHAB%' and (access is null or access='yes')
       ) as roads
       </Parameter>
       &datasource-settings;
@@ -361,7 +361,7 @@
 	smoothness is not null as has_smoothness
 	
        from roads
-       where (surface_survey is not null or name is not null or ref is not null)
+       where (surface_survey is not null or name is not null or ref is not null) and (access is null or access='yes')
       ) as roads
       </Parameter>
 <!--

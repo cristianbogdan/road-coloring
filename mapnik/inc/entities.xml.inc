@@ -10,7 +10,7 @@
 <!ENTITY good_color "#376f00">
 <!ENTITY intermediate_color "#ff9f00">
 <!ENTITY bad_color "#ff0000">
-<!ENTITY very_bad_color "#ff00ff">
+<!ENTITY horrible_color "#ff00ff">
 
 <!ENTITY motorway56stroke "1.5">
 <!ENTITY motorway78stroke "3.2">
