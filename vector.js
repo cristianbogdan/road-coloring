@@ -1,4 +1,7 @@
 /* global ol */
+try { MAP_ROOT }catch(e) {
+    MAP_ROOT="";
+}
 
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -202,7 +205,7 @@ var styleFunction = function(feature, resolution) {
 	return p.railway=='proposed'?[transp,gray, railDash]:[transp, black, railDash];
 
     var construction= (p.access=='no')?red:blue;
-    if(p.construction&&p.opening_date>nextYear || !p.opening_date)
+    if(p.construction&&p.opening_date>=nextYear || !p.opening_date)
 	construction= (p.access=='no')?lightred:lightblue;
 
     return p.construction? p.access=='no'?[transp, construction, whiteDash]:[transp, construction, whiteDash]:p.proposed?[transp, proposed_highway, whiteDash]:p.access=='no'?[transp, red]:[transp, blue];
@@ -214,7 +217,7 @@ var roads=
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
-		url: 'motorways.json'
+		url: MAP_ROOT+'/maps/data/motorways.json'
 		
 	    }),
 	    style: styleFunction
@@ -226,7 +229,7 @@ var roads_tiles=
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
-		url: '/motorway/{z}/{x}/{y}.json'
+		url: MAP_ROOT+'/motorway/{z}/{x}/{y}.json'
 		
 	    }),
 	    style: styleFunction
@@ -260,7 +263,7 @@ var mapnik= new ol.layer.Tile({
 
 var infra= new ol.layer.Tile({
     source: new ol.source.OSM({
-	url:'/infra/{z}/{x}/{y}.png'
+	url:MAP_ROOT+'/infra/{z}/{x}/{y}.png'
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 

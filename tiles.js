@@ -16,6 +16,11 @@
   </head>
 */
 
+try { MAP_ROOT }catch(e) {
+    MAP_ROOT="";
+}
+    console.log(MAP_ROOT);
+
 function loadDoc(zoom) {
     zoom=zoom||7;
     
@@ -30,7 +35,7 @@ function loadDoc(zoom) {
     
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-	roadQUrl= '/tiles/{z}/{x}/{y}.png',
+	roadQUrl= MAP_ROOT+'/tiles/{z}/{x}/{y}.png',
 	osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
         landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
 	hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
