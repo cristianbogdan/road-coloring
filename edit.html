@@ -42,6 +42,9 @@ padding-RIGHT:10px;
       <tr><td>Detalii (surface_survey)</td> <td><input name="surface_survey" onchange="enableSave()" size="40"/> (va contine REHAB pt drumuri in reabilitare)</td>
 	<td><span id="current_survey"></span></td>
       </tr>
+      <tr><td>tip suprafata</td><td><input name="surface" value="asphalt" onchange="enableSave()" size="40"></td>
+	<td><span id="current_surface"></span></td>
+      </tr>
       <tr><td>Comentarii OSM</td><td> <input name="comment" onchange="onComment()" size="40"/> </td></tr>
       <tr><td><button id="save" disabled onclick="submit()">Salvare la OSM!</button></td>
       <td><span style="color:red;" id="error"></span>

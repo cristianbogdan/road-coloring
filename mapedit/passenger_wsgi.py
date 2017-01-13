@@ -25,6 +25,7 @@ def application(environ, start_response):
                 x=api.WayGet(way)
                 x['tag'][u'smoothness']=d.get('smoothness')[0]
                 x['tag'][u'surface_survey']=d.get('surface_survey')[0]
+                x['tag'][u'surface']=d.get('surface')[0]
                 api.WayUpdate(x)
             
             response_body= str(api.ChangesetClose())            
