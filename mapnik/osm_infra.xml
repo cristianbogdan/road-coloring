@@ -10,35 +10,12 @@
     <Rule>
       &maxscale_zoom9;
       &minscale_zoom17;
-      <TextSymbolizer size="11" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
-    </Rule>
-    <Rule>
-      &maxscale_zoom9;
-      &minscale_zoom17;
-      <TextSymbolizer size="11" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[start_date]</TextSymbolizer>
-    </Rule>
-    <Rule>
-      <Filter>[delayed]='delayed'</Filter>
-      &maxscale_zoom9;
-      &minscale_zoom17;
-      <TextSymbolizer size="11" fill="red" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
-    </Rule>
-
-    <Rule>
-      &maxscale_zoom7;
-      &minscale_zoom8;
-      <TextSymbolizer size="8" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
+      <TextSymbolizer repeat-distance="50" margin="20" avoid-edges="true" size="11" fill="[color]" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2">[date]</TextSymbolizer>
     </Rule>
     <Rule>
       &maxscale_zoom7;
       &minscale_zoom8;
-      <TextSymbolizer size="8" fill="blue" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[start_date]</TextSymbolizer>
-    </Rule>
-    <Rule>
-      <Filter>[delayed]='delayed'</Filter>
-      &maxscale_zoom7;
-      &minscale_zoom8;
-      <TextSymbolizer size="8" fill="red" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2" allow-overlap="true" spacing="150">[opening_date]</TextSymbolizer>
+      <TextSymbolizer repeat-distance="30" margin="20" size="8" fill="[color]" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2">[date]</TextSymbolizer>
     </Rule>
 </Style>
 
@@ -47,8 +24,10 @@
      <StyleName>roads-text-name</StyleName>
      <Datasource>
       <Parameter name="table">
-      (select way,highway, opening_date, start_date, case when construction is null and proposed is null  and opening_date> start_date then 'delayed' else '' end as delayed
-       from planet_osm_line
+	(select way,
+	case when opening_date is null then start_date else opening_date end as date,
+	case when construction is null and proposed is null  and opening_date> start_date then 'red' else 'blue' end as color
+       from lines_old
        where (opening_date is not null or start_date is not null ) and (highway in ('motorway', 'trunk', 'primary') or construction in ('motorway', 'trunk', 'primary') or proposed in ('motorway', 'trunk', 'primary')) 
       ) as roads
       </Parameter>
