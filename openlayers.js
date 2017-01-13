@@ -4,7 +4,7 @@ var roadLayer=
     new ol.layer.Vector({
 	source: new ol.source.TileVector({
 	    format: new ol.format.GeoJSON(),
-	    tileGrid: ol.tilegrid.createXYZ({maxZoom: 14}),
+	    tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 	    tilePixelRatio: 16,
 	    url: '/roads/{z}/{x}/{y}.json'
 	})
@@ -61,12 +61,20 @@ var selectClick = new ol.interaction.Select({
 
 map.addInteraction(selectClick);
 
+var selected={};
 var segments={};
 var ways={};
 var roads={};
 var other=0;
 
 selectClick.on('select', function(e){
+    if(selectClick.getFeatures().getLength()==0 && selected.length>0)
+    {
+	selectClick.getFeatures().extend(selected);
+	return;
+    }
+    selected=selectClick.getFeatures().getArray().slice(0);
+    
     segments={};
     ways={};
     roads={};
