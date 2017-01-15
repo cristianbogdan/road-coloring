@@ -53,17 +53,17 @@
       <Filter>[highway] = 'motorway' or [highway] = 'trunk'  and [has_smoothness]</Filter>
       &maxscale_zoom7;
       &minscale_zoom7;
-      <TextSymbolizer   repeat-distance="30" margin="30" size="9" spacing="0" fill="black" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="1.5">[name]</TextSymbolizer>
+      <TextSymbolizer   repeat-distance="30" margin="30" size="7" spacing="0" fill="black" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="1.5">[name]</TextSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' or [highway] = 'trunk' or [highway] = 'primary'  and [has_smoothness] </Filter>
       &maxscale_zoom8;
       &minscale_zoom9;
-      <TextSymbolizer    repeat-distance="30" margin="30" size="9" spacing="0" fill="black" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="1.5">[name]</TextSymbolizer>
+      <TextSymbolizer    repeat-distance="30" margin="30" size="8" spacing="0" fill="black" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="1.5">[name]</TextSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary'  and [has_smoothness]</Filter>
-      &maxscale_zoom8;
+      &maxscale_zoom9;
       &minscale_zoom9;
       <TextSymbolizer    repeat-distance="50" margin="50" size="8" spacing="0" fill="black" placement="line" fontset-name="book-fonts" halo-radius="1" halo-fill="white">[name]</TextSymbolizer>
     </Rule>
@@ -207,14 +207,18 @@
 
 	case when highway='motorway' or highway='motorway_link' then &motorway78stroke;
 	when highway='trunk' or highway='trunk_link' then &trunk78stroke;
-	when highway='primary' or highway='primary_link' then &trunk78stroke;
 	else 0 end as stroke7,
 
 	case when highway='motorway' or highway='motorway_link' then &motorway78stroke;
 	when highway='trunk' or highway='trunk_link' then &trunk78stroke;
-	when highway='primary' or highway='primary_link' then &primary78stroke;
-	when highway='secondary' or highway='secondary_link' then &secondary8stroke;
+	when highway='primary' or highway='primary_link' then &trunk78stroke;
 	else 0 end as stroke8,
+
+--	case when highway='motorway' or highway='motorway_link' then &motorway78stroke;
+--	when highway='trunk' or highway='trunk_link' then &trunk78stroke;
+--	when highway='primary' or highway='primary_link' then &primary78stroke;
+--	when highway='secondary' or highway='secondary_link' then &secondary8stroke;
+--	else 0 end as stroke8,
 
 	case when highway='motorway' or highway='motorway_link' then &motorway9stroke;
 	when highway='trunk' or highway='trunk_link' then &trunk910stroke;
@@ -249,7 +253,7 @@
 	case when surface in ('asphalt', 'paved', 'sett', 'paving_stones', 'cobblestone', 'metal') or surface like 'concrete%' then '1,0' else '5,5' end as dash11
 	
        from roads
-       where highway is not null and not (highway='construction') and not (highway='proposed') and smoothness is not null and (access is null or access='yes')
+       where highway is not null and not (highway='construction') and not (highway='proposed') and smoothness is not null and (access is null or access in ('yes', 'permissive', 'discouraged', 'forestry', 'destination', 'customers'))
        order by z_order
       ) as roads
       </Parameter>
@@ -267,15 +271,14 @@
 	when highway='trunk' or highway='trunk_link' then &trunk56stroke;
 	else 0 end as stroke56,
 
+	
+	case when highway='motorway' or highway='motorway_link' then &motorway78stroke;
+	when highway='trunk' or highway='trunk_link' then &trunk78stroke;
+	else 0 end as stroke7,
+	
 	case when highway='motorway' or highway='motorway_link' then &motorway78stroke;
 	when highway='trunk' or highway='trunk_link' then &trunk78stroke;
 	when highway='primary' or highway='primary_link' then &trunk78stroke;
-	else 0 end as stroke7,
-
-	case when highway='motorway' or highway='motorway_link' then &motorway78stroke;
-	when highway='trunk' or highway='trunk_link' then &trunk78stroke;
-	when highway='primary' or highway='primary_link' then &primary78stroke;
-	when highway='secondary' or highway='secondary_link' then &secondary8stroke;
 	else 0 end as stroke8,
 
 	case when highway='motorway' or highway='motorway_link' then &motorway9stroke;
@@ -283,6 +286,12 @@
 	when highway='primary' or highway='primary_link' then &primary9stroke;
 	when highway='secondary' or highway='secondary_link' then &secondary910stroke;
 	else 0 end as stroke9,
+
+--	case when highway='motorway' or highway='motorway_link' then &motorway9stroke;
+--	when highway='trunk' or highway='trunk_link' then &trunk910stroke;
+--	when highway='primary' or highway='primary_link' then &primary9stroke;
+--	when highway='secondary' or highway='secondary_link' then &secondary910stroke;
+--	else 0 end as stroke9,
 
 	case when highway='motorway' or highway='motorway_link' then &motorway10stroke;
 	when highway='trunk' or highway='trunk_link' then &trunk910stroke;
@@ -312,7 +321,7 @@
 	'&excellent_color;' as color
 	
        from roads
-       where highway is not null and not (highway='construction') and not (highway='proposed') and surface_survey like '%REHAB%' and (access is null or access='yes')
+       where highway is not null and not (highway='construction') and not (highway='proposed') and surface_survey like '%REHAB%' and (access is null or access in ('yes', 'permissive', 'discouraged', 'forestry', 'destination', 'customers'))
       ) as roads
       </Parameter>
       &datasource-settings;
@@ -361,7 +370,7 @@
 	smoothness is not null as has_smoothness
 	
        from roads
-       where (surface_survey is not null or name is not null or ref is not null) and (access is null or access='yes')
+       where (surface_survey is not null or name is not null or ref is not null) and (access is null or access in ('yes', 'permissive', 'discouraged', 'forestry', 'destination', 'customers'))
       ) as roads
       </Parameter>
 <!--
