@@ -32,7 +32,7 @@ var MapBrowserNav= function(){
 	
 	    var center = ol.proj.toLonLat(map.getView().getCenter());
 	    var hash = '#map=' +
-	    map.getView().getZoom() + '/' +
+		    Math.round(map.getView().getZoom()*100)/100 + '/' +
 		Math.round(center[1] * 1000) / 1000 + '/' +
 		Math.round(center[0] * 1000) / 1000 + '/' +
 		map.getView().getRotation();

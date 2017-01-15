@@ -1,14 +1,17 @@
 var changedComment=false;
 var dt= new Date();
 var months=["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-document.querySelector('input[name="surface_survey"]').value= dt.getFullYear().toString()+months[dt.getMonth()]+"_";
+if(document.querySelector('input[name="surface_survey"]'))
+    document.querySelector('input[name="surface_survey"]').value= dt.getFullYear().toString()+months[dt.getMonth()]+"_";
 
 var user= getCookie("usr");
 if(user)
-    document.querySelector('input[name="osm_user"]').value=user;
+    if(document.querySelector('input[name="osm_user"]'))
+	document.querySelector('input[name="osm_user"]').value=user;
 var pass= getCookie("pass");
 if(pass)
-    document.querySelector('input[name="osm_pass"]').value=pass;
+    if( document.querySelector('input[name="osm_pass"]'))
+	document.querySelector('input[name="osm_pass"]').value=pass;
     
 function onComment(e){
     console.log(e);
@@ -16,7 +19,7 @@ function onComment(e){
     enableSave();
 }
 
-function enableSave(selected){
+function enableSave(selection){
     
     var txt='';
     var sep='';
@@ -28,29 +31,32 @@ function enableSave(selected){
 	txt+=sep+other.toString()+' segments';
     if(txt)
 	txt+=" smoothness";
+
+    if(document.querySelector('input[name="comment"]'))
+	if(!changedComment || document.querySelector('input[name="comment"]').value=='')
+            document.querySelector('input[name="comment"]').value= txt;
     
-    if(!changedComment || document.querySelector('input[name="comment"]').value=='')
-        document.querySelector('input[name="comment"]').value= txt;
-    
-    if(selected)
+    if(selection)
 	if(selected.length>0){
-	    var txt= '<a href="http://openstreetmap.org/way/'+selected[0].getProperties().osm_id+'" target="OSM">ultimul selectat</a>';
-	    if(selected[0].getProperties().ref || selected[0].getProperties().name){
-		txt+=' (';
+	    var lastSelected=selected[selected.length-1];
+	    var txt= '';
+	    if(lastSelected.getProperties().ref || lastSelected.getProperties().name){
+		//txt+=' (';
 		sep='';
-		if(selected[0].getProperties().ref)
-		{txt+=selected[0].getProperties().ref; sep=" ";}
+		if(lastSelected.getProperties().ref)
+		{txt+=lastSelected.getProperties().ref; sep=" ";}
 		
-		if(selected[0].getProperties().name)
-		    txt+=sep+selected[0].getProperties().name;
+		if(lastSelected.getProperties().name)
+		    txt+=sep+lastSelected.getProperties().name;
 		
-		txt+=')';
+		//txt+=')';
 	    }
+	    txt+=' (<a href="http://openstreetmap.org/way/'+lastSelected.getProperties().osm_id+'" target="OSM">detalii</a> si '+
+		'<a href="http://openstreetmap.org/way/'+lastSelected.getProperties().osm_id+'/history" target="OSM">istoric</a> OSM)';
 	    document.getElementById('current').innerHTML=txt;
 	    
-       document.getElementById('current_smoothness').innerHTML=selected[0].getProperties().smoothness;
-	    
-	    var surf=selected[0].getProperties().surface_survey;
+	    document.getElementById('current_smoothness').innerHTML=lastSelected.getProperties().smoothness;
+	    var surf=lastSelected.getProperties().surface_survey;
 	    if(surf){
 		var i= surf.indexOf("_http://");
 		
@@ -59,13 +65,17 @@ function enableSave(selected){
 	    }
 	    
 	    document.getElementById('current_survey').innerHTML=surf;
+	    surf=lastSelected.getProperties().surface;
+	    document.getElementById('current_surface').innerHTML=surf;
 	}else {
-	    document.getElementById('current').innerHTML=
-		document.getElementById('current_smoothness').innerHTML=
-		document.getElementById('current_survey').innerHTML
+	    document.getElementById('current').innerHTML
+		=document.getElementById('current_smoothness').innerHTML
+		=document.getElementById('current_survey').innerHTML
+		=document.getElementById('current_surface').innerHTML
 		='';
 	}
-    
+
+    if(document.querySelector('button[id="save"]'))
     document.querySelector('button[id="save"]').disabled=Object.keys(ways).length==0 
 	|| !document.querySelector('input[name="osm_user"]').value
 	|| !document.querySelector('input[name="osm_pass"]').value
@@ -83,11 +93,12 @@ function submit(){
     document.getElementById("error").innerHTML = '';
     
     var http=new XMLHttpRequest();
-    var url= "../mapedit?username="+encodeURIComponent(document.querySelector('input[name="osm_user"]').value)
+    var url= "/mapedit?username="+encodeURIComponent(document.querySelector('input[name="osm_user"]').value)
 	+"&password="+encodeURIComponent(document.querySelector('input[name="osm_pass"]').value)
 	+"&smoothness="+document.querySelector('input[name="quality"]:checked').value
 	+"&comment="+encodeURIComponent(document.querySelector('input[name="comment"]').value)
 	+"&surface_survey="+encodeURIComponent(document.querySelector('input[name="surface_survey"]').value)
+    	+"&surface="+encodeURIComponent(document.querySelector('input[name="surface"]').value)
     ;
     
     url= Object.keys(ways).reduce(function(partial, key){ return partial+"&way="+key; }, url);

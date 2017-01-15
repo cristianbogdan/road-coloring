@@ -1,20 +1,46 @@
 /* global ol */
 
+var selectStyle =
+[
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'white',
+        width:  5
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [0, 153, 255, 1],
+        width: 3
+      })
+    })
+  ];
+
+var defaultStyle=	new ol.style.Style({
+	    stroke: new ol.style.Stroke({
+		width: 6,
+		color: [0xff,0xff,0xff,0.01]
+	    })
+	})
+;
+
+var selectedIds=[];
+
 var roadLayer=
-    new ol.layer.Vector({
-	source: new ol.source.TileVector({
+    new ol.layer.VectorTile({
+	source: new ol.source.VectorTile({
 	    format: new ol.format.GeoJSON(),
 	    tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 	    tilePixelRatio: 16,
 	    url: '/roads/{z}/{x}/{y}.json'
 	})
 	,style:
-	new ol.style.Style({
-	    stroke: new ol.style.Stroke({
-		width: 4,
-		color: [0xff,0xff,0,0.3]
-	    })
-	})
+	function(f, resolution) {
+            if (selectedIds.indexOf(f.getId())!=-1 ) {
+          return selectStyle;
+        }
+        return  defaultStyle ;
+      }
     });
 
 var mapnik= new ol.layer.Tile({
@@ -54,18 +80,79 @@ var map = new ol.Map({
 
 nav.attachTo(map);
 
+
+map.on('singleclick', function(e) {
+  var selectedFeature = map.forEachFeatureAtPixel(e.pixel, function(f) {
+    return f;
+  });
+    if(selectedFeature){
+	var x;
+	if((x=selectedIds.indexOf(selectedFeature.getId()))!=-1 && e.originalEvent.shiftKey)
+	{
+	    selectedIds.splice(x,1);
+	    selected.splice(x,1);
+	}
+	else{
+	    if(!e.originalEvent.shiftKey)
+	    {
+		selectedIds.length=0;
+		selected.length=0;
+	    }
+	    selectedIds.push(selectedFeature.getId());
+	    selected.push(selectedFeature);
+	    
+	}
+
+	segments={};
+	ways={};
+	roads={};
+	other=0;
+	selected.forEach(treatSelect);
+	
+	var log= ""+selectedIds.length;
+	if(document.getElementById('text'))
+	    document.getElementById('text').innerHTML=
+	    Object.keys(segments).reduce(function(partial, key){
+		return partial+ ' '+key+':'+Object.keys(segments[key]).length;
+	    }, log);
+	
+	//if(document.querySelector('button[id="save"]'))
+	    enableSave(true);
+    }
+    roadLayer.getSource().changed();
+}, undefined, function(l) { return l == roadLayer; });
+
+
 var selectClick = new ol.interaction.Select({
     condition: ol.events.condition.click
 });
 
 
-map.addInteraction(selectClick);
+//map.addInteraction(selectClick);
 
-var selected={};
+var selected=[];
 var segments={};
 var ways={};
 var roads={};
 var other=0;
+
+var treatSelect= function(rd){
+    var ref= rd.getProperties().ref;
+    if(!ref)
+	ref=rd.getProperties().name;
+    if(!ref)
+	ref=rd.getProperties().osm_id.toString();
+    var x=segments[ref];
+    if(!x){
+	segments[ref]={};
+    }
+    segments[ref][rd.getProperties().osm_id]=1;
+    ways[rd.getProperties().osm_id]=1;
+    if(!rd.getProperties().ref && ! rd.getProperties().name)
+	other++;
+    else
+	roads[ref]=1;
+};
 
 selectClick.on('select', function(e){
     if(selectClick.getFeatures().getLength()==0 && selected.length>0)
@@ -80,23 +167,7 @@ selectClick.on('select', function(e){
     roads={};
     other=0;
     
-    selectClick.getFeatures().forEach(function(rd){
-	var ref= rd.getProperties().ref;
-	if(!ref)
-	    ref=rd.getProperties().name;
-	if(!ref)
-	    ref=rd.getProperties().osm_id.toString();
-	var x=segments[ref];
-	if(!x){
-	    segments[ref]={};
-	}
-	segments[ref][rd.getProperties().osm_id]=1;
-	ways[rd.getProperties().osm_id]=1;
-	if(!rd.getProperties().ref && ! rd.getProperties().name)
-	    other++;
-	else
-	    roads[ref]=1;
-    });
+    selectClick.getFeatures().forEach(treatSelect);
 
     var log= selectClick.getFeatures().getLength().toString();
     
