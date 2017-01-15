@@ -11,7 +11,7 @@ create unique index roads_pkey on roads using btree (id);
 --create index roads_surface_survey on roads using btree (surface_survey);
 --create index roads_access on roads using btree (access);
 --create index roads_name on roads using btree (name);
---create index roads_ref on roads using btree (ref);
+create index roads_ref on roads using btree (ref);
 --create index roads_highway on roads using btree (highway);
 create index roads_wstart on roads using btree (wstart);
 create index roads_wend on roads using btree (wend);
@@ -32,12 +32,12 @@ FOR pair IN
 select a.id as aosm, b.id as bosm, b.way as bway, b.osm_id as bosmid, a.osm_id as aosmid, a.way as away, b.way as bway
 from roads a, roads b
 where
-a.wend =b.wstart
+a.id < b.id
+and (a.wend =b.wstart or a.wend=b.wend or a.wstart=b.wend or a.wstart=b.wstart)
 ---a.smoothness is not null
 -- and a.highway is not null
-and b.highway=a.highway
-and a.id < b.id
 and (a.ref is null and b.ref is null or a.ref=b.ref)
+and b.highway=a.highway
 and (a.name is null and b.name is null or a.name= b.name)
 and (a.smoothness is null and b.smoothness is null or a.smoothness=b.smoothness )
 and (a.surface_survey is null and b.surface_survey is null or a.surface_survey=b.surface_survey)
@@ -119,5 +119,5 @@ create index roads_surface on roads using btree (surface);
 create index roads_surface_survey on roads using btree (surface_survey);
 create index roads_access on roads using btree (access);
 create index roads_name on roads using btree (name);
-create index roads_ref on roads using btree (ref);
+--create index roads_ref on roads using btree (ref);
 create index roads_highway on roads using btree (highway);
