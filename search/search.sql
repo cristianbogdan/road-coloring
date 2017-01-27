@@ -11,11 +11,18 @@ SELECT row_to_json(fc)::text
 		  (select
 		  ST_AsGeoJSON(ST_Transform(ST_centroid(way), 4326)) as center,
 		  ST_xmax(way)-ST_xmin(way) as width,
-		  ST_ymax(way)-ST_ymin(way) as height
+		  ST_ymax(way)-ST_ymin(way) as height,
+		  type
 		  ) t
 	   ) AS properties
-			     FROM planet_osm_line As lg WHERE lg.osm_id=$1::int
-   ) As f
+			     FROM(
+			     (SELECT way as way, place as type FROM planet_osm_polygon WHERE unaccent_string($1) in (unaccent_string(name), unaccent_string(ref)))
+			     union
+			      (SELECT ST_union(way) as way, 'road' as type FROM planet_osm_line WHERE $1 in (osm_id::text, name, ref)) 
+
+			     )
+as lg 
+ order by lg.type  )As f
 )  As fc;
 $$
 LANGUAGE SQL;
