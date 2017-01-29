@@ -85,13 +85,20 @@ function enableSave(selection){
     ;
 }
 
+var successNode= document.getElementById("success");
 function submit(){
     document.cookie="usr="+document.querySelector('input[name="osm_user"]').value;
     document.cookie="pass="+document.querySelector('input[name="osm_pass"]').value;
 
     document.querySelector('button[id="save"]').disabled=true;
     document.getElementById("error").innerHTML = '';
+
+    var resultNode= document.createElement("span");
+    resultNode.innerHTML="<img id='searchimg' class='loadingimg' src='/maps/images/loading.gif'/>";
     
+    successNode.insertBefore(resultNode, successNode.firstChild);
+    
+
     var http=new XMLHttpRequest();
     var url= "/mapedit?username="+encodeURIComponent(document.querySelector('input[name="osm_user"]').value)
 	+"&password="+encodeURIComponent(document.querySelector('input[name="osm_pass"]').value)
@@ -110,12 +117,76 @@ function submit(){
 	}
 	
 	if (http.readyState == 4 && http.status == 200) {
-	    document.getElementById("success").innerHTML += '<a href="http://openstreetmap.org/changeset/'+http.responseText+'" target="OSM">'+http.responseText+'</a> ';
+	    resultNode.innerHTML= '<a href="http://openstreetmap.org/changeset/'+http.responseText+'" target="OSM">'+http.responseText+'</a> ';
 	}
 	
-    }
+    };
     
     http.send();
+}
+
+
+function clearSearch(){
+    searchLayer.getSource().clear();
+    document.querySelector('input[name="search"]').value="";
+    document.getElementById("searchclear").style.display="none";
+}
+function search(){
+    searchLayer.getSource().clear();
+
+    var http=new XMLHttpRequest();
+    var url= "/mapsearch?search="+encodeURIComponent(document.querySelector('input[name="search"]').value.trim())
+    ;
+    
+    http.open("GET", url);
+    http.onreadystatechange = function() {
+	changedComment=false;
+	if (http.readyState == 4 && http.status != 200) {
+//	    document.getElementById("error").innerHTML = http.responseText;
+	}
+	
+	if (http.readyState == 4 && http.status == 200) {
+	    var result= JSON.parse(http.responseText);
+	    if(result.features){
+		searchLayer.getSource().addFeatures(( new ol.format.GeoJSON() ).readFeatures( result, {
+		    featureProjection: 'EPSG:3857'
+		} ) );
+		var features=(new ol.format.GeoJSON()).readFeatures(http.responseText);
+		
+		searchSource.addFeature(features[0]);
+		searchSource.changed();
+		var props=result.features[0].properties;
+		var yresolution= (props.height*1.4)/map.getSize()[1];
+		var xresolution= (props.width*1.4)/map.getSize()[0];
+		
+		map.getView().setCenter(ol.proj.fromLonLat(JSON.parse(props.center).coordinates));
+		if(xresolution==0 || yresolution==0)		
+		    map.getView().setZoom(15);
+		else
+		{
+		    var resolution=Math.max(xresolution, yresolution);
+		//    console.log(resolution);
+		    if(resolution>=map.getView().getMinResolution()){
+			/*		    while(map.getView().getResolution()/2>resolution){
+			 map.getView().setResolution(map.getView().getResolution()/2);
+			 }*/
+			map.getView().setResolution(resolution);
+		    }
+		    else
+			map.getView().setZoom(17);
+		}
+	    }
+	    
+	}
+	
+	document.getElementById("searchimg").style.display="none";
+	document.getElementById("searchclear").style.display="inline";
+	
+    };
+    
+    http.send();
+    document.getElementById("searchimg").style.display="inline";
+    document.getElementById("searchclear").style.display="none";
 }
 
 function getCookie(cname) {

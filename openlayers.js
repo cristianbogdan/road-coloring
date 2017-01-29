@@ -59,6 +59,23 @@ var landscape=  new ol.layer.Tile({
     , tileOptions: {crossOriginKeyword: null} 
 });
 
+var searchResults= new ol.Collection();
+
+var searchSource = new ol.source.Vector();
+
+var searchLayer = new ol.layer.Vector({
+    source: searchSource,
+    style: 	new ol.style.Style({
+	    stroke: new ol.style.Stroke({
+		width: 6,
+		color: [255, 255, 0, 0.5]
+	    })
+    })
+});
+
+
+
+
 
 var nav= new MapBrowserNav();
 
@@ -66,6 +83,7 @@ var map = new ol.Map({
     layers: [
 	landscape,
 	mapnik,
+	searchLayer,
 	roadLayer
     ],
     target: 'map',
@@ -74,7 +92,7 @@ var map = new ol.Map({
 	zoom: nav.zoom,
 	rotation:nav.rotation,
 	minZoom:7,
-	maxZoom:17
+	maxZoom:18
     })
 });
 

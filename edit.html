@@ -3,7 +3,8 @@
 <head>
 <title>Edit OSM road quality</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.css" type="text/css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol-debug.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
+
 <style>
 .map {
 background: #f8f4f0;
@@ -12,10 +13,19 @@ height:600px;
 .radio{
 padding-RIGHT:10px;
 }
+.loadingimg{
+width:12pt;
+height:12pt;
+}
 </style>
 </head>
 <body>
   <div><a href="https://www.openstreetmap.org/user/new">OSM</a> user:<input name="osm_user" onchange="enableSave()" /> password:<input name="osm_pass" type="password" onchange="enableSave()"/>
+    <div style="float:right;">
+      Cautare: <input name="search" size="40" onkeyup="if(event.which==13) search(); if(value=='')clearSearch();"/>
+      <img id="searchimg" class="loadingimg" src="/maps/images/loading.gif" style="display:none;position: absolute; top: 7pt; right: 7pt "/>
+      <img id="searchclear" class="loadingimg" src="/maps/images/remove-icon.png" style="display:none;position: absolute; top: 7pt; right: 7pt; " onClick="clearSearch()"/>
+    </div>
      <br>Click pe o portiune de drum, apoi Shift-click ca sa selectezi mai multe.
 </div>
   <div id="map" class="map"></div>
@@ -37,7 +47,7 @@ padding-RIGHT:10px;
       </td>
 	<td><span id="current_smoothness"></span></td>
       </tr>
-      <tr><td>Detali calitate:</td> <td><input name="surface_survey" onchange="enableSave()" size="40"/> (va contine REHAB pt drumuri in reabilitare)</td>
+      <tr><td>Detalii calitate:</td> <td><input name="surface_survey" onchange="enableSave()" size="40"/> (va contine REHAB pt drumuri in reabilitare)</td>
 	<td><span id="current_survey"></span></td>
       </tr>
       <tr><td>Tip suprafata:</td>
