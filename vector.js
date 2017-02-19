@@ -17,16 +17,18 @@ var points={};
 function punctCritic(data){
     var columns={};
     data.feed.entry.forEach(function(e){
-	if(e.title.$t[1]=="1")	{
+	var line= e.title.$t.substring(1);	
+
+	if(line=="1")	{
 	    columns[e.title.$t[0]]=e.content.$t.toLowerCase();
 	    return;
 	}
+
+	if(!points[line])
+	    points[line]={};
 	
-	if(!points[e.title.$t[1]])
-	    points[e.title.$t[1]]={};
-	
-	points[e.title.$t[1]]=points[e.title.$t[1]] || {};
-	points[e.title.$t[1]][columns[e.title.$t[0]]]=e.content.$t;
+	points[line]=points[line] || {};
+	points[line][columns[e.title.$t[0]]]=e.content.$t;
     });
     
     
