@@ -10,39 +10,20 @@
 <script src="http://standup.csc.kth.se/maps/ol-debug10.js"></script>
 
 <style>
-.map {
-background: #f8f4f0;
-height:700px;
-}
-.popover{
-width:300px;
-}
+body,html{height:100%;width:100%;}
+.map {  height:100%;width:100%;}
+.popover{width:300px;}
+div.ol-attribution button{position: absolute; bottom: 12px;right: 0;  }
+#text{  position:absolute; left:50%; bottom:0px;}
 </style>
 </head>
 <body>
-  <div><b>Harta proiectelor de infrastructură din România</b><br>
-    Click pe drum pentru detalii! 
-    <b>Legenda:</b> In construcție, predare estimată: 
-    <b><font color="#0000ff">2017</font></b>, 
-    <b><font color="78bcff">2018...</font></b>,
-    <b><font color="#809bc0">neatribuit</font></b>
-
-    Predare fără acces trafc:
-    <b><font color="#ff0000">2017</font></b>, 
-    <b><font color="#F08080">2018...</font></b>
-
-    Variante de viteză CF: 
-    <b><font color="#000000">in constructie</font></b>,
-    <b><font color="#787878">neatribuit</font></b>
+  <div id="map" class="map"> 
+    <div id="olmap" class="map"><div id="popup"></div></div>
   </div>
-
-  <div id="map" class="map"><div id="popup"></div></div>
   <div id="text"></div>
-
-<div><hr/>Date hartă: <a href="http://www.openstreetmap.org/copyright">contributori OSM</a> și <a href="http://www.proinfrastructura.ro">API</a>/<a href="http://www.peundemerg.ro">peundemerg.ro</a> </div>
-    <script src="vector.js">
-</script>
-    <script src="https://spreadsheets.google.com/feeds/cells/1jEmiKZ2hiKzlk_68mSV-L-mzwFJOGEXVBj3tXFFwWJc/default/public/basic?alt=json-in-script&callback=punctCritic">  
-</script>
+  <script>var MAP_ROOT="http://cristi5.ddns.net"</script>
+  <script src="http://cristi5.ddns.net/maps/thunderforestKey.js"></script>
+  <script src="http://cristi5.ddns.net/maps/vector-gmaps.js"></script>    
 </body>
 </html>
