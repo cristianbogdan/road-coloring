@@ -45,5 +45,12 @@ topojson -p -o all-roads.topo.json -- all-roads.json
 -----
 SET client_encoding = 'UTF8';
 
- psql -d gis -c "SELECT  distinct max(osm_timestamp) as time, ref, osm_user, osm_changeset, old_smoothness, new_smoothness, new_survey from smoothness_updates group by osm_changeset, ref, osm_user, old_smoothness, new_smoothness, new_survey order by time desc"
+psql -d gis -c "SELECT  distinct max(osm_timestamp) as time, ref, osm_user, osm_changeset, old_smoothness, new_smoothness, new_survey from smoothness_updates group by osm_changeset, ref, osm_user, old_smoothness, new_smoothness, new_survey order by time desc"
 
+select name, round(sum(ST_Length(ST_Transform(way,4326)::geography))/100)/10 as km from planet_osm_line where osm_id>0 and status is not null and status like '%builder%' and status like '%AC%' and  (construction not like 'motorway%') group by name;
+
+select name, round(sum(ST_Length(ST_Transform(way,4326)::geography)/(case when lanes='4' then 1 else 2 end))/100)/10 as km from planet_osm_line where osm_id>0 and status is not null and status not like '%builder%' and status like '%AC%' and (proposed='motorway' or construction='motorway') group by name;
+
+select osm_id, status from planet_osm_line, planet_osm_rels where id =7391166 and members @> array[concat('w', osm_id)];
+
+update planet_osm_line set status='AC,builder:Salini Impregilo,progress_estimate:60%/24.07.2017' from planet_osm_rels where id =7391166 and members @> array[concat('w', osm_id)];
