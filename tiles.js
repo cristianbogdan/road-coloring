@@ -37,7 +37,8 @@ function loadDoc(zoom) {
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
 	roadQUrl= MAP_ROOT+'/tiles/{z}/{x}/{y}.png',
 	osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-        landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
+	landUrl='https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey,
+	//        landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
 	hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
 	
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
