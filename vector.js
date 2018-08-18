@@ -54,9 +54,9 @@ function punctCritic(data){
 	    //      anchorOrigin: 'bottomLeft',
 	    //    anchorXUnits: 'pixels',
 	    //    anchorYUnits: 'pixels',
-	    opacity: 0.75,
-	    scale:0.035,
-	    src: 'http://www.clker.com/cliparts/Z/x/U/0/B/3/red-pin-hi.png'
+	    opacity: 1,
+	    scale:0.15,
+	    src: 'http://cristi5.ddns.net/maps/pin.png'
 	}))
     });
     
@@ -136,6 +136,13 @@ var lightred=new ol.style.Style({
 	})
 });
 
+var bridge=new ol.style.Style({
+	stroke: new ol.style.Stroke({
+	    width: wdth+3,
+	    color: [0,0,0, 1]
+	})
+});
+
 function cName(name){
 return new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -198,7 +205,7 @@ var nextYear= ''+(new Date().getFullYear()+1);
 
 var styleFunction = function(feature, resolution) {
     var p= feature.getProperties();
-
+    var ret=function(p){
     if((p.highway =='motorway' || p.highway== 'motorway_link') && (p.construction || p.proposed))
 	//if(p.construction && p.highway!='construction' || p.proposed && p.highway!='proposed')
 	return [transp, blue];
@@ -209,8 +216,14 @@ var styleFunction = function(feature, resolution) {
     var construction= (p.access=='no')?red:blue;
     if(p.construction&&p.opening_date>=nextYear || !p.opening_date)
 	construction= (p.access=='no')?lightred:lightblue;
-
+	
     return p.construction? p.access=='no'?[transp, construction, whiteDash]:[transp, construction, whiteDash]:p.proposed?[transp, proposed_highway, whiteDash]:p.access=='no'?[transp, red]:[transp, blue];
+    }(p);
+    if(resolution<150 && (p.bridge || p.tunnel))
+	ret.splice(1, 0, bridge);
+    if(resolution<150 && p.tunnel)
+	ret.splice(-1,1);
+     return ret;
 };
 
 var roads=
@@ -256,7 +269,7 @@ var selectClick = new ol.interaction.Select({
 
 var mapnik= new ol.layer.Tile({
     source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
+	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
 //	url:'http://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
 	,crossOrigin:null
     })
@@ -393,6 +406,8 @@ function treatFeature(rd){
     if(prop.highway=='construction'|| prop.highway=='proposed' ){
 	x+=(prop.opening_date?"<br>Estimarea terminarii constructiei: "+prop.opening_date:'');
 	x+=(prop.access=='no'?"<br><font color='red'>Inchis traficului la terminarea constructiei</font>":'');
+	x+="<br>"+((prop.status&& prop.status.indexOf('AC')>=0)?'<font color="00D200">Autorizatie de construire</font>':'<font color="red">Nu are Autorizatie de construire</font>');
+	x+=(prop.status&&prop.status.indexOf("builder:")>=0)?"<br>Constructor: "+prop.status.substring(prop.status.indexOf("builder:")+8):'';
     }
     else{
 	x+=	(prop.start_date?"<br>Data terminarii constructiei: "+prop.start_date:'');
