@@ -20,7 +20,9 @@ SELECT row_to_json(fc)::text
 			     union
 			     (SELECT way as way, '1' as type FROM planet_osm_point WHERE unaccent_string(lower($1))= unaccent_string(lower(name)) and place is not null)
 			     union
-			    (SELECT ST_union(way) as way, '2' as type FROM planet_osm_line WHERE highway is not null and lower($1) in (lower(osm_id::text), lower(name), lower(ref)) and not highway in ('construction', 'proposed') group by highway) 
+			    (SELECT ST_union(way) as way, '2' as type FROM planet_osm_line WHERE highway is not null and lower($1) in (lower(osm_id::text), lower(name), lower(ref))
+			    --and not highway in ('construction', 'proposed')
+			    group by highway) 
 
 			     )
 as lg 
