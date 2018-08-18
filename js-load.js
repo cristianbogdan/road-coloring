@@ -1,5 +1,5 @@
-var SCRIPT_ROOT="http://cristi.dtdns.net/maps/";
-var MAP_ROOT="http://cristi.dtdns.net";
+var SCRIPT_ROOT="http://cristi5.ddns.net/maps/";
+var MAP_ROOT="http://cristi5.ddns.net";
 
 if (!String.prototype.endsWith) {
   String.prototype.endsWith = function(searchString, position) {
