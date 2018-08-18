@@ -8,7 +8,7 @@ CREATE INDEX planet_osm_point_place ON planet_osm_point USING btree(place);
 CREATE INDEX planet_osm_polygon_name ON planet_osm_polygon USING btree(unaccent_string(lower(name)));
 CREATE INDEX planet_osm_polygon_place ON planet_osm_point USING btree(place);
  
-§update planet_osm_line set highway='trunk' where highway='primary' and ref in ('DN6', 'CB', 'DN1', 'DN4', 'DN14', 'DN15', 'DN18', 'DN19');
+update planet_osm_line set highway='trunk' where highway='primary' and ref in ('DN6', 'CB', 'DN1', 'DN4', 'DN14', 'DN15', 'DN18', 'DN19');
 
 select max(osm_timestamp) into max from lines_old;
 
