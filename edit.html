@@ -2,8 +2,11 @@
 <html>
 <head>
 <title>Edit OSM road quality</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.css" type="text/css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.css" type="text/css">
+<link rel="stylesheet" href="http://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.js"></script>
+<script src="http://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js"></script>
 
 <style>
 .map {
@@ -16,6 +19,12 @@ padding-RIGHT:10px;
 .loadingimg{
 width:12pt;
 height:12pt;
+}
+.layer-switcher{
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: small;
 }
 </style>
 </head>
@@ -67,6 +76,7 @@ height:12pt;
 
 <!--http://www.ajaxload.info/cache/FF/FF/FF/00/00/00/1-0.gif
 document.querySelector('input[name="rate"]:checked').value; -->
+    <script src="thunderforestKey.js"></script>
     <script src="map-browser-nav.js"></script>
     <script src="openlayers.js"></script>
     <script src="edit.js"></script>
