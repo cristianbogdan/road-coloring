@@ -59,6 +59,7 @@ psql -q -t -A -d gis -f log.sql  > data/log.js
 psql -d gis -f cleanup.sql
 
 psql -t -A -d gis -f motorways.sql > data/motorways.json
+psql -t -A -d gis -f lot_limits.sql >  data/lot_limits.json
 
 psql -t -A -d gis -f smoothness-trunk.sql > data/main-roads.json
 geo2topo -p -o data/main-roads.topo.json -- data/main-roads.json
