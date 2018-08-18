@@ -18,7 +18,7 @@ document.body.insertAdjacentHTML
 	+'<font color="red">bad very_bad</font> '
 	+'<font color="#ff00ff"">horrible very_horrible impassable</font></b><br/>'
 	+'<font size="smaller">Vezi <a href="hcd-log.html">ultimele noutăți</a> în privința calității drumurilor!</font></br>'      
-	+'<font size="smaller">Lipsește drumul tău "favorit"? Treci în <a href="http://cristi.dtdns.net/maps/edit.html" id="editlink" onmouseover="this.href=\'http://cristi.dtdns.net/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">modul de editare!</a> (ai nevoie de un cont OSM)</font>'
+	+'<font size="smaller">Lipsește drumul tău "favorit"? Treci în <a href="http://cristi5.ddns.net/maps/edit.html" id="editlink" onmouseover="this.href=\'http://cristi5.ddns.net/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">modul de editare!</a> (ai nevoie de un cont OSM). Vezi <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161439#msg161439">instrucțiuni</a>, <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161411#msg161411">TODO</a> și <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161442#msg161442">idei de dezvoltare</a>.</font>'
 
     
 	+'<h2>Harta calității drumurilor din România, varianta Open Data / OSM</h2>'
@@ -39,7 +39,7 @@ document.body.insertAdjacentHTML
 loadScript([ 
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", 
     insertHTML,
-    "leaflet.css","leaflet.js",
-    "tiles.js", "smoothness.js", function(){ loadDoc();}], 0
+    "leaflet.css","leaflet.js",  "thunderforestKey.js",
+    "tiles.js", "smoothness.js", "analytics.js", function(){ loadDoc();}], 0
 	  );
 
