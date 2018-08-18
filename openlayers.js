@@ -44,6 +44,7 @@ var roadLayer=
     });
 
 var mapnik= new ol.layer.Tile({
+    title:"Calitatea drumurilor",
     source: new ol.source.OSM({
 	url:'/tiles/{z}/{x}/{y}.png'
 	,crossOrigin:null
@@ -52,8 +53,10 @@ var mapnik= new ol.layer.Tile({
 });
 
 var landscape=  new ol.layer.Tile({
+    title: 'Landscape',
+    type: 'base',
     source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
+	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 
@@ -81,10 +84,19 @@ var nav= new MapBrowserNav();
 
 var map = new ol.Map({
     layers: [
-	landscape,
-	mapnik,
-	searchLayer,
-	roadLayer
+	   new ol.layer.Group({
+                'title': 'Base maps',
+                layers: [
+		    landscape
+		]
+	   }),
+	new ol.layer.Group({
+            'title': 'Overlays',
+	    layers: [
+		mapnik,
+		searchLayer,
+		roadLayer
+	    ]})
     ],
     target: 'map',
     view: new ol.View({
@@ -95,6 +107,11 @@ var map = new ol.Map({
 	maxZoom:18
     })
 });
+
+    var layerSwitcher = new ol.control.LayerSwitcher({
+        tipLabel: 'Légende' // Optional label for button
+    });
+    map.addControl(layerSwitcher);
 
 nav.attachTo(map);
 
