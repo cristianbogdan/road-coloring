@@ -8,7 +8,7 @@ require('./data/bridges.js');
 require('../osm_account.js');
 
 console.log(password);
-var root= 'http://cristi.dtdns.net/mapedit/?username=';
+var root= 'http://cristi5.ddns.net/mapedit/?username=';
 bridges.forEach(function(road){
     var uri=root+username;
     uri+='&password='+password;
