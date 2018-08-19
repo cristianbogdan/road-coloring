@@ -353,7 +353,7 @@ var iconStyle = new ol.style.Style({
 	//    anchorYUnits: 'pixels',
 	opacity: 1,
 	scale:0.15,
-	src: 'http://cristi5.ddns.net/maps/pin.png'
+	src: MAP_ROOT+'/maps/images/pin.png'
     }))
 });
 
