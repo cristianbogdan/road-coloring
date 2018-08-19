@@ -18,11 +18,25 @@ document.body.insertAdjacentHTML
 	+'<font color="red">bad very_bad</font> '
 	+'<font color="#ff00ff"">horrible very_horrible impassable</font></b><br/>'
 	+'<font size="smaller">Vezi <a href="hcd-log.html">ultimele noutăți</a> în privința calității drumurilor!</font></br>'      
-	+'<font size="smaller">Lipsește drumul tău "favorit"? Treci în <a href="http://cristi5.ddns.net/maps/edit.html" id="editlink" onmouseover="this.href=\'http://cristi5.ddns.net/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">modul de editare!</a> (ai nevoie de un cont OSM). Vezi <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161439#msg161439">instrucțiuni</a>, <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161411#msg161411">TODO</a> și <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161442#msg161442">idei de dezvoltare</a>.</font>'
+	+'<font size="smaller">Lipsește drumul tău "favorit"? Treci în <a href="'+
+	MAP_ROOT
++'maps/edit.html" id="editlink" onmouseover="this.href=MAP_ROOT+\'/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">modul de editare!</a> (ai nevoie de un cont OSM). Vezi <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161439#msg161439">instrucțiuni</a>, <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161411#msg161411">TODO</a> și <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161442#msg161442">idei de dezvoltare</a>.</font>'
 
     
 	+'<h2>Harta calității drumurilor din România, varianta Open Data / OSM</h2>'
 	+'Harta se actualizează automat la fiecare 24h cu date despre calitatea drumurilor preluate din <a href="http://openstreetmap.org">OpenStreetMap</a>.'
+
+	+'<img src="http://i.imgur.com/QBc6ren.png" width="162" style="float:right;"/>'
+
+        +'<a name="mobile"></a><h3>Mobile (iPhone, Android)</h3>'
+
+        +'<ul>'
+	+'<li>Instalați app-urile: <a href="http://galileo-app.com">Galileo Offline Maps</a>, Dropbox'
+        +'<li>Click pe acest link: <a href="https://www.dropbox.com/s/8liiw8s1e5voa9z/hartaCalitatii.xml?dl=0">map description</a>'
+	+'<li>Se va deschide app-ul Dropbox. Apăsați <b>Export (sau share)</b>, <b>Open in...</b><br/>'
+	+'<li>Alegeți <b>Galileo Offline Maps</b>'
+	      +'</ul>'
+    
 	+'<h3>See also</h3>'
 	+'Hărți actualizate manual pe baza rapoartelor scrise:'
 	+'<a href="http://enjoymaps.ro/harta-interactiva-calitatii-drumurilor-din-romania/">enjoymaps.ro</a>,'
