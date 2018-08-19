@@ -15,9 +15,16 @@
 # easy_install pip
 # sudo pip install tilestache
 # sudo pip install mapnik and all other tilestache dependencies
+# sudo apt-get install python-shapely
+# sudo pip install mapbox-vector-tile
+# sudo pip install psycopg2-binary
+# sudo pip install osmapi
+# define functions search() and unaccent_string()
+# copy tilestache/template/* or generate them with tilestache-list (see below)
 
 #brew install nginx --with-passenger --with-gzip
 # follow Caveats instructions "to activate passenger"...
+# on ubuntu follow https://www.phusionpassenger.com/library/install/nginx/install/oss/xenial/
 
 # run daily
 
@@ -27,7 +34,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 
 echo `date` reading the map
-cd /Users/cristi/maps
+cd /home/cristi/maps
 cp data/romania-latest.osm.pbf data/romania.latest.osm.bak.pbf
 cd data; wget -N http://download.geofabrik.de/europe/romania-latest.osm.pbf 2> download-status.txt
 cd ..
@@ -38,8 +45,9 @@ if [[ $? -eq 0 ]] ; then
     date
     exit 1
 fi
-tail download-status.txt
+tail data/download-status.txt
 
+echo `date` osm to psql
 osm2pgsql --host localhost --slim -d gis -C 1600 --hstore --number-processes 8 --style osm2pgsql.style  --extra-attributes data/romania-latest.osm.pbf
 
 if [[ $? -ne 0 ]] ; then
