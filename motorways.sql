@@ -6,7 +6,7 @@ SELECT row_to_json(fc)
           (
 	          select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, access, start_date, opening_date, check_date, description, status, maxspeed, bridge, tunnel) t
 	   ) AS properties
-			     FROM planet_osm_line As lg WHERE lg.osm_id>0 AND lg.highway in('motorway', 'motorway_link') or lg.highway not in ('construction','proposed') and lg.opening_date is not null or lg.construction in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'secondary', 'tertiary')
+			     FROM planet_osm_line As lg WHERE lg.osm_id>0 AND (lg.highway in('motorway', 'motorway_link') or lg.highway not in ('construction','proposed') and lg.opening_date is not null or lg.construction in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'secondary', 'tertiary'))
 			     or lg.proposed in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'secondary', 'tertiary')		
 			     or lg.railway in('proposed', 'construction')
 			     order by  
