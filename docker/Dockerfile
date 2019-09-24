@@ -1,6 +1,9 @@
 # TODO: at first start, undump smoothness_updates table from another system
 # TODO: from within the docker container, chown maps/data to the docker cristi account. Alternatively set it as a volume inside the container
 
+# sudo docker run -d -P -p 8888:80  -v /home/cristi/maps-docker:/home/cristi/maps --name mapnik mapnik
+# also map /home/cristi/html, where maps is /home/cristi/maps
+
 # Mapnik for Docker
 
 FROM ubuntu:16.04
