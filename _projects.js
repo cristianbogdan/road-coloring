@@ -35,8 +35,11 @@ loadScript([
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", 
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",
     insertHTML,
-    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.11.1/ol.css",
-    "ol-debug10.js",
+//    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css",
+//   "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
+    "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
     "http://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
     "gmap.js",
     "vector-gmaps.js"

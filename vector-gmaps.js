@@ -54,7 +54,14 @@ var blue=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: wdth,
 	    color: [0,0,0xff, 1]
+	}),
+/*    text: new ol.style.Text({
+	font: 'bold 14px "Open Sans", "Arial Unicode MS", "sans-serif"',
+	placement: 'line',
+	fill: new ol.style.Fill({
+	    color: 'white'
 	})
+    })*/
 });
 
 var green=new ol.style.Style({
@@ -172,9 +179,9 @@ var black=new ol.style.Style({
 
 var railDash=new ol.style.Style({
 	stroke: new ol.style.Stroke({
-	    width: 1,
+	    width: 2,
 	    lineDash:[5,10],
-	    color: [0xff,0xff,0xff, 1]
+	    color: [0,0,0, 1]
 	})
     });
 
@@ -211,9 +218,9 @@ function toHex(n){
 }
 
 function clr(style){
-    return '#'+toHex(style.stroke_.color_[0])
-	+toHex(style.stroke_.color_[1])
-    	+toHex(style.stroke_.color_[2]);
+    return '#'+toHex(style.getStroke().getColor()[0])
+	+toHex(style.getStroke().getColor()[1])
+    	+toHex(style.getStroke().getColor()[2]);
 }
     
 var nextYear= ''+(new Date().getFullYear()+1);
@@ -238,8 +245,21 @@ var computeStatus=function(p)
     p.status=null;
 };
 
+var colorProgress=function(latestProgress){
+    return latestProgress>75?dodgerBlue:latestProgress>50?deepSkyBlue:latestProgress>25?lightSkyBlue:latestProgress>0?powderBlue:gray;
+}
+
+function check(x, ret){
+    if(document.getElementById(x))
+	return document.getElementById(x).checked?ret:[transp];
+    return x=="proposed"?[transp]:ret;
+	
+}
+
 var styleFunction = function(feature, resolution) {
     var p= feature.getProperties();
+    if(p.tags)
+	p=p.tags;
     if(p.status)
 	computeStatus(p);
     var ret=function(p){
@@ -253,12 +273,12 @@ var styleFunction = function(feature, resolution) {
 	    return [transp];
 	
     if(p.railway)
-	return p.railway=='proposed'?[transp,gray, railDash]:[transp, black, railDash];
+	return p.railway=='proposed'?check("CF-neatrib",[transp,gray, railDash]):check("CF",[transp, colorProgress(p.latestProgress), railDash]);
 
 	var AC= (!p.AC)?(p.construction||p.hadStatus)?p.PTE?orange:p.AM?orangeRed:red:lightred:green;
 
 	if(AC===green && p.latestProgress!=undefined)
-	    AC=p.latestProgress>75?dodgerBlue:p.latestProgress>50?deepSkyBlue:p.latestProgress>25?lightSkyBlue:p.latestProgress>0?powderBlue:gray;
+	    AC= colorProgress(p.latestProgress)
 	
 //    if(p.construction&&p.opening_date>=nextYear || !p.opening_date)
 //	construction= (p.access=='no')?lightred:lightblue;
@@ -269,10 +289,11 @@ var styleFunction = function(feature, resolution) {
 	//if(p.proposed && p.status)
 	//{ p.construction=p.proposed; p.proposed=null;}
 
-	return p.construction? p.builder?[transp, AC]:[transp, AC, whiteDash]:p.proposed?[transp, AC, whiteDash]:p.access=='no'?[transp, blue, redDash]:[transp, blue];
+	// only works w openlayers 4	blue.getText().setText(p.opening_date?p.openin_date:p.start_date);
+	return p.construction? p.builder?[transp, AC]:[transp, AC, whiteDash]:p.proposed?([transp, AC, whiteDash]):p.access=='no'?[transp, blue, redDash]:[transp, blue];
     }(p);
     
-    if(resolution<150 && (p.bridge || p.tunnel))
+    if(ret.length>1 && resolution<150 && (p.bridge || p.tunnel))
 	ret.splice(1, 0, bridge);
     if(resolution<150 && p.tunnel)
 	ret.splice(-1,1);
@@ -284,21 +305,34 @@ var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'<div style="text-align:left;line-height:115%;">'
 				 +'<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
 				 
+				 +'<input type="checkbox" id="inCirculatie" checked  onclick="refresh()"/> '
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(blue) +';"></div> în circulație<br>'
+				 +'<input type="checkbox" id="circulabilFaraAcces" checked  onclick="refresh()"/> '
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(blue)+'; border-top:dotted red"></div> recepționat/circulabil fără acces<br>'
-				 +'<!--div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:rgb(0,210,0);"></div-->în construcție, cu AC, stadiu:<br>'
+				 +'<input type="checkbox" id="inConstructie" checked  onclick="refresh()"/> '
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(lightSkyBlue)+';"></div> în construcție, cu AC, stadiu:<br>'
 				 +'<font color='+clr(gray)+'>0%</font> <font color='+clr(powderBlue)+'>&lt;25%</font> <font color='+clr(lightSkyBlue)+'>&lt;50%</font> <font color='+clr(deepSkyBlue)+'>&lt;75%</font> <font color='+clr(dodgerBlue)+'>&lt;100%</font><br>'
+				 +'<input type="checkbox" id="neatribuitCuAC" checked  onclick="refresh()"/> '
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted '+clr(deepSkyBlue)+';"></div> neatribuit sau reziliat, cu AC<br>'
+				 +'<input type="checkbox" id="atribuitFaraAM" checked  onclick="refresh()"/> '
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(red)+';"></div> atribuit, lipsă AM<br>'
+				 +'<input type="checkbox" id="AMfaraPT" checked  onclick="refresh()"/> '
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orangeRed)+';"></div> cu AM, fără PT aprobat<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orange)+';"></div> cu PT aprobat, fără AC<br>'				 
+				 +'<input type="checkbox" id="PTfaraAC" checked  onclick="refresh()"/> '
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orange)+';"></div> cu PT aprobat, fără AC<br>'
+				 +'<input type="checkbox" id="neatribuit" checked  onclick="refresh()"/> '
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted '+clr(orangeRed)+';"></div> neatribuit, lipsă AC/PT/AM<br>'
+				 +'<input type="checkbox" id="CF" checked  onclick="refresh()"/> '
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:black; border-top:dotted '+clr(powderBlue)+';"></div> CF cu AC, în construcție<br>'
+				 +'<input type="checkbox" id="CF-neatrib" checked  onclick="refresh()"/> '
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:black; border-top:dotted #787878;"></div> CF cu AC, neatribuit<br>'
+				 +'<input type="checkbox" id="propus"  onclick="refresh()"/> '
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #ffbdbd;"></div> proiecte propuse (vise)<br>'
+				 +'<input type="checkbox" id="necunoscut" checked  onclick="refresh()"/> '
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#809bc0;"></div> statut necunoscut<br>'
+				 
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted;"></div> CF cu AC, în construcție<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #787878;"></div> CF cu AC, neatribuit<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #ffbdbd;"></div> proiecte propuse (vise)<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#809bc0;"></div> statut necunoscut<br>'
 				 +'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
 				 +'<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>'+
 '<div style:"font-size:2px"><br></div></div></span>'})];
@@ -316,9 +350,107 @@ var roads=
 	    style: styleFunction
 	});
 
+var ro='way(area.ro)';
+
+
+var queries=[
+    '('+ro+'[highway=construction];'+ro+'[highway=motorway];'+ro+'[highway=proposed];'+ro+'[railway=construction];'+ro+'[railway=proposed];'+ro+'[railway=rail][status];)'
+];
+
+var retry={};
+var completed=0;
+var attempted=0;
+
+function writeStatus(){
+    document.getElementById("text").innerHTML=""+completed+"/"+attempted;
+}
+function overpass(query)
+{
+    var url= 'https://www.overpass-api.de/api/interpreter?data='
+        +'[out:json][timeout:60];'
+        +'(area[boundary=administrative]["name:en"=Romania];)->.ro;'
+	+ query + ';'
+	+'out geom;';
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    var onError = function() {
+	console.error("Overpass error "+xhr.statusText);
+	retry[query]=1;
+    }
+    xhr.onerror = onError;
+    xhr.onload = function() {
+	if (xhr.status == 200) {
+	    let data=JSON.parse(xhr.responseText);
+	    if(!data.elements || data.elements.length<5){
+		if(data.remark)
+		    console.error(data.remark)
+		retry[query]=1;
+	    }
+	    else{
+		vectorSource.addFeatures(
+		    vectorSource.getFormat().readFeatures(
+			osmtogeojson(
+			    data
+			)
+			,{
+			    featureProjection: map.getView().getProjection()
+			}
+		    ));
+		completed++;
+		writeStatus();
+	    }
+	} else {
+		onError();
+	}
+    }
+    try{
+	attempted++;
+	writeStatus();
+	xhr.send();
+    }catch(e){ onError(); }   
+}
+
+var startLoading;
+function consume(){
+    if(completed==queries.length){
+	console.log("overpass complete");
+	return;
+    }
+    
+    if(queries.length-Object.keys(retry).length- completed<1){
+	let q=Object.keys(retry)[0];
+	if(q){
+	    delete retry[q]
+	    overpass(q);
+	}
+    }
+    setTimeout(consume, 10000);
+}
+
+var vectorSource= new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
+    tilePixelRatio: 16,
+    loader: function(extent, resolution, projection) {
+	queries.map(q=> retry[q]=1);
+	startLoading=new Date().getTime();
+	consume();
+    },
+    strategy:ol.loadingstrategy.all
+    ,attributions: attrib
+    
+});
+
+if(window.location.search)
+   roads=  new ol.layer.Vector({
+    source: vectorSource,
+    style: styleFunction
+});
+
 var roads_tiles=
 	new ol.layer.Vector({
-	    source: new ol.source.TileVector({
+	    source: new ol.source.VectorTile({
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
@@ -327,17 +459,6 @@ var roads_tiles=
 	    }),
 	    style: styleFunction
 	});
-
-
-var speed= new ol.layer.Vector({
-    source: new ol.source.TileVector({
-	format: new ol.format.GeoJSON(),
-	tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
-	tilePixelRatio: 16,
-	url: 'http://standup.csc.kth.se:8081/speed/{z}/{x}/{y}.json'	
-    }),
-    style: styleFunction
-});
 
 
 var selectClick = new ol.interaction.Select({
@@ -406,7 +527,9 @@ var attribution = new ol.control.Attribution({
   });
 
 var map = gmap?new ol.Map({
-    layers: [roads, infra, icons],
+    layers: [roads,
+	     infra,
+	     icons],
     interactions: ol.interaction.defaults({
     altShiftDragRotate: false,
     dragPan: false,
@@ -417,7 +540,6 @@ var map = gmap?new ol.Map({
 //    ,controls: ol.control.defaults({attribution: false})
 }):new ol.Map({
     layers: [
-	getMapnik(),
 	roads,
 	infra,
 	icons,
@@ -429,17 +551,6 @@ var map = gmap?new ol.Map({
     view: view
 });;
 
-
-function getMapnik(){
-    return new ol.layer.Tile({
-    source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
-//	url:'http://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
-	,crossOrigin:null
-    })
-    , tileOptions: {crossOriginKeyword: null} 
-    });
-}
 
 var popupElement = document.getElementById('popup');
 
@@ -457,7 +568,12 @@ if(gmap){
 }
 view.setCenter( ol.proj.fromLonLat(center));
 view.setZoom(zoom);
-map.getControls().array_[2].setCollapsed(false);
+map.getControls().forEach(control=>{
+    if(control instanceof ol.control.Attribution){
+	control.setCollapsed(false);
+    }
+})
+
 
 selectClick.on('select', function(event){
     document.getElementById('text').innerHTML=selectClick.getFeatures().getArray().map(treatFeature).join(", ");
@@ -476,8 +592,8 @@ map.on('click', function(evt) {
     var lonlat=ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
     document.getElementById('text').innerHTML="<div align=center>"+(Math.round(lonlat[1]*10000)/10000)+", "+(Math.round(lonlat[0]*10000)/10000)+"</div>";
 
-    if(evt.browserEvent.target.parentElement.className=='popover-content' ||
-       evt.browserEvent.target.className=='popover-content'){
+    if(evt.originalEvent.target.parentElement.className=='popover-content' ||
+       evt.originalEvent.target.className=='popover-content'){
 	$(popupElement).popover('hide');
 	return;
     }
@@ -528,10 +644,16 @@ map.on('pointermove', function(e) {
 });
 */
 
-
+function refresh(){
+    roads.getSource().changed();
+}
 
 function treatFeature(rd){
     var prop= rd.getProperties();
+    if(prop.tags){
+	prop=prop.tags;
+	prop.osm_id=rd.getProperties().id;
+    }
     if(prop.comentarii_problema){
 	return '<b>'+prop.nume+'</b><br/>'
 	+prop.comentarii_problema+'<br/><br/>'
@@ -541,8 +663,8 @@ function treatFeature(rd){
 
 
     }
-    if(prop.highway=='lot_limit')
-	return 'Limita lot <a href=\"http://openstreetmap.org/node/'+prop.osm_id+'\" target="OSM">'+prop.name+'</a>';
+    if(prop.highway=='lot_limit' || prop.railway=='lot_limit')
+	return 'Limita lot '+(prop.highway?'autostrada':'CF')+' <a href=\"http://openstreetmap.org/node/'+prop.osm_id+'\" target="OSM">'+prop.name+'</a>';
     
     var x=(prop.highway?prop.highway:prop.railway)
 	+' <a href=\"http://openstreetmap.org/way/'+prop.osm_id+'\" target="OSM">'
@@ -555,7 +677,7 @@ function treatFeature(rd){
     if(prop.status)
 	computeStatus(prop);
     
-    if(prop.highway=='construction'|| prop.highway=='proposed' ){
+    if(prop.highway=='construction'|| prop.highway=='proposed' || prop.railway && prop.hadStatus){
 	x+=(prop.opening_date?"<br>Estimarea terminarii constructiei: "+prop.opening_date:'');
 	x+=(prop.access=='no'?"<br><font color='red'>Inchis traficului la terminarea constructiei</font>":'');
 //	if(prop.construction)
@@ -630,12 +752,6 @@ window.addEventListener('popstate', function(event) {
   map.getView().setRotation(event.state.rotation);
   shouldUpdate = false;
 });
-
-
-
-
-
-
 
 
 
