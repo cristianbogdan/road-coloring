@@ -1,5 +1,8 @@
-var SCRIPT_ROOT="http://cristi5.ddns.net/maps/";
-var MAP_ROOT="http://cristi5.ddns.net";
+var SCRIPT_ROOT="http://pum.project-online.se/maps/";
+var MAP_ROOT="http://pum.project-online.se";
+
+if(scriptName=="_imgur.js")
+    SCRIPT_ROOT=MAP_ROOT+"/imgur/";
 
 if (!String.prototype.endsWith) {
   String.prototype.endsWith = function(searchString, position) {
