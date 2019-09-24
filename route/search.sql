@@ -1,6 +1,4 @@
 SET client_encoding = 'UTF8';
-DROP FUNCTION unaccent_string(text);
-CREATE FUNCTION unaccent_string (text) RETURNS text as $$ SELECT translate(  $1,  'ăîșțâ', 'aista') $$ LANGUAGE SQL;
 DROP function search(text);
 CREATE FUNCTION search (text) RETURNS text as $$
 SELECT row_to_json(fc)::text

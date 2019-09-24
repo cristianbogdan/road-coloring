@@ -1,3 +1,13 @@
+/*
+curl  https://www.openstreetmap.org/api/0.6/changeset/69648591
+curl  https://www.openstreetmap.org/api/0.6/changeset/69648591/download
+curl  https://www.openstreetmap.org/api/0.6/way/667236048
+curl  https://www.openstreetmap.org/api/0.6/way/667236048/history
+https://stackoverflow.com/questions/1773550/convert-xml-to-json-and-back-using-javascript
+curl -u cristian.m.bogdan@gmail.com:*** -X POST https://api-ssl.bitly.com/oauth/access_token
+curl -H "Authorization: Bearer 66396cd75f9d0d906bb858609b8831092101bd7b" -d '{"long_url":"http://cristi5.ddns.net/maps/edit.html"}'  -H 'Content-Type: application/json' https://api-ssl.bitly.com/v4/shorten 
+*/
+
 var changedComment=false;
 var dt= new Date();
 var months=["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -36,18 +46,27 @@ function enableSave(selection){
 	if(!changedComment || document.querySelector('input[name="comment"]').value=='')
             document.querySelector('input[name="comment"]').value= txt;
     
-    if(selection)
-	if(selected.length>0){
-	    var lastSelected=selected[selected.length-1];
-	    var txt= '';
-	    if(lastSelected.getProperties().ref || lastSelected.getProperties().name){
+    if(document.querySelector('button[id="save"]'))
+    document.querySelector('button[id="save"]').disabled=Object.keys(ways).length==0 
+	|| !document.querySelector('input[name="osm_user"]').value
+	|| !document.querySelector('input[name="osm_pass"]').value
+	|| !document.querySelector('input[name="quality"]:checked')
+	|| !document.querySelector('input[name="surface_survey"]').value
+	|| !document.querySelector('input[name="comment"]').value
+    ;
+}
+
+function setCurrentText(lastSelected){
+	 if(lastSelected){
+	 var txt= '';
+	 if(lastSelected.getProperties().ref || lastSelected.getProperties().name){
 		//txt+=' (';
-		sep='';
-		if(lastSelected.getProperties().ref)
+	  sep='';
+          if(lastSelected.getProperties().ref)
 		{txt+=lastSelected.getProperties().ref; sep=" ";}
 		
-		if(lastSelected.getProperties().name)
-		    txt+=sep+lastSelected.getProperties().name;
+	   if(lastSelected.getProperties().name)
+		txt+=sep+lastSelected.getProperties().name;
 		
 		//txt+=')';
 	    }
@@ -75,14 +94,7 @@ function enableSave(selection){
 		='';
 	}
 
-    if(document.querySelector('button[id="save"]'))
-    document.querySelector('button[id="save"]').disabled=Object.keys(ways).length==0 
-	|| !document.querySelector('input[name="osm_user"]').value
-	|| !document.querySelector('input[name="osm_pass"]').value
-	|| !document.querySelector('input[name="quality"]:checked')
-	|| !document.querySelector('input[name="surface_survey"]').value
-	|| !document.querySelector('input[name="comment"]').value
-    ;
+
 }
 
 var successNode= document.getElementById("success");
@@ -155,7 +167,22 @@ function search(){
 		
 		searchSource.addFeature(features[0]);
 		searchSource.changed();
-		var props=result.features[0].properties;
+		zoomOn(result.features[0].properties);
+	    }
+	    
+	}
+	
+	document.getElementById("searchimg").style.display="none";
+	document.getElementById("searchclear").style.display="inline";
+	
+    };
+    
+    http.send();
+    document.getElementById("searchimg").style.display="inline";
+    document.getElementById("searchclear").style.display="none";
+}
+
+function zoomOn(props){
 		var yresolution= (props.height*1.4)/map.getSize()[1];
 		var xresolution= (props.width*1.4)/map.getSize()[0];
 		
@@ -175,18 +202,20 @@ function search(){
 		    else
 			map.getView().setZoom(17);
 		}
-	    }
-	    
-	}
-	
-	document.getElementById("searchimg").style.display="none";
-	document.getElementById("searchclear").style.display="inline";
-	
-    };
-    
-    http.send();
-    document.getElementById("searchimg").style.display="inline";
-    document.getElementById("searchclear").style.display="none";
+}
+
+function findPlace(input){
+ 	let s= input.value.trim();	
+ 	if(s.startsWith("44.") || s.startsWith("45.") || s.startsWith("46.") || s.startsWith("47.") || s.indexOf("/")!=-1)
+		input.val=s;
+
+	else	
+	 fetch("https://nominatim.openstreetmap.org/search?q="+input.value+"&format=json&countrycodes=RO")
+	 .then(r=>r.json())
+	 .then(d=>d.filter(e=>e.type!='administrative' && e.type!='archaeological_site'))
+	 .then(d=> {
+		    input.val=input.value=(d&&d[0])?d[0].display_name:"?"+input.value;
+		})
 }
 
 function getCookie(cname) {

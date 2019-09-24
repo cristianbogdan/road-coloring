@@ -17,7 +17,7 @@ def application(environ, start_response):
 
     else:
         try:    
-            conn=psycopg2.connect('host=localhost dbname=gis user=cristi')
+            conn=psycopg2.connect('dbname=gis user=cristi')
             cursor=conn.cursor()        
             cursor.execute("select search(%s)", (search[0],))
             

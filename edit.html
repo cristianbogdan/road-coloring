@@ -35,8 +35,15 @@ height:12pt;
       <img id="searchimg" class="loadingimg" src="/maps/images/loading.gif" style="display:none;position: absolute; top: 7pt; right: 7pt "/>
       <img id="searchclear" class="loadingimg" src="/maps/images/remove-icon.png" style="display:none;position: absolute; top: 7pt; right: 7pt; " onClick="clearSearch()"/>
     </div>
-     <br>Click pe o portiune de drum, apoi Shift-click ca sa selectezi mai multe.
+<div>
+     Click pe o portiune de drum, apoi Shift-click ca sa selectezi mai multe. <button disabled id="undo" onclick="undoSelection()">Pierdut selectia</button>
 </div>
+<div>
+   Sau selecteaza intre localitati:
+     De la: <input id="frm" onChange="findPlace(this)"/> pana la: <input id="to" onChange="findPlace(this)"/> <button onClick="route(document.getElementById('frm'), document.getElementById('to'))">selecteaza!</button> <span id="coords" />
+</div>
+</div>
+
   <div id="map" class="map"></div>
   <div><table class="table">
       <tr><td colspan="2">Selectate: <span id="text"></span></td>
