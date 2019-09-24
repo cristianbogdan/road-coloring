@@ -6,7 +6,7 @@ Note: feel free to leave password, host, port, or use blank
 
 <Parameter name="type">postgis</Parameter>
 <Parameter name="password"></Parameter>
-<Parameter name="host">localhost</Parameter>
+<Parameter name="host"></Parameter>
 <Parameter name="port"></Parameter>
 <Parameter name="user"></Parameter>
 <Parameter name="dbname">gis</Parameter>
