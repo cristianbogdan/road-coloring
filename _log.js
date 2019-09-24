@@ -4,7 +4,7 @@ function insertHTML(){
     document.body.insertAdjacentHTML
 ( 
     'afterbegin',
-    '<h1><a href="index.html">Calitatea drumurilor din România</a> - contribuții pe <a href="http://openstreetmap.org">OpenStreetMap</a></h1>'
+    '<h1><a href="http://proinfrastructura.ro/harta-calitatii-drumurilor.html">Calitatea drumurilor din România</a> - contribuții pe <a href="http://openstreetmap.org">OpenStreetMap</a></h1>'
 	+'<div id="text"/>'
 );
 }
