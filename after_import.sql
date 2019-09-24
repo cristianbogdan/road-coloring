@@ -1,6 +1,6 @@
-SELECT UpdateGeometrySRID('planet_osm_line','way',900913);
-SELECT UpdateGeometrySRID('planet_osm_point','way',900913);
-SELECT UpdateGeometrySRID('planet_osm_polygon','way',900913);
+---SELECT UpdateGeometrySRID('planet_osm_line','way',900913);
+---SELECT UpdateGeometrySRID('planet_osm_point','way',900913);
+---SELECT UpdateGeometrySRID('planet_osm_polygon','way',900913);
 
 create index planet_osm_line_smo on planet_osm_line(smoothness);
 CREATE INDEX planet_osm_point_name ON planet_osm_point USING btree(unaccent_string(lower(name)));
@@ -9,6 +9,7 @@ CREATE INDEX planet_osm_polygon_name ON planet_osm_polygon USING btree(unaccent_
 CREATE INDEX planet_osm_polygon_place ON planet_osm_point USING btree(place);
  
 update planet_osm_line set highway='trunk' where highway='primary' and ref in ('DN6', 'CB', 'DN1', 'DN4', 'DN14', 'DN15', 'DN18', 'DN19');
+update planet_osm_line set ref=nat_ref where ref is null and ( nat_ref is not null);
 
 select max(osm_timestamp) into max from lines_old;
 
