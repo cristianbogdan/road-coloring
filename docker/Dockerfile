@@ -1,8 +1,7 @@
 # TODO: at first start, undump smoothness_updates table from another system
 # TODO: from within the docker container, chown maps/data to the docker cristi account. Alternatively set it as a volume inside the container
-# TODO: sshd and the root password should not be needed. Just use docker exec -it "TERM=vt100 bash"
 
-# sudo docker run -d -p 8888:80  -v /home/cristi/maps-docker:/home/cristi/maps --name mapnik mapnik
+# sudo docker run -d -t -p8888:80  -v /home/cristi/maps-docker:/home/cristi/maps --name mapnik mapnik
 # also map /home/cristi/html, im which maps/ is /home/cristi/maps
 
 # to map ports or volumes differently than at docker run do
@@ -43,8 +42,6 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
 RUN cd /tmp/ && curl -Os https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 RUN apt-get install python-pil
 RUN pip install -U modestmaps simplejson werkzeug tilestache #--allow-external PIL --allow-unverified PIL
-RUN mkdir -p /etc/tilestache
-COPY etc/run_tilestache.py /etc/tilestache/
 
 
 RUN pip install mapnik
@@ -80,10 +77,14 @@ RUN adduser cristi
 USER postgres
 RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && psql -d gis -c "CREATE EXTENSION hstore" && service postgresql stop
 
+USER cristi
+RUN printf "30 23 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
+
 USER root
 ADD start.sh /
 RUN chmod +x /start.sh
 
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+VOLUME ["/tmp/stache"]
 
-CMD ["/start.sh"]
+CMD ["./start.sh"]
