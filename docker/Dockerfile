@@ -1,5 +1,5 @@
 # At first start, undump smoothness_updates table from another system
-# From within the docker container, chown maps/data to the docker cristi account. Alternatively set it as a volume inside the container
+# /home/cristi/maps/data, /tmp/stache and /var/lib/postgresql should be external volumes. The owner will be set to the right users by start.sh
 
 # sudo docker run -d -t -p8888:80  -v /home/cristi/maps-docker:/home/cristi/maps -v /some/pg-data/dir:/var/lib/postgresql -v /some/tiles/dir:/tmp/stache --name mapnik mapnik
 
@@ -21,6 +21,8 @@ ENV LANG C.UTF-8
 ENV MAPNIK_VERSION 3.0.10
 RUN apt-get clean && apt-get update && apt-get install -y locales
 RUN update-locale LANG=C.UTF-8
+
+RUN printf "APT::Install-Recommends \"0\";APT::Install-Suggests \"0\";" > /etc/apt/apt.conf.d/01norecommend
 
 # Update and upgrade system
 RUN apt-get -qq update && apt-get -qq --yes upgrade
@@ -50,7 +52,7 @@ RUN apt-get -qq install -y python-shapely
 RUN pip install mapbox-vector-tile
 RUN pip install psycopg2-binary
 RUN pip install osmapi
-RUN sudo apt-get -qq install -y postgis
+RUN sudo apt-get -qq install -y --install-recommends postgis 
 RUN sudo apt-get -qq install -y  osm2pgsql
 
 # Passenger, Nginx
@@ -77,6 +79,9 @@ RUN adduser cristi
 USER postgres
 RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && psql -d gis -c "CREATE EXTENSION hstore" && service postgresql stop
 
+USER root
+RUN apt-get install -y cron 
+
 USER cristi
 RUN printf "30 23 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
 
@@ -86,5 +91,8 @@ RUN chmod +x /start.sh
 
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 VOLUME ["/tmp/stache"]
+
+RUN apt-get remove --purge --yes  build-essential
+RUN apt-get autoremove --purge --yes
 
 CMD ["./start.sh"]

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+sudo chown -R postgres.postgres /var/lib/postgresql/
+sudo chown -R cristi.cristi /tmp/stache
+sudo chown -R cristi.cristi /home/cristi/maps/data
+
 #start postgres
 service postgresql start
 
