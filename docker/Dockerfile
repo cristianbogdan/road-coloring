@@ -1,8 +1,8 @@
-# TODO: at first start, undump smoothness_updates table from another system
-# TODO: from within the docker container, chown maps/data to the docker cristi account. Alternatively set it as a volume inside the container
+# At first start, undump smoothness_updates table from another system
+# From within the docker container, chown maps/data to the docker cristi account. Alternatively set it as a volume inside the container
 
-# sudo docker run -d -t -p8888:80  -v /home/cristi/maps-docker:/home/cristi/maps --name mapnik mapnik
-# also map /home/cristi/html, im which maps/ is /home/cristi/maps
+# sudo docker run -d -t -p8888:80  -v /home/cristi/maps-docker:/home/cristi/maps -v /some/pg-data/dir:/var/lib/postgresql -v /some/tiles/dir:/tmp/stache --name mapnik mapnik
+
 
 # to map ports or volumes differently than at docker run do
 # https://stackoverflow.com/questions/19335444/how-do-i-assign-a-port-mapping-to-an-existing-docker-container
