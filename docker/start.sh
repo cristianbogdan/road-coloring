@@ -7,7 +7,7 @@ service postgresql start
 service nginx start
 
 #start cron
-cron
+service cron start
 
 #make sure the container stays busy so it does not exit
 cat
