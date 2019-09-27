@@ -72,8 +72,6 @@ COPY etc/default /etc/nginx/sites-enabled/default
 
 EXPOSE 80
 
-ENV HOST_IP `ifconfig | grep inet | grep Mask:255.255.255.0 | cut -d ' ' -f 12 | cut -d ':' -f 2`
-
 RUN adduser cristi
 
 USER postgres
@@ -86,8 +84,6 @@ USER cristi
 RUN printf "30 23 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
 
 USER root
-ADD start.sh /
-RUN chmod +x /start.sh
 
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 VOLUME ["/tmp/stache"]
@@ -95,4 +91,6 @@ VOLUME ["/tmp/stache"]
 RUN apt-get remove --purge --yes  build-essential
 RUN apt-get autoremove --purge --yes
 
-CMD ["./start.sh"]
+COPY start.sh /
+RUN chmod +x /start.sh
+CMD ["/start.sh"]
