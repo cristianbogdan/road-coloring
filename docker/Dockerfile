@@ -1,7 +1,7 @@
 # At first start, undump smoothness_updates table from another system
 # /home/cristi/maps/data, /tmp/stache and /var/lib/postgresql should be external volumes. The owner will be set to the right users by start.sh
 
-# sudo docker run -d -t -p8888:80  -v /home/cristi/maps-docker:/home/cristi/maps -v /some/pg-data/dir:/var/lib/postgresql -v /some/tiles/dir:/tmp/stache --name mapnik mapnik
+# sudo docker run -d -t -p8888:80  --restart unless-stopped -v /home/cristi/maps-docker:/home/cristi/maps -v /some/pg-data/dir:/var/lib/postgresql -v /some/tiles/dir:/tmp/stache --name mapnik mapnik
 
 
 # to map ports or volumes differently than at docker run do
