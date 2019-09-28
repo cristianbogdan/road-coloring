@@ -27,36 +27,20 @@ RUN printf "APT::Install-Recommends \"0\";APT::Install-Suggests \"0\";" > /etc/a
 # Update and upgrade system
 RUN apt-get -qq update && apt-get -qq --yes upgrade
 
-# Essential stuffs
-RUN apt-get -qq install --yes build-essential cron sudo software-properties-common curl
+# Essential stuff
+RUN apt-get -qq install --yes cron sudo curl
 
-# Boost
-RUN apt-get -qq install -y libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev
-
-# Mapnik dependencies
-RUN apt-get -qq install --yes libicu-dev libtiff5-dev libfreetype6-dev libpng12-dev libxml2-dev libproj-dev libsqlite3-dev libgdal-dev libcairo-dev python-cairo-dev postgresql-contrib libharfbuzz-dev
-
-# Mapnik
-RUN curl -s https://mapnik.s3.amazonaws.com/dist/v${MAPNIK_VERSION}/mapnik-v${MAPNIK_VERSION}.tar.bz2 | tar -xj -C /tmp/ && cd /tmp/mapnik-v${MAPNIK_VERSION} && python scons/scons.py configure JOBS=4 && make && make install JOBS=4
-
-# TileStache and dependencies
-RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
-RUN cd /tmp/ && curl -Os https://bootstrap.pypa.io/get-pip.py && python get-pip.py
-RUN apt-get -qq install python-pil
-RUN pip install -U modestmaps simplejson werkzeug tilestache #--allow-external PIL --allow-unverified PIL
-
-
-RUN pip install mapnik
-RUN pip install tilestache
-RUN apt-get -qq install -y python-shapely
-RUN pip install mapbox-vector-tile
-RUN pip install psycopg2-binary
-RUN pip install osmapi
+RUN apt-get install --yes python-cairo-dev postgresql-contrib 
 RUN sudo apt-get -qq install -y --install-recommends postgis 
 RUN sudo apt-get -qq install -y  osm2pgsql
+RUN adduser cristi
+
+USER postgres
+RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && psql -d gis -c "CREATE EXTENSION hstore" && service postgresql stop
+
+USER root
 
 # Passenger, Nginx
-
 RUN apt-get -qq install -y dirmngr gnupg
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
 RUN apt-get -qq install -y apt-transport-https ca-certificates
@@ -72,10 +56,20 @@ COPY etc/default /etc/nginx/sites-enabled/default
 
 EXPOSE 80
 
-RUN adduser cristi
+#install mapnik
+RUN apt-get -qq install --yes python3-mapnik gir1.2-pango-1.0 gir1.2-rsvg-2.0 python3-gi-cairo
 
-USER postgres
-RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && psql -d gis -c "CREATE EXTENSION hstore" && service postgresql stop
+# TileStache and dependencies
+#RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+RUN cd /tmp/ && curl -Os https://bootstrap.pypa.io/get-pip.py && python get-pip.py && rm /tmp/get-pip.py
+RUN apt-get -qq install python-pil
+RUN pip install -U modestmaps simplejson werkzeug tilestache #--allow-external PIL --allow-unverified PIL
+
+RUN pip install mapnik
+RUN apt-get -qq install -y python-shapely
+RUN pip install mapbox-vector-tile
+RUN pip install psycopg2-binary
+RUN pip install osmapi
 
 USER cristi
 RUN printf "30 23 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
