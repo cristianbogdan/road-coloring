@@ -43,21 +43,23 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC
 RUN apt-get -qq install -y apt-transport-https ca-certificates
 RUN echo deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main > /etc/apt/sources.list.d/passenger.list
 RUN apt-get -qq update
+
 RUN apt-get -qq install -y nginx-extras passenger
 
 # configure passenger and nginx
 COPY etc/default /etc/nginx/sites-enabled/default
 EXPOSE 80
 
-#install mapnik (and a font lib to avoid a font warning)
-RUN apt-get -qq install --yes python-mapnik ttf-unifont
+#install mapnik (and a font lib to avoid a font warning), tilestache, python-psycopg2  and pip
+RUN apt-get -qq install --yes python-mapnik ttf-unifont tilestache python-psycopg2 python-shapely python-setuptools python-pip
 # was: python3-mapnik gir1.2-pango-1.0 gir1.2-rsvg-2.0 python3-gi-cairo
+RUN ln -s /usr/bin/tilestache-seed /usr/bin/tilestache-seed.py
 
-# get pip
-RUN cd /tmp/ && curl -Os https://bootstrap.pypa.io/get-pip.py && python get-pip.py && rm /tmp/get-pip.py
-# tilestache, dependencies and other python libraries used
-RUN pip install -U mapnik mapbox-vector-tile shapely tilestache    psycopg2-binary osmapi 
-RUN pip uninstall -y  Werkzeug
+RUN pip install --upgrade pip
+
+# osmapi available only in pip 
+RUN pip install -U osmapi 
+
 
 # crontab
 USER cristi
