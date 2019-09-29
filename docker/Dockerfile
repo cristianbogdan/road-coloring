@@ -29,12 +29,12 @@ RUN apt-get -qq update && apt-get -qq --yes upgrade
 RUN apt-get -qq install --yes cron sudo curl
 
 # postgres, postgis, osm2pgsql
-RUN apt-get -qq install --yes  postgresql-9.5-postgis postgresql-contrib   osm2pgsql
+RUN apt-get -qq install --yes  postgresql-9.5-postgis   osm2pgsql
 
 # configure the postgress db, add postgis extension
 RUN adduser cristi
 USER postgres
-RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && psql -d gis -c "CREATE EXTENSION hstore" && service postgresql stop
+RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && service postgresql stop
 USER root
 
 # Passenger, Nginx
