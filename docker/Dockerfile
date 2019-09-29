@@ -22,14 +22,29 @@ RUN update-locale LANG=C.UTF-8
 # only install dependencies, no recommended or suggested pakages
 RUN printf "APT::Install-Recommends \"0\";APT::Install-Suggests \"0\";" > /etc/apt/apt.conf.d/01norecommend
 
-# upgrade OS
+RUN apt-get -qq install -y dirmngr gnupg
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+RUN apt-get -qq install -y apt-transport-https ca-certificates
+RUN echo deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main > /etc/apt/sources.list.d/passenger.list
+
+# update, upgrade
 RUN apt-get -qq update && apt-get -qq --yes upgrade
 
-# curl, cron, sudo
-RUN apt-get -qq install --yes cron sudo curl
-
 # postgres, postgis, osm2pgsql
-RUN apt-get -qq install --yes  postgresql-9.5-postgis   osm2pgsql
+RUN apt-get -qq install --yes \
+   cron sudo curl \
+   postgresql-9.5-postgis   osm2pgsql \
+   nginx-extras passenger \
+   python-mapnik ttf-unifont tilestache python-psycopg2 python-shapely \
+   python-setuptools python-pip
+
+# was: python3-mapnik gir1.2-pango-1.0 gir1.2-rsvg-2.0 python3-gi-cairo
+RUN ln -s /usr/bin/tilestache-seed /usr/bin/tilestache-seed.py
+
+RUN pip install --upgrade pip
+
+# osmapi available only in pip 
+RUN pip install -U osmapi
 
 # configure the postgress db, add postgis extension
 RUN adduser cristi
@@ -37,29 +52,9 @@ USER postgres
 RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && service postgresql stop
 USER root
 
-# Passenger, Nginx
-RUN apt-get -qq install -y dirmngr gnupg
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
-RUN apt-get -qq install -y apt-transport-https ca-certificates
-RUN echo deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main > /etc/apt/sources.list.d/passenger.list
-RUN apt-get -qq update
-
-RUN apt-get -qq install -y nginx-extras passenger
-
 # configure passenger and nginx
 COPY etc/default /etc/nginx/sites-enabled/default
 EXPOSE 80
-
-#install mapnik (and a font lib to avoid a font warning), tilestache, python-psycopg2  and pip
-RUN apt-get -qq install --yes python-mapnik ttf-unifont tilestache python-psycopg2 python-shapely python-setuptools python-pip
-# was: python3-mapnik gir1.2-pango-1.0 gir1.2-rsvg-2.0 python3-gi-cairo
-RUN ln -s /usr/bin/tilestache-seed /usr/bin/tilestache-seed.py
-
-RUN pip install --upgrade pip
-
-# osmapi available only in pip 
-RUN pip install -U osmapi 
-
 
 # crontab
 USER cristi
