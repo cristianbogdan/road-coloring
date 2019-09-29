@@ -32,7 +32,7 @@ RUN apt-get -qq update && apt-get -qq --yes upgrade
 
 # postgres, postgis, osm2pgsql
 RUN apt-get -qq install --yes \
-   cron sudo curl \
+   cron sudo curl wget \
    postgresql-9.5-postgis   osm2pgsql \
    nginx-extras passenger \
    python-mapnik ttf-unifont tilestache python-psycopg2 python-shapely \
