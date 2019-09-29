@@ -30,8 +30,7 @@ RUN apt-get -qq update && apt-get -qq --yes upgrade
 RUN apt-get -qq install --yes cron sudo curl
 
 # postgres, postgis, osm2pgsql
-RUN apt-get -qq install --yes  postgresql-9.5-postgis    osm2pgsql
-RUN apt-get -qq install --yes postgresql-contrib
+RUN apt-get -qq install --yes  postgresql-9.5-postgis postgresql-contrib   osm2pgsql
 
 # configure the postgress db, add postgis extension
 RUN adduser cristi
