@@ -354,7 +354,21 @@ var ro='way(area.ro)';
 
 
 var queries=[
-    '('+ro+'[highway=construction];'+ro+'[highway=motorway];'+ro+'[highway=proposed];'+ro+'[railway=construction];'+ro+'[railway=proposed];'+ro+'[railway=rail][status];)'
+
+    "("
+	+ro+'[highway=construction];'	+ro+'[highway=motorway];'
+	+ro+`[highway=trunk][ref~"^DN",i](if:is_date(t["start_date"])&&date(t["start_date"])>'2009-09-28');`
+	+ro+`[highway!~trunk][ref~"^DJ",i](if:is_date(t["start_date"])&&date(t["start_date"])>'2017-09-28');`    
+	+ro+'[highway=proposed];'+ro+'[railway=construction];'+ro+'[railway=proposed];'+ro+'[railway=rail][status];'
+    
+	+")"
+    
+    //'('+
+
+//	"[highway~trunk][ref~\"^DN\",i](if:is_date(t[\"start_date\"])&&date(t[\"start_date\"])>'2017-09-28T19:51:44Z');"
+//        +ro+'[highway!~trunk][ref~"^DJ",i](if:is_date(t["start_date"])&& date(t["start_date"]>\'2017-09-28\');'   
+    //
+
 ];
 
 var retry={};
@@ -366,14 +380,14 @@ function writeStatus(){
 }
 function overpass(query)
 {
-    var url= 'https://www.overpass-api.de/api/interpreter?data='
-        +'[out:json][timeout:60];'
-        +'(area[boundary=administrative]["name:en"=Romania];)->.ro;'
-	+ query + ';'
-	+'out geom;';
-    
+    var url= 'https://www.overpass-api.de/api/interpreter';
+
+    var post=`[out:json][timeout:180];(area[boundary=administrative]["name:en"=Romania];)->.ro;`+
+	query
+	+";out geom;";
+ 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
+    xhr.open('POST', url);
     var onError = function() {
 	console.error("Overpass error "+xhr.statusText);
 	retry[query]=1;
@@ -407,7 +421,7 @@ function overpass(query)
     try{
 	attempted++;
 	writeStatus();
-	xhr.send();
+	xhr.send(post);
     }catch(e){ onError(); }   
 }
 
