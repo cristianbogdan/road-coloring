@@ -58,7 +58,7 @@ EXPOSE 80
 
 # crontab
 USER cristi
-RUN printf "30 23 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
+RUN printf "30 0 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
 USER root
 
 # volumes, though recommended to map them to host folders using -v
