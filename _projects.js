@@ -42,6 +42,8 @@ loadScript([
     "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
     "http://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
     "gmap.js",
+    "project-colors.js",
+    "projects-legend.js",
     "vector-gmaps.js"
 ], 0);
 }

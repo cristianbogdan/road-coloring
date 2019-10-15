@@ -34,195 +34,6 @@ if (window.location.hash !== '') {
   }
 }
 
-
-var wdth= 4;
-var yellow= new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	width: 5,
-	color: [0xff,0xff,0,1]
-    })
-});
-
-var transp= new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	width: 20,
-	color: [0xff,0xff,0xff,0.01]
-    })
-});
-
-var blue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0,0,0xff, 1]
-	}),
-/*    text: new ol.style.Text({
-	font: 'bold 14px "Open Sans", "Arial Unicode MS", "sans-serif"',
-	placement: 'line',
-	fill: new ol.style.Fill({
-	    color: 'white'
-	})
-    })*/
-});
-
-var green=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0,210,0, 1]
-	})
-});
-
-var dodgerBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x19,0x9a,0x8d, 1]
-	})
-});
-
-var deepSkyBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x20,0xc5,0xb5, 1]
-	})
-});
-
-var lightSkyBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x40,0xe0,0xd0, 1]
-	})
-});
-
-var powderBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x91,0xed,0xe4, 1]
-	})
-});
-
-
-var lightblue=new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x1e,0x90,0xff, 1]
-	})
-});
-
-var red=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0xb3,0,0, 1]
-	})
-});
-
-var lightred=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [255,189,189, 1]
-	})
-});
-
-
-var orange=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0xff,0xbf,0x00, 1]
-	})
-});
-
-var orangeRed=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0xff,0x45,0x00, 1]
-	})
-});
-
-var bridge=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth+3,
-	    color: [0,0,0, 0.5]
-	})
-});
-
-function cName(name){
-return new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0,0,0xff, 1]
-	})
-	    ,text:new ol.style.Text({
-		text:name
-//,		textcolor:[0xff,0xff,0xff, 1]
-	    })
-    });
-}
-
-var proposed_highway=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x80,0x9b,0xc0, 1]
-	})
-    });
-
-
-var gray=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: 3,
-	    color: [0x78,0x78,0x78, 1]
-	})
-    });
-var black=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: 3,
-	    color: [0,0,0, 1]
-	})
-    });
-
-var railDash=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: 2,
-	    lineDash:[5,10],
-	    color: [0,0,0, 1]
-	})
-    });
-
-var whiteDash=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth-2,
-	    lineDash:[10,10],
-	    color: [0xff,0xff,0xff, 1]
-	})
-    });
-
-
-var redDash=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth-2,
-	    lineDash:[10,10],
-	    color: [0xff,0x0,0x0, 1]
-	})
-    });
-
-var noNothing=new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	    width: wdth,
-	    lineDash:[10,10],
-	    color: [0, 0xff,0,1]
-	})
-    });
-
-function toHex(n){
-    var ret= new Number(n).toString(16);
-    if (ret.length==1)
-	return '0'+ret;
-    return ret;
-}
-
-function clr(style){
-    return '#'+toHex(style.getStroke().getColor()[0])
-	+toHex(style.getStroke().getColor()[1])
-    	+toHex(style.getStroke().getColor()[2]);
-}
-    
 var nextYear= ''+(new Date().getFullYear()+1);
 
 var computeStatus=function(p)
@@ -245,36 +56,22 @@ var computeStatus=function(p)
     p.status=null;
 };
 
-var colorProgress=function(latestProgress){
-    return latestProgress>75?dodgerBlue:latestProgress>50?deepSkyBlue:latestProgress>25?lightSkyBlue:latestProgress>0?powderBlue:gray;
-}
-
-initiallyHidden={propus:true}
-
 function check(x, ret){
     if(document.getElementById(x))
 	return document.getElementById(x).checked?ret:[transp];
-    return initiallyHidden[x]?[transp]:ret;	
+    return ret;	
 }
 
-var styleFunction = function(feature, resolution) {
-    var p= feature.getProperties();
-    if(p.tags)
-	p=p.tags;
-    if(p.status)
-	computeStatus(p);
 
-    
-    var ret=function(p){
-    //if((p.highway =='motorway' || p.highway== 'motorway_link') && (p.construction || p.proposed))
-	//if(p.construction && p.highway!='construction' || p.proposed && p.highway!='proposed')
-//	return [transp, blue];
-	if(p.highway!='construction' && p.construction)
-	    return [transp];
-
-	if(p.highway && p.highway!='proposed' && p.proposed)
-	    return [transp];
-	
+let feature_render=function(p){
+    let rule=legend.projectTypes.find(x=>x.condition(p));
+    if(rule){
+	if(typeof rule.lineType==='function')
+	    return rule.lineType(p);
+	return rule.lineType;
+    }
+    console.log(p);
+    return [];
     if(p.railway)
 	return p.railway=='proposed'?check("CF-neatrib",[transp,gray, railDash]):check("CF",[transp, colorProgress(p.latestProgress), railDash]);
 
@@ -309,46 +106,35 @@ var styleFunction = function(feature, resolution) {
 	return [transp, AC, whiteDash];
 
 
-    }(p);
+}
+
+var styleFunction = function(feature, resolution) {
+    var p= feature.getProperties();
+    if(p.tags)
+	p=p.tags;
+    if(p.status)
+	computeStatus(p);
+
+    if(p.highway!='construction' && p.construction)
+	return [transp];
+    
+    if(p.highway && p.highway!='proposed' && p.proposed)
+	return [transp];
+    
+    var ret=feature_render(p);
     
     if(ret.length>1 && resolution<150 && (p.bridge || p.tunnel))
 	ret.splice(1, 0, bridge);
     if(resolution<150 && p.tunnel)
 	ret.splice(-1,1);
-     return ret;
+    return ret;
 };
 
 var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
 				 +'<div style="text-align:left;line-height:115%;">'
 				 +'<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
-				 
-				 +'<input type="checkbox" id="inCirculatie" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(blue) +';"></div> în circulație<br>'
-				 +'<input type="checkbox" id="circulabilFaraAcces" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(blue)+'; border-top:dotted red"></div> recepționat/circulabil fără acces<br>'
-				 +'<input type="checkbox" id="inConstructie" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(lightSkyBlue)+';"></div> în construcție, cu AC, stadiu:<br>'
-				 +'<font color='+clr(gray)+'>0%</font> <font color='+clr(powderBlue)+'>&lt;25%</font> <font color='+clr(lightSkyBlue)+'>&lt;50%</font> <font color='+clr(deepSkyBlue)+'>&lt;75%</font> <font color='+clr(dodgerBlue)+'>&lt;100%</font><br>'
-				 +'<input type="checkbox" id="neatribuitCuAC" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted '+clr(deepSkyBlue)+';"></div> neatribuit sau reziliat, cu AC<br>'
-				 +'<input type="checkbox" id="atribuitFaraAM" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(red)+';"></div> atribuit, lipsă AM<br>'
-				 +'<input type="checkbox" id="AMfaraPT" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orangeRed)+';"></div> cu AM, fără PT aprobat<br>'
-				 +'<input type="checkbox" id="PTfaraAC" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orange)+';"></div> cu PT aprobat, fără AC<br>'
-				 +'<input type="checkbox" id="neatribuit" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted '+clr(orangeRed)+';"></div> neatribuit, lipsă AC/PT/AM<br>'
-				 +'<input type="checkbox" id="CF" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:black; border-top:dotted '+clr(powderBlue)+';"></div> CF cu AC, în construcție<br>'
-				 +'<input type="checkbox" id="CF-neatrib" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:black; border-top:dotted #787878;"></div> CF cu AC, neatribuit<br>'
-				 +'<input type="checkbox" id="propus"  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #ffbdbd;"></div> proiecte propuse (vise)<br>'
-				 +'<input type="checkbox" id="necunoscut" checked  onclick="refresh()"/> '
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#809bc0;"></div> statut necunoscut<br>'
-				 
+				 +legend.projectTypes.map(x=>'<div style="'+legend.basicStyle+' '+x.symbol+'"></div> '+x.text+"<br>").join('')
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
 				 +'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
@@ -368,26 +154,6 @@ var roads=
 	    style: styleFunction
 	});
 
-var ro='way(area.ro)';
-
-
-var overpass_q=
-
-    "("
-	+ro+'[highway=construction];'	+ro+'[highway=motorway];'
-	+ro+`[highway=trunk][ref~"^DN",i](if:is_date(t["start_date"])&&date(t["start_date"])>'2009-09-28');`
-	+ro+`[highway!~trunk][ref~"^DJ",i](if:is_date(t["start_date"])&&date(t["start_date"])>'2017-09-28');`    
-	+ro+'[highway=proposed];'+ro+'[railway=construction];'+ro+'[railway=proposed];'+ro+'[railway=rail][status];'
-    
-	+")"
-    
-    //'('+
-
-//	"[highway~trunk][ref~\"^DN\",i](if:is_date(t[\"start_date\"])&&date(t[\"start_date\"])>'2017-09-28T19:51:44Z');"
-//        +ro+'[highway!~trunk][ref~"^DJ",i](if:is_date(t["start_date"])&& date(t["start_date"]>\'2017-09-28\');'   
-    //
-
-;
 
 var retry={};
 var completed=0;
@@ -482,7 +248,7 @@ var vectorSource= new ol.source.Vector({
     loader: function(extent, resolution, projection) {
 //	queries.map(q=> retry[q]=1);
 	startLoading=new Date().getTime();
-	overpass(overpass_q);
+	overpass();
     },
     strategy:ol.loadingstrategy.all
     ,attributions: attrib
