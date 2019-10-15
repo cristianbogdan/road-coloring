@@ -249,11 +249,12 @@ var colorProgress=function(latestProgress){
     return latestProgress>75?dodgerBlue:latestProgress>50?deepSkyBlue:latestProgress>25?lightSkyBlue:latestProgress>0?powderBlue:gray;
 }
 
+initiallyHidden={propus:true}
+
 function check(x, ret){
     if(document.getElementById(x))
 	return document.getElementById(x).checked?ret:[transp];
-    return x=="proposed"?[transp]:ret;
-	
+    return initiallyHidden[x]?[transp]:ret;	
 }
 
 var styleFunction = function(feature, resolution) {
@@ -262,6 +263,8 @@ var styleFunction = function(feature, resolution) {
 	p=p.tags;
     if(p.status)
 	computeStatus(p);
+
+    
     var ret=function(p){
     //if((p.highway =='motorway' || p.highway== 'motorway_link') && (p.construction || p.proposed))
 	//if(p.construction && p.highway!='construction' || p.proposed && p.highway!='proposed')
@@ -276,6 +279,7 @@ var styleFunction = function(feature, resolution) {
 	return p.railway=='proposed'?check("CF-neatrib",[transp,gray, railDash]):check("CF",[transp, colorProgress(p.latestProgress), railDash]);
 
 	var AC= (!p.AC)?(p.construction||p.hadStatus)?p.PTE?orange:p.AM?orangeRed:red:lightred:green;
+	var AC_id=(!p.AC)?(p.construction||p.hadStatus)?p.PTE?"PTfaraAC":p.AM?"AMfaraPT":"atribuitFaraAM":"propus":"inConstructie";
 
 	if(AC===green && p.latestProgress!=undefined)
 	    AC= colorProgress(p.latestProgress)
@@ -289,8 +293,22 @@ var styleFunction = function(feature, resolution) {
 	//if(p.proposed && p.status)
 	//{ p.construction=p.proposed; p.proposed=null;}
 
-	// only works w openlayers 4	blue.getText().setText(p.opening_date?p.openin_date:p.start_date);
-	return p.construction? p.builder?[transp, AC]:[transp, AC, whiteDash]:p.proposed?([transp, AC, whiteDash]):p.access=='no'?[transp, blue, redDash]:[transp, blue];
+	if(!p.construction){
+	    if(p.proposed)
+		return check(AC_id, ([transp, AC, whiteDash]));
+	    else{
+		if(p.access=='no')
+	            return [transp, blue, redDash];
+		else
+	            return [transp, blue];
+	    }
+	}
+	
+
+        if( p.builder) return [transp, AC];
+	return [transp, AC, whiteDash];
+
+
     }(p);
     
     if(ret.length>1 && resolution<150 && (p.bridge || p.tunnel))
@@ -353,7 +371,7 @@ var roads=
 var ro='way(area.ro)';
 
 
-var queries=[
+var overpass_q=
 
     "("
 	+ro+'[highway=construction];'	+ro+'[highway=motorway];'
@@ -369,7 +387,7 @@ var queries=[
 //        +ro+'[highway!~trunk][ref~"^DJ",i](if:is_date(t["start_date"])&& date(t["start_date"]>\'2017-09-28\');'   
     //
 
-];
+;
 
 var retry={};
 var completed=0;
@@ -378,16 +396,28 @@ var attempted=0;
 function writeStatus(){
     document.getElementById("text").innerHTML=""+completed+"/"+attempted;
 }
+
+function writeStatus1(dt){
+    document.getElementById("text").innerHTML=""+new Date(dt);
+}
 function overpass(query)
 {
+    var sym=true;
     var url= 'https://www.overpass-api.de/api/interpreter';
 
+    if(sym)
+	url=SCRIPT_ROOT+'/data/data-overpass.json';
+    
     var post=`[out:json][timeout:180];(area[boundary=administrative]["name:en"=Romania];)->.ro;`+
 	query
 	+";out geom;";
  
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
+
+    if(sym)
+	xhr.open('GET', url);
+    else
+	xhr.open('POST', url);
     var onError = function() {
 	console.error("Overpass error "+xhr.statusText);
 	retry[query]=1;
@@ -412,7 +442,8 @@ function overpass(query)
 			}
 		    ));
 		completed++;
-		writeStatus();
+		if(sym)writeStatus1(data.osm3s.timestamp_osm_base);
+		else writeStatus();
 	    }
 	} else {
 		onError();
@@ -420,12 +451,14 @@ function overpass(query)
     }
     try{
 	attempted++;
-	writeStatus();
-	xhr.send(post);
+	if(!sym)writeStatus();
+	if(sym)xhr.send();
+	else xhr.send(post);
     }catch(e){ onError(); }   
 }
 
 var startLoading;
+/*
 function consume(){
     if(completed==queries.length){
 	console.log("overpass complete");
@@ -440,16 +473,16 @@ function consume(){
 	}
     }
     setTimeout(consume, 10000);
-}
+}*/
 
 var vectorSource= new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
     tilePixelRatio: 16,
     loader: function(extent, resolution, projection) {
-	queries.map(q=> retry[q]=1);
+//	queries.map(q=> retry[q]=1);
 	startLoading=new Date().getTime();
-	consume();
+	overpass(overpass_q);
     },
     strategy:ol.loadingstrategy.all
     ,attributions: attrib
