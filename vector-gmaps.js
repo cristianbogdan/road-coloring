@@ -62,16 +62,14 @@ function check(x, ret){
     return ret;	
 }
 
-
 let feature_render=function(p){
     let rule=legend.projectTypes.find(x=>x.condition(p));
-    if(rule){
-	if(typeof rule.lineType==='function')
-	    return rule.lineType(p);
-	return rule.lineType;
-    }
-    console.log(p);
-    return [];
+    if(rule)
+	return rule.lineType(p);
+    return [transp];
+}
+
+let old_render=function(p){
     if(p.railway)
 	return p.railway=='proposed'?check("CF-neatrib",[transp,gray, railDash]):check("CF",[transp, colorProgress(p.latestProgress), railDash]);
 
@@ -85,7 +83,7 @@ let feature_render=function(p){
 //	construction= (p.access=='no')?lightred:lightblue;
 
      	if(p.construction&& !p.hadStatus)
-	    return [transp, proposed_highway];
+	    return [transp, unknown];
 
 	//if(p.proposed && p.status)
 	//{ p.construction=p.proposed; p.proposed=null;}
@@ -121,7 +119,11 @@ var styleFunction = function(feature, resolution) {
     if(p.highway && p.highway!='proposed' && p.proposed)
 	return [transp];
     
-    var ret=feature_render(p);
+    var ret1=old_render(p);
+    var ret= feature_render(p);
+    if(JSON.stringify(ret)!==JSON.stringify(ret1)){
+	console.log((x=>x?x.text:"none")(legend.projectTypes.find(x=>x.condition(p))), ret.map(x=>x.name), ret1.map(x=>x.name), p);
+    }
     
     if(ret.length>1 && resolution<150 && (p.bridge || p.tunnel))
 	ret.splice(1, 0, bridge);

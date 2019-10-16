@@ -6,12 +6,16 @@ var yellow= new ol.style.Style({
     })
 });
 
+yellow.name="yellow";
+
 var transp= new ol.style.Style({
     stroke: new ol.style.Stroke({
 	width: 20,
 	color: [0xff,0xff,0xff,0.01]
     })
 });
+
+transp.name="transp";
 
 var blue=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -27,12 +31,16 @@ var blue=new ol.style.Style({
     })*/
 });
 
+blue.name="blue";
+
 var green=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: wdth,
 	    color: [0,210,0, 1]
 	})
 });
+
+green.name="green";
 
 var dodgerBlue=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -41,12 +49,16 @@ var dodgerBlue=new ol.style.Style({
 	})
 });
 
+dodgerBlue.name="dodgerBlue";
+
 var deepSkyBlue=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: wdth,
 	    color: [0x20,0xc5,0xb5, 1]
 	})
 });
+
+deepSkyBlue.name="deepSkyBlue";
 
 var lightSkyBlue=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -55,6 +67,8 @@ var lightSkyBlue=new ol.style.Style({
 	})
 });
 
+lightSkyBlue.name="lightSkyBlue";
+
 var powderBlue=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: wdth,
@@ -62,6 +76,7 @@ var powderBlue=new ol.style.Style({
 	})
 });
 
+powderBlue.name="powderBlue";
 
 var lightblue=new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -69,6 +84,7 @@ var lightblue=new ol.style.Style({
 	    color: [0x1e,0x90,0xff, 1]
 	})
 });
+lightblue.name="lightBlue";
 
 var red=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -76,6 +92,7 @@ var red=new ol.style.Style({
 	    color: [0xb3,0,0, 1]
 	})
 });
+red.name="red";
 
 var lightred=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -83,7 +100,7 @@ var lightred=new ol.style.Style({
 	    color: [255,189,189, 1]
 	})
 });
-
+lightred.name="lightred";
 
 var orange=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -91,6 +108,7 @@ var orange=new ol.style.Style({
 	    color: [0xff,0xbf,0x00, 1]
 	})
 });
+orange.name="orange";
 
 var orangeRed=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -98,6 +116,7 @@ var orangeRed=new ol.style.Style({
 	    color: [0xff,0x45,0x00, 1]
 	})
 });
+orangeRed.name="orangeRed";
 
 var bridge=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -105,14 +124,15 @@ var bridge=new ol.style.Style({
 	    color: [0,0,0, 0.5]
 	})
 });
+bridge.name="bridge";
 
-var proposed_highway=new ol.style.Style({
+var unknown=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: wdth,
 	    color: [0x80,0x9b,0xc0, 1]
 	})
     });
-
+unknown.name="proposed?";
 
 var gray=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -120,12 +140,15 @@ var gray=new ol.style.Style({
 	    color: [0x78,0x78,0x78, 1]
 	})
     });
+gray.name="gray";
+
 var black=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: 3,
 	    color: [0,0,0, 1]
 	})
     });
+black.name="black";
 
 var railDash=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -134,6 +157,7 @@ var railDash=new ol.style.Style({
 	    color: [0,0,0, 1]
 	})
     });
+railDash.name="railDash";
 
 var whiteDash=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -142,7 +166,7 @@ var whiteDash=new ol.style.Style({
 	    color: [0xff,0xff,0xff, 1]
 	})
     });
-
+whiteDash.name="whiteDash";
 
 var redDash=new ol.style.Style({
 	stroke: new ol.style.Stroke({
@@ -151,6 +175,7 @@ var redDash=new ol.style.Style({
 	    color: [0xff,0x0,0x0, 1]
 	})
     });
+redDash.name="redDash";
 
 var noNothing=new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -159,6 +184,7 @@ var noNothing=new ol.style.Style({
 	    color: [0, 0xff,0,1]
 	})
     });
+noNothing.name="noNothing";
 
 function toHex(n){
     var ret= new Number(n).toString(16);
@@ -174,6 +200,9 @@ function clr(style){
 }
     
 var colorProgress=function(latestProgress){
-    return latestProgress>75?dodgerBlue:latestProgress>50?deepSkyBlue:latestProgress>25?lightSkyBlue:latestProgress>0?powderBlue:gray;
+    return !latestProgress?green:latestProgress>75?dodgerBlue:latestProgress>50?deepSkyBlue:latestProgress>25?lightSkyBlue:latestProgress>0?powderBlue:gray;
 }
 
+var a_missing=function(p){
+    return p.PTE?orange:p.AM?orangeRed:red;
+}

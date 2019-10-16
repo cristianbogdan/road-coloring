@@ -5,14 +5,14 @@ let legend={
 	    symbol: 'background-color:'+clr(blue) +';',
 	    text: "în circulație",
 	    condition: p=> p.highway && !p.construction && !p.proposed &&  p.access!='no',
-	    lineType: [transp, blue],
+	    lineType: p=> [transp, blue],
 	    canHide: true
 	},
 	{
 	    symbol: 'background-color:'+clr(blue)+'; border-top:dotted red',
 	    text: "recepționat/circulabil fără acces",
 	    condition: p=> p.highway && !p.construction && !p.proposed &&  p.access=='no',
-	    lineType: [transp, blue, redDash],
+	    lineType: p=> [transp, blue, redDash],
 	    canHide: true
 	},
 	{
@@ -33,29 +33,29 @@ let legend={
 	{
 	    symbol:'background-color:'+clr(red)+';',
 	    text: ' atribuit, lipsă AM',
-	    condition: p=> p.highway && p.builder && !p.AM,
-	    lineType: [transp, red],
+	    condition: p=> p.highway && p.builder && !p.AM && !p.PTE,
+	    lineType: p=>[transp, a_missing(p)],
 	    canHide: true
 	},
 	{
 	    symbol:'background-color:'+clr(orangeRed)+';',
 	    text: 'cu AM, fără PT aprobat',
-	    condition: p=> p.highway && p.builder && !p.PTE && p.AM,
-	    lineType: [transp, orangeRed],
+	    condition: p=> p.highway && p.construction && p.builder && !p.PTE && p.AM,
+	    lineType: p=>[transp, a_missing(p)],
 	    canHide: true
 	},
 	{
 	    symbol:'background-color:'+clr(orange)+';',	    
 	    text: 'cu PT aprobat, fără AC',
 	    condition: p=> p.highway && p.builder && !p.AC && p.PTE,
-	    lineType: [transp, orange],
+	    lineType: p=>[transp, a_missing(p)],
 	    canHide: true
 	},
 	{
 	    symbol:'border-top:dotted '+clr(orangeRed)+';',
 	    text: 'neatribuit, lipsă AC/PT/AM',
-	    condition: p=> p.highway && !p.builder && !p.AC && (!p.proposed || p.AM) ,
-	    lineType: [transp, orangeRed, whiteDash],
+	    condition: p=> p.highway && p.hadStatus  && (!p.AC || !p.PTE || !p.AM) ,
+	    lineType: p=>[transp, a_missing(p), whiteDash],
 	    canHide: true
 	},
 	{
@@ -69,21 +69,21 @@ let legend={
 	    symbol:'background-color:black; border-top:dotted #787878;',
 	    text: 'CF, neatribuit',
 	    condition: p=> p.railway==='proposed',
-	    lineType: [transp,gray, railDash],
+	    lineType: p=> [transp,gray, railDash],
 	    canHide: true
 	},
 	{
 	    symbol:'border-top:dotted #ffbdbd;',	    
 	    text: 'proiecte propuse (vise)',
-	    condition: p=> p.highway && !p.AC && !p.AM && !p.PTE,
-	    lineType: [transp, lightred, whiteDash],
+	    condition: p=> p.highway && (p.proposed || p.hadStatus && !p.AC && !p.AM && !p.PTE),
+	    lineType: p=> [transp, lightred, whiteDash],
 	    canHide: true
 	},
 	{
 	    symbol:'background-color:#809bc0;',
 	    text: 'statut necunoscut',
-	    condition: p=> p.highway && p.construction && !p.hadStatus,
-	    lineType: [transp, proposed_highway],
+	    condition: p=> p.highway  && p.construction && !p.hadStatus,
+	    lineType: p=> [transp, unknown],
 	    canHide: true,
 	    initiallyHidden: true
 	},
