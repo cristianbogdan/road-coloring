@@ -119,12 +119,13 @@ var styleFunction = function(feature, resolution) {
     if(p.highway && p.highway!='proposed' && p.proposed)
 	return [transp];
     
-    var ret1=old_render(p);
+
     var ret= feature_render(p);
+/*    var ret1=old_render(p);
     if(JSON.stringify(ret)!==JSON.stringify(ret1)){
 	console.log((x=>x?x.text:"none")(legend.projectTypes.find(x=>x.condition(p))), ret.map(x=>x.name), ret1.map(x=>x.name), p);
     }
-    
+ */   
     if(ret.length>1 && resolution<150 && (p.bridge || p.tunnel))
 	ret.splice(1, 0, bridge);
     if(resolution<150 && p.tunnel)
@@ -143,7 +144,7 @@ var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>'+
 '<div style:"font-size:2px"><br></div></div></span>'})];
 	
-var roads=
+/*var roads=
 	new ol.layer.Vector({
 	    source: new ol.source.Vector({
 		format: new ol.format.GeoJSON(),
@@ -156,39 +157,16 @@ var roads=
 	    style: styleFunction
 	});
 
-
-var retry={};
-var completed=0;
-var attempted=0;
-
-function writeStatus(){
-    document.getElementById("text").innerHTML=""+completed+"/"+attempted;
-}
-
-function writeStatus1(dt){
-    document.getElementById("text").innerHTML=""+new Date(dt);
-}
-function overpass(query)
+*/
+function overpass()
 {
-    var sym=true;
-    var url= 'https://www.overpass-api.de/api/interpreter';
-
-    if(sym)
-	url=SCRIPT_ROOT+'/data/data-overpass.json';
+    var url=SCRIPT_ROOT+'/data/data-overpass.json';
     
-    var post=`[out:json][timeout:180];(area[boundary=administrative]["name:en"=Romania];)->.ro;`+
-	query
-	+";out geom;";
- 
     var xhr = new XMLHttpRequest();
 
-    if(sym)
-	xhr.open('GET', url);
-    else
-	xhr.open('POST', url);
+    xhr.open('GET', url);
     var onError = function() {
 	console.error("Overpass error "+xhr.statusText);
-	retry[query]=1;
     }
     xhr.onerror = onError;
     xhr.onload = function() {
@@ -197,7 +175,6 @@ function overpass(query)
 	    if(!data.elements || data.elements.length<5){
 		if(data.remark)
 		    console.error(data.remark)
-		retry[query]=1;
 	    }
 	    else{
 		vectorSource.addFeatures(
@@ -209,47 +186,22 @@ function overpass(query)
 			    featureProjection: map.getView().getProjection()
 			}
 		    ));
-		completed++;
-		if(sym)writeStatus1(data.osm3s.timestamp_osm_base);
-		else writeStatus();
+		document.getElementById("text").innerHTML=""+new Date(data.osm3s.timestamp_osm_base);
 	    }
 	} else {
 		onError();
 	}
     }
     try{
-	attempted++;
-	if(!sym)writeStatus();
-	if(sym)xhr.send();
-	else xhr.send(post);
+	xhr.send();
     }catch(e){ onError(); }   
 }
-
-var startLoading;
-/*
-function consume(){
-    if(completed==queries.length){
-	console.log("overpass complete");
-	return;
-    }
-    
-    if(queries.length-Object.keys(retry).length- completed<1){
-	let q=Object.keys(retry)[0];
-	if(q){
-	    delete retry[q]
-	    overpass(q);
-	}
-    }
-    setTimeout(consume, 10000);
-}*/
 
 var vectorSource= new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
     tilePixelRatio: 16,
     loader: function(extent, resolution, projection) {
-//	queries.map(q=> retry[q]=1);
-	startLoading=new Date().getTime();
 	overpass();
     },
     strategy:ol.loadingstrategy.all
@@ -257,8 +209,7 @@ var vectorSource= new ol.source.Vector({
     
 });
 
-if(window.location.search)
-   roads=  new ol.layer.Vector({
+var roads=  new ol.layer.Vector({
     source: vectorSource,
     style: styleFunction
 });
