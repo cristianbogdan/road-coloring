@@ -3,6 +3,7 @@ var ROOT= location.protocol+'//'+location.hostname+(location.port ? ':'+location
 var SCRIPT_ROOT=ROOT+"/maps/";
 var MAP_ROOT=ROOT;
 
+
 if(scriptName=="_imgur.js")
     SCRIPT_ROOT=MAP_ROOT+"/imgur/";
 

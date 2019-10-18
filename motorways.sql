@@ -1,10 +1,12 @@
+---	          select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, access, start_date, opening_date, status, description, maxspeed, bridge, tunnel) t
+
 SELECT row_to_json(fc)
  FROM
   ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features
   FROM (SELECT 'Feature' As type,
       ST_AsGeoJSON(ST_Transform(ST_simplify(lg.way, 10), 4326))::json As geometry,
           (
-	          select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, access, start_date, opening_date, check_date, description, status, maxspeed, bridge, tunnel) t
+	          select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, bridge, tunnel, status, start_date, opening_date) t
 	   ) AS properties
 			     FROM planet_osm_line As lg 
 			     WHERE lg.osm_id>0 AND (
@@ -14,6 +16,7 @@ SELECT row_to_json(fc)
 					     or lg.construction in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'services', 'service')
 					     or lg.proposed in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link','tertiary', 'tertiary_link', 'services', 'service')
 					     or lg.railway in('proposed', 'construction')
+					     or lg.railway='rail' and lg.status is not null
 					     )
 			     order by  
 			     	(case when highway='construction' then 100 when highway='proposed' then 1 else 2 end),
