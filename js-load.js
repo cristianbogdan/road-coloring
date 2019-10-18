@@ -1,5 +1,8 @@
-var SCRIPT_ROOT="http://pum.project-online.se/maps/";
-var MAP_ROOT="http://pum.project-online.se";
+// change this to retrieve scripts from another server
+var ROOT= location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+var SCRIPT_ROOT=ROOT+"/maps/";
+var MAP_ROOT=ROOT;
+
 
 if(scriptName=="_imgur.js")
     SCRIPT_ROOT=MAP_ROOT+"/imgur/";
