@@ -34,188 +34,6 @@ if (window.location.hash !== '') {
   }
 }
 
-
-var wdth= 4;
-var yellow= new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	width: 5,
-	color: [0xff,0xff,0,1]
-    })
-});
-
-var transp= new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	width: 20,
-	color: [0xff,0xff,0xff,0.01]
-    })
-});
-
-var blue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0,0,0xff, 1]
-	})
-});
-
-var green=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0,210,0, 1]
-	})
-});
-
-var dodgerBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x19,0x9a,0x8d, 1]
-	})
-});
-
-var deepSkyBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x20,0xc5,0xb5, 1]
-	})
-});
-
-var lightSkyBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x40,0xe0,0xd0, 1]
-	})
-});
-
-var powderBlue=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x91,0xed,0xe4, 1]
-	})
-});
-
-
-var lightblue=new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x1e,0x90,0xff, 1]
-	})
-});
-
-var red=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0xb3,0,0, 1]
-	})
-});
-
-var lightred=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [255,189,189, 1]
-	})
-});
-
-
-var orange=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0xff,0xbf,0x00, 1]
-	})
-});
-
-var orangeRed=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0xff,0x45,0x00, 1]
-	})
-});
-
-var bridge=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth+3,
-	    color: [0,0,0, 0.5]
-	})
-});
-
-function cName(name){
-return new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0,0,0xff, 1]
-	})
-	    ,text:new ol.style.Text({
-		text:name
-//,		textcolor:[0xff,0xff,0xff, 1]
-	    })
-    });
-}
-
-var proposed_highway=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth,
-	    color: [0x80,0x9b,0xc0, 1]
-	})
-    });
-
-
-var gray=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: 3,
-	    color: [0x78,0x78,0x78, 1]
-	})
-    });
-var black=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: 3,
-	    color: [0,0,0, 1]
-	})
-    });
-
-var railDash=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: 1,
-	    lineDash:[5,10],
-	    color: [0xff,0xff,0xff, 1]
-	})
-    });
-
-var whiteDash=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth-2,
-	    lineDash:[10,10],
-	    color: [0xff,0xff,0xff, 1]
-	})
-    });
-
-
-var redDash=new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	    width: wdth-2,
-	    lineDash:[10,10],
-	    color: [0xff,0x0,0x0, 1]
-	})
-    });
-
-var noNothing=new ol.style.Style({
-    stroke: new ol.style.Stroke({
-	    width: wdth,
-	    lineDash:[10,10],
-	    color: [0, 0xff,0,1]
-	})
-    });
-
-function toHex(n){
-    var ret= new Number(n).toString(16);
-    if (ret.length==1)
-	return '0'+ret;
-    return ret;
-}
-
-function clr(style){
-    return '#'+toHex(style.stroke_.color_[0])
-	+toHex(style.stroke_.color_[1])
-    	+toHex(style.stroke_.color_[2]);
-}
-    
 var nextYear= ''+(new Date().getFullYear()+1);
 
 var computeStatus=function(p)
@@ -238,72 +56,95 @@ var computeStatus=function(p)
     p.status=null;
 };
 
-var styleFunction = function(feature, resolution) {
-    var p= feature.getProperties();
-    if(p.status)
-	computeStatus(p);
-    var ret=function(p){
-    //if((p.highway =='motorway' || p.highway== 'motorway_link') && (p.construction || p.proposed))
-	//if(p.construction && p.highway!='construction' || p.proposed && p.highway!='proposed')
-//	return [transp, blue];
-	if(p.highway!='construction' && p.construction)
-	    return [transp];
+function check(x, ret){
+    if(document.getElementById(x))
+	return document.getElementById(x).checked?ret:[transp];
+    return ret;	
+}
 
-	if(p.highway && p.highway!='proposed' && p.proposed)
-	    return [transp];
-	
+let feature_render=function(p){
+    let rule=legend.projectTypes.find(x=>x.condition(p));
+    if(rule)
+	return rule.lineType(p);
+    return [transp];
+}
+
+let old_render=function(p){
     if(p.railway)
-	return p.railway=='proposed'?[transp,gray, railDash]:[transp, black, railDash];
+	return p.railway=='proposed'?check("CF-neatrib",[transp,gray, railDash]):check("CF",[transp, colorProgress(p.latestProgress), railDash]);
 
 	var AC= (!p.AC)?(p.construction||p.hadStatus)?p.PTE?orange:p.AM?orangeRed:red:lightred:green;
+	var AC_id=(!p.AC)?(p.construction||p.hadStatus)?p.PTE?"PTfaraAC":p.AM?"AMfaraPT":"atribuitFaraAM":"propus":"inConstructie";
 
 	if(AC===green && p.latestProgress!=undefined)
-	    AC=p.latestProgress>75?dodgerBlue:p.latestProgress>50?deepSkyBlue:p.latestProgress>25?lightSkyBlue:p.latestProgress>0?powderBlue:gray;
+	    AC= colorProgress(p.latestProgress)
 	
 //    if(p.construction&&p.opening_date>=nextYear || !p.opening_date)
 //	construction= (p.access=='no')?lightred:lightblue;
 
      	if(p.construction&& !p.hadStatus)
-	    return [transp, proposed_highway];
+	    return [transp, unknown];
 
 	//if(p.proposed && p.status)
 	//{ p.construction=p.proposed; p.proposed=null;}
 
-	return p.construction? p.builder?[transp, AC]:[transp, AC, whiteDash]:p.proposed?[transp, AC, whiteDash]:p.access=='no'?[transp, blue, redDash]:[transp, blue];
-    }(p);
+	if(!p.construction){
+	    if(p.proposed)
+		return check(AC_id, ([transp, AC, whiteDash]));
+	    else{
+		if(p.access=='no')
+	            return [transp, blue, redDash];
+		else
+	            return [transp, blue];
+	    }
+	}
+	
+
+        if( p.builder) return [transp, AC];
+	return [transp, AC, whiteDash];
+
+
+}
+
+var styleFunction = function(feature, resolution) {
+    var p= feature.getProperties();
+    if(p.tags)
+	p=p.tags;
+    if(p.status)
+	computeStatus(p);
+
+    if(p.highway!='construction' && p.construction)
+	return [transp];
     
-    if(resolution<150 && (p.bridge || p.tunnel))
+    if(p.highway && p.highway!='proposed' && p.proposed)
+	return [transp];
+    
+
+    var ret= feature_render(p);
+/*    var ret1=old_render(p);
+    if(JSON.stringify(ret)!==JSON.stringify(ret1)){
+	console.log((x=>x?x.text:"none")(legend.projectTypes.find(x=>x.condition(p))), ret.map(x=>x.name), ret1.map(x=>x.name), p);
+    }
+ */   
+    if(ret.length>1 && resolution<150 && (p.bridge || p.tunnel))
 	ret.splice(1, 0, bridge);
     if(resolution<150 && p.tunnel)
 	ret.splice(-1,1);
-     return ret;
+    return ret;
 };
 
 var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
 				 +'<div style="text-align:left;line-height:115%;">'
 				 +'<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
-				 
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(blue) +';"></div> în circulație<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(blue)+'; border-top:dotted red"></div> recepționat/circulabil fără acces<br>'
-				 +'<!--div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:rgb(0,210,0);"></div-->în construcție, cu AC, stadiu:<br>'
-				 +'<font color='+clr(gray)+'>0%</font> <font color='+clr(powderBlue)+'>&lt;25%</font> <font color='+clr(lightSkyBlue)+'>&lt;50%</font> <font color='+clr(deepSkyBlue)+'>&lt;75%</font> <font color='+clr(dodgerBlue)+'>&lt;100%</font><br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted '+clr(deepSkyBlue)+';"></div> neatribuit sau reziliat, cu AC<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(red)+';"></div> atribuit, lipsă AM<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orangeRed)+';"></div> cu AM, fără PT aprobat<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:'+clr(orange)+';"></div> cu PT aprobat, fără AC<br>'				 
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted '+clr(orangeRed)+';"></div> neatribuit, lipsă AC/PT/AM<br>'
+				 +legend.projectTypes.map(x=>'<div style="'+legend.basicStyle+' '+x.symbol+'"></div> '+x.text+"<br>").join('')
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted;"></div> CF cu AC, în construcție<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #787878;"></div> CF cu AC, neatribuit<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #ffbdbd;"></div> proiecte propuse (vise)<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#809bc0;"></div> statut necunoscut<br>'
 				 +'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
 				 +'<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>'+
 '<div style:"font-size:2px"><br></div></div></span>'})];
 	
-var roads=
+/*var roads=
 	new ol.layer.Vector({
 	    source: new ol.source.Vector({
 		format: new ol.format.GeoJSON(),
@@ -316,9 +157,66 @@ var roads=
 	    style: styleFunction
 	});
 
+*/
+function overpass()
+{
+    var url=SCRIPT_ROOT+'/data/data-overpass.json';
+    
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('GET', url);
+    var onError = function() {
+	console.error("Overpass error "+xhr.statusText);
+    }
+    xhr.onerror = onError;
+    xhr.onload = function() {
+	if (xhr.status == 200) {
+	    let data=JSON.parse(xhr.responseText);
+	    if(!data.elements || data.elements.length<5){
+		if(data.remark)
+		    console.error(data.remark)
+	    }
+	    else{
+		vectorSource.addFeatures(
+		    vectorSource.getFormat().readFeatures(
+			osmtogeojson(
+			    data
+			)
+			,{
+			    featureProjection: map.getView().getProjection()
+			}
+		    ));
+		document.getElementById("text").innerHTML=""+new Date(data.osm3s.timestamp_osm_base);
+	    }
+	} else {
+		onError();
+	}
+    }
+    try{
+	xhr.send();
+    }catch(e){ onError(); }   
+}
+
+var vectorSource= new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
+    tilePixelRatio: 16,
+    loader: function(extent, resolution, projection) {
+	overpass();
+    },
+    strategy:ol.loadingstrategy.all
+    ,attributions: attrib
+    
+});
+
+var roads=  new ol.layer.Vector({
+    source: vectorSource,
+    style: styleFunction
+});
+
 var roads_tiles=
 	new ol.layer.Vector({
-	    source: new ol.source.TileVector({
+	    source: new ol.source.VectorTile({
 		format: new ol.format.GeoJSON(),
 		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 		tilePixelRatio: 16,
@@ -327,17 +225,6 @@ var roads_tiles=
 	    }),
 	    style: styleFunction
 	});
-
-
-var speed= new ol.layer.Vector({
-    source: new ol.source.TileVector({
-	format: new ol.format.GeoJSON(),
-	tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
-	tilePixelRatio: 16,
-	url: 'http://standup.csc.kth.se:8081/speed/{z}/{x}/{y}.json'	
-    }),
-    style: styleFunction
-});
 
 
 var selectClick = new ol.interaction.Select({
@@ -406,7 +293,9 @@ var attribution = new ol.control.Attribution({
   });
 
 var map = gmap?new ol.Map({
-    layers: [roads, infra, icons],
+    layers: [roads,
+	     infra,
+	     icons],
     interactions: ol.interaction.defaults({
     altShiftDragRotate: false,
     dragPan: false,
@@ -417,7 +306,6 @@ var map = gmap?new ol.Map({
 //    ,controls: ol.control.defaults({attribution: false})
 }):new ol.Map({
     layers: [
-	getMapnik(),
 	roads,
 	infra,
 	icons,
@@ -429,17 +317,6 @@ var map = gmap?new ol.Map({
     view: view
 });;
 
-
-function getMapnik(){
-    return new ol.layer.Tile({
-    source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
-//	url:'http://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
-	,crossOrigin:null
-    })
-    , tileOptions: {crossOriginKeyword: null} 
-    });
-}
 
 var popupElement = document.getElementById('popup');
 
@@ -457,7 +334,12 @@ if(gmap){
 }
 view.setCenter( ol.proj.fromLonLat(center));
 view.setZoom(zoom);
-map.getControls().array_[2].setCollapsed(false);
+map.getControls().forEach(control=>{
+    if(control instanceof ol.control.Attribution){
+	control.setCollapsed(false);
+    }
+})
+
 
 selectClick.on('select', function(event){
     document.getElementById('text').innerHTML=selectClick.getFeatures().getArray().map(treatFeature).join(", ");
@@ -476,8 +358,8 @@ map.on('click', function(evt) {
     var lonlat=ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
     document.getElementById('text').innerHTML="<div align=center>"+(Math.round(lonlat[1]*10000)/10000)+", "+(Math.round(lonlat[0]*10000)/10000)+"</div>";
 
-    if(evt.browserEvent.target.parentElement.className=='popover-content' ||
-       evt.browserEvent.target.className=='popover-content'){
+    if(evt.originalEvent.target.parentElement.className=='popover-content' ||
+       evt.originalEvent.target.className=='popover-content'){
 	$(popupElement).popover('hide');
 	return;
     }
@@ -528,10 +410,16 @@ map.on('pointermove', function(e) {
 });
 */
 
-
+function refresh(){
+    roads.getSource().changed();
+}
 
 function treatFeature(rd){
     var prop= rd.getProperties();
+    if(prop.tags){
+	prop=prop.tags;
+	prop.osm_id=rd.getProperties().id;
+    }
     if(prop.comentarii_problema){
 	return '<b>'+prop.nume+'</b><br/>'
 	+prop.comentarii_problema+'<br/><br/>'
@@ -541,8 +429,8 @@ function treatFeature(rd){
 
 
     }
-    if(prop.highway=='lot_limit')
-	return 'Limita lot <a href=\"http://openstreetmap.org/node/'+prop.osm_id+'\" target="OSM">'+prop.name+'</a>';
+    if(prop.highway=='lot_limit' || prop.railway=='lot_limit')
+	return 'Limita lot '+(prop.highway?'autostrada':'CF')+' <a href=\"http://openstreetmap.org/node/'+prop.osm_id+'\" target="OSM">'+prop.name+'</a>';
     
     var x=(prop.highway?prop.highway:prop.railway)
 	+' <a href=\"http://openstreetmap.org/way/'+prop.osm_id+'\" target="OSM">'
@@ -555,7 +443,7 @@ function treatFeature(rd){
     if(prop.status)
 	computeStatus(prop);
     
-    if(prop.highway=='construction'|| prop.highway=='proposed' ){
+    if(prop.highway=='construction'|| prop.highway=='proposed' || prop.railway && prop.hadStatus){
 	x+=(prop.opening_date?"<br>Estimarea terminarii constructiei: "+prop.opening_date:'');
 	x+=(prop.access=='no'?"<br><font color='red'>Inchis traficului la terminarea constructiei</font>":'');
 //	if(prop.construction)
@@ -630,12 +518,6 @@ window.addEventListener('popstate', function(event) {
   map.getView().setRotation(event.state.rotation);
   shouldUpdate = false;
 });
-
-
-
-
-
-
 
 
 
