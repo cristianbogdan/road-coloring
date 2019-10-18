@@ -8,8 +8,6 @@ server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
-        root /home/cristi/html;
-	
 	index index.html index.htm index.nginx-debian.html;
 
 	server_name _;
@@ -17,16 +15,15 @@ server {
 	gzip on;
         gzip_types text/plain text/css application/json application/javascript text/xml image/png application/xml application/xml+rss text/javascript;
 	
-	location / {
+	location /maps {
+	        root /home/cristi;
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
 		try_files $uri $uri/ =404;
 		add_header 'Access-Control-Allow-Origin' '*';
 }
 
-location /doclic{
-    autoindex on;
-}
+
 
 location /tiles{
              try_files $uri @stache;
