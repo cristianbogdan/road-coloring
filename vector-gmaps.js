@@ -64,7 +64,7 @@ function check(x, ret){
 
 let feature_render=function(p){
     let rule=legend.projectTypes.find(x=>x.condition(p));
-    if(rule)
+    if(rule && !rule.hidden)
 	return rule.lineType(p);
     return [transp];
 }
@@ -133,12 +133,19 @@ var styleFunction = function(feature, resolution) {
     return ret;
 };
 
+const legendClick= (e, span)=>{
+    if(e.target.type!=="checkbox")
+	return;
+    legend.projectTypes[[... span.children].findIndex(x=>x.firstChild==e.target)].hidden= !e.target.checked;
+    roads.getSource().changed();
+}
+
 var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
 				 +'<div style="text-align:left;line-height:115%;">'
-				 +'<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
-				 +legend.projectTypes.map(x=>'<div style="'+legend.basicStyle+' '+x.symbol+'"></div> '+x.text+"<br>").join('')
-				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
+				 +'<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br><span onclick="legendClick(event, this)">'
+				 +legend.projectTypes.map(x=>'<span>'+(x.canHide?'<input type=checkbox'+ (x.hidden?'':' checked ') +'> ':' ')+ '<div style="'+legend.basicStyle+' '+x.symbol+'"></div> '+x.text+"<br></span>").join('')
+				 +'</span><div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
 				 +'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
 				 +'<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>'+
