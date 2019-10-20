@@ -77,7 +77,8 @@ let legend={
 	    text: 'proiecte propuse (vise)',
 	    condition: p=> p.highway && (p.proposed || p.hadStatus && !p.AC && !p.AM && !p.PTE),
 	    lineType: p=> [transp, lightred, whiteDash],
-	    canHide: true
+	    canHide: true,
+	    hidden: true
 	},
 	{
 	    symbol:'background-color:#809bc0;',
@@ -85,7 +86,6 @@ let legend={
 	    condition: p=> p.highway  && p.construction && !p.hadStatus,
 	    lineType: p=> [transp, unknown],
 	    canHide: true,
-	    initiallyHidden: true
 	},
 	
     ]
