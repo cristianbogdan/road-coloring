@@ -61,6 +61,8 @@ USER cristi
 RUN printf "30 0 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
 USER root
 
+RUN apt-get install -y osmctools
+
 # volumes, though recommended to map them to host folders using -v
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql", "/tmp/stache"]
 

@@ -34,22 +34,19 @@ PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 
 echo `date` reading the map
+OUTPUT=data/data-roads-new.osm.pbf
 cd /home/cristi/maps
-cp data/romania-latest.osm.pbf data/romania.latest.osm.bak.pbf
-# wget --no-cookies --header "$(cat data/gf-key.txt)"  https://osm-internal.download.geofabrik.de/europe/romania-latest-internal.osm.pbf
-cd data; wget -N http://download.geofabrik.de/europe/romania-latest.osm.pbf 2> download-status.txt
-cd ..
-grep "not retrieving" data/download-status.txt
-if [[ $? -eq 0 ]] ; then
-    tail data/download-status.txt
-    echo "no download, exiting"
-    date
-    exit 1
+curl --fail --silent --show-error -d @overpass-roads.txt https://www.overpass-api.de/api/interpreter 2>data/err.txt | osmconvert - -o=$OUTPUT
+if [ $(stat -c%s $OUTPUT) -gt 5000 ] ; then
+    mv $OUTPUT data/data-roads.osm.pbf
+else
+    cat data/err.txt
+    mv data/err.txt $(mktemp data/error_XXXXXX)
+    exit 1;
 fi
-tail data/download-status.txt
 
 echo `date` osm to psql
-osm2pgsql  --slim -d gis -C 1600 --hstore --number-processes 8 --style osm2pgsql.style  --extra-attributes data/romania-latest.osm.pbf
+osm2pgsql --style osm2pgsql.style --slim --drop -d gis -c --extra-attributes data/data-roads.osm.pbf
 
 if [[ $? -ne 0 ]] ; then
     echo "osm2pgsql failed, exiting..."
@@ -64,29 +61,10 @@ psql -d gis -f search/search.sql
 
 psql -d gis -f after_import.sql 
 
-psql -q -t -A -d gis -f log.sql  > data/log.js
+#psql -q -t -A -d gis -f log.sql  > data/log.js
 #./upload.sh log.js
 
 psql -d gis -f cleanup.sql
-
-psql -t -A -d gis -f motorways.sql > data/motorways.json
-psql -t -A -d gis -f lot_limits.sql >  data/lot_limits.json
-
-psql -t -A -d gis -f smoothness-trunk.sql > data/main-roads.json
-#geo2topo -p -o data/main-roads.topo.json -- data/main-roads.json
-#(echo "mainRoads="; cat data/main-roads.topo.json ; echo ";";)> data/main-roads.topo.json.js
-
-psql -t -A -d gis -f smoothness-other.sql > data/other-roads.json
-#geo2topo -p -o data/other-roads.topo.json -- data/other-roads.json
-#(echo "otherRoads="; cat data/other-roads.topo.json ; echo ";";)> data/other-roads.topo.json.js
-
-#psql -t -A -d gis -f all-roads.sql > all-roads.json
-#geo2topo -p -o all-roads.topo.json -- all-roads.json
-#(echo "allRoads="; cat all-roads.topo.json ; echo ";";)> all-roads.topo.json.js
-
-#./upload.sh main-roads.topo.json.js
-#./upload.sh other-roads.topo.json.js 
-#./upload.sh all-roads.topo.json.js 
 
 cd tilestache/
 
