@@ -59,17 +59,47 @@ let legend={
 	    canHide: true
 	},
 	{
+	    symbol:'background-color:black; border-top:dotted '+clr(blue)+';' ,
+	    text: 'CF cu reabilitare finalizată',
+	    condition: p=> p.railway && p.latestProgress===100 /* && p.opening_date && !p.start_date */,
+	    lineType: p=>[transp, blue, railDash],
+	    canHide: true
+	},
+	/*
+	{
 	    symbol:'background-color:black; border-top:dotted '+clr(powderBlue)+';' ,
-	    text: 'CF cu AC, în construcție',
-	    condition: p=> p.railway && p.railway!=='proposed',
+	    text: 'CF nouă finalizata',
+	    condition: p=> p.railway && p.latestProgress===100 &&  && !p.opening_date && p.start_date ,
+	    lineType: p=>[transp, blue, newrailDash],
+	    canHide: true
+	},
+	*/
+	{
+	    symbol:'background-color:gray; border-top:dotted '+clr(powderBlue)+';' ,
+	    text: 'CF nouă cu AC, în construcție',
+	    condition: p=> p.railway && p.railway=='construction' ,
+	    lineType: p=>[transp, colorProgress(p.latestProgress), newrailDash],
+	    canHide: true
+	},
+		{
+	    symbol:'background-color:black; border-top:dotted '+clr(powderBlue)+';' ,
+	    text: 'CF cu AC, în reabilitare',
+	    condition: p=> p.railway && p.railway!=='proposed' && !p.tender ,
 	    lineType: p=>[transp, colorProgress(p.latestProgress), railDash],
 	    canHide: true
 	},
 	{
-	    symbol:'background-color:black; border-top:dotted #787878;',
-	    text: 'CF, neatribuit',
-	    condition: p=> p.railway==='proposed',
-	    lineType: p=> [transp,gray, railDash],
+	    symbol:'background-color:gray; border-top:dotted #ffbdbd;',
+	    text: 'CF nouă, neatribuit',
+	    condition: p=> p.railway==='proposed' /*&& p.tender*/,
+	    lineType: p=> [transp,lightred, newrailDash],
+	    canHide: true
+	},
+	{
+	    symbol:'background-color:black; border-top:dotted #ffbdbd;',
+	    text: 'CF vechi, neatribuit',
+	    condition: p=> p.railway==='rail'  && p.tender ,
+	    lineType: p=> [transp,lightred, railDash],
 	    canHide: true
 	},
 	{
