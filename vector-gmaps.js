@@ -481,7 +481,6 @@ function treatFeature(rd){
 		
 		if (prop.railway){
 			if (prop.signal_progress){
-				console.log(prop.signal_progress);
 				if(parseFloat(prop.signal_progress.split('%')[0])==100) x+="<br>Semnalizare ETCS: implementat";
 				else x+="<br>Semnalizare ETCS: <font color="+color_ETCS+"><b>"+prop.signal_progress+"</b></font>";
 			}
