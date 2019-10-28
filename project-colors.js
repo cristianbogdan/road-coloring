@@ -159,14 +159,14 @@ var railDash=new ol.style.Style({
     });
 railDash.name="railDash";
 
-var newrailDash=new ol.style.Style({
+var blueDash=new ol.style.Style({
 	stroke: new ol.style.Stroke({
 	    width: 2,
 	    lineDash:[5,10],
-	    color: [0x78,0x78,0x78, 1]
+	    color: [0x40,0x42,0x47, 1]
 	})
     });
-newrailDash.name="newrailDash";
+blueDash.name="blueDash";
 
 var whiteDash=new ol.style.Style({
 	stroke: new ol.style.Stroke({
