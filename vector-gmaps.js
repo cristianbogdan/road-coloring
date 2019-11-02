@@ -43,15 +43,23 @@ var computeStatus=function(p)
 	if(kv.length>1){
 	    p[kv[0]]=kv[1];
 	    if(kv[0]=='progress'){
-		p.progress=kv[1].split(' ');
-		p.latestProgress=parseFloat(p.progress[0].split('%')[0]);
+			p.progress=kv[1].split(' ');
+			p.latestProgress=parseFloat(p.progress[0].split('%')[0]);
+	    }
+		else if(kv[0]=='progress_estimate'){
+			p.progress_estimate=kv[1].split(' ');
+			p.latestProgress=parseFloat(p.progress_estimate[0].split('%')[0]);
+	    } 
+		else if(kv[0]=='signal_progress'){
+			p.signal_progress=kv[1].split(' ');
+			p.latestSignalProgress=parseFloat(p.signal_progress[0].split('%')[0]);
 	    }
 	}
 	else
 	    p[kv[0]]=true;
     });
-    if(p.progress_estimate)
-	p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);
+    //if(p.progress_estimate)
+	//p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);
     p.hadStatus=true;
     p.status=null;
 };
@@ -447,44 +455,63 @@ function treatFeature(rd){
     //    +"</a> [<a href=\"http://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
     ;
 
-    if(prop.status)
-	computeStatus(prop);
-    
-    if(prop.highway=='construction'|| prop.highway=='proposed' || prop.railway && prop.hadStatus){
-	x+=(prop.opening_date?"<br>Estimarea terminarii constructiei: "+prop.opening_date:'');
-	x+=(prop.access=='no'?"<br><font color='red'>Inchis traficului la terminarea constructiei</font>":'');
-//	if(prop.construction)
-	    if(prop.hadStatus)
-		x+="<br>"+(prop.AC?'<font color='+clr(deepSkyBlue)+'>Autorizatie de construire</font>':prop.PTE?'<font color='+clr(orange)+'>Are Proiect Tehnic aprobat dar nu Autorizatie de Construire</font>':prop.AM?'<font color='+clr(orangeRed)+'>Are Acord de Mediu dar nu Proiect Tehnic aprobat, deci nu are Autorizatie de Construire</font>':'<font color='+clr(red)+'>Nu are Acord de Mediu, deci nu are Autorizatie de Construire</font>');
-	else
-	    x+="<br>Progresul constructiei necunoscut";
-	if(prop.tender){
-	    x+="<br>In licitatie "+prop.tender;
-	    if(prop.winner)
-		x+=" castigator "+prop.winner;
-	}
-	x+=(prop.builder?"<br>Constructor: "+prop.builder:'');
-	x+=(prop.severance?"<br>Reziliat: "+prop.severance:'');
-	x+=(prop.funding?"<br>Finantare: "+prop.severance:'');
+    if(prop.status) computeStatus(prop);
+	
+    if(prop.highway=='construction'|| prop.highway=='proposed' || (prop.railway && prop.latestProgress!=100)){
+		x+=(prop.opening_date?"<br>Estimarea terminarii constructiei: "+prop.opening_date:'');
+		x+=(prop.access=='no'?"<br><font color='red'>Inchis traficului la terminarea constructiei</font>":'');
 
-	if(prop.progress){
-	    var color=prop.latestProgress>75?clr(dodgerBlue):prop.latestProgress>50?clr(deepSkyBlue):prop.latestProgress>25?clr(lightSkyBlue):prop.latestProgress>0?clr(powderBlue):clr(gray);
-	    x+="<br>Stadiul lucrarilor: <font color="+color+"><b>"+prop.progress[0]+"</b></font><font size=-2>"
-	    +prop.progress.slice(1).reduce(function(s, e){return s+" "+e.trim();}, "")
-	    +"</font>";
+		if(prop.hadStatus)
+			if (prop.highway)x+="<br>"+(prop.AC?'<font color='+clr(deepSkyBlue)+'>Autorizatie de construire</font>':prop.PTE?'<font color='+clr(orange)+'>Are Proiect Tehnic aprobat dar nu Autorizatie de Construire</font>':prop.AM?'<font color='+clr(orangeRed)+'>Are Acord de Mediu dar nu Proiect Tehnic aprobat, deci nu are Autorizatie de Construire</font>':'<font color='+clr(red)+'>Nu are Acord de Mediu, deci nu are Autorizatie de Construire</font>');
+			else x+=(prop.AC?"<br>"+'<font color='+clr(deepSkyBlue)+'>Autorizatie de construire</font>':'');
+		else if (prop.highway)
+			x+="<br>Progresul constructiei necunoscut";
+		if(prop.tender){
+			x+="<br>In licitatie "+prop.tender;
+			if(prop.winner) x+="<br> castigator "+prop.winner;
+		}
+		x+=(prop.builder?"<br>Constructor: "+prop.builder:'');
+		x+=(prop.severance?"<br>Reziliat: "+prop.severance:'');
+		x+=(prop.funding?"<br>Finantare: "+prop.severance:'');
+		
+		if(prop.progress){
+			var color=prop.latestProgress>75?clr(dodgerBlue):prop.latestProgress>50?clr(deepSkyBlue):prop.latestProgress>25?clr(lightSkyBlue):prop.latestProgress>0?clr(powderBlue):clr(gray);
+			x+="<br>Stadiul lucrarilor: <font color="+color+"><b>"+prop.progress[0]+"</b></font><font size=-2>"
+			+prop.progress.slice(1).reduce(function(s, e){return s+" "+e.trim();}, "")
+			+"</font>";
+		}
+		if(prop.progress_estimate){
+			var color_e=prop.latestProgress>75?clr(dodgerBlue):prop.latestProgress>50?clr(deepSkyBlue):prop.latestProgress>25?clr(lightSkyBlue):prop.latestProgress>0?clr(powderBlue):clr(gray);
+			x+="<br>Estimare stadiu: <font color="+color_e+"><b>"+prop.progress_estimate[0]+"</b></font><font size=-2>"
+			+prop.progress_estimate.slice(1).reduce(function(s, e){return s+" "+e.trim();}, "")
+			+"</font>";
+		}
 	}
-	if(prop.progress_estimate){
-	    var color_e=prop.latestProgress>75?clr(dodgerBlue):prop.latestProgress>50?clr(deepSkyBlue):prop.latestProgress>25?clr(lightSkyBlue):prop.latestProgress>0?clr(powderBlue):clr(gray);
-	    x+="<br>Stadiul lucrarilor (estimat): <font color="+color_e+"><b>"+prop.progress_estimate+"</b></font>";
-	}
-    }
     else{
-	x+=	(prop.start_date?"<br>Data terminarii constructiei: "+prop.start_date:'');
-	x+=prop.opening_date?"<br>Dat in circulatie: "+prop.opening_date:"";
-	x+=prop.access=='no'?"<br><font color='red'>Inchis traficului</font>":"";
+		if (prop.highway){
+			x+=	(prop.start_date?"<br>Data terminarii constructiei: "+prop.start_date:'');
+			x+= (prop.opening_date?"<br>Dat in circulatie: "+prop.opening_date:"");
+
+		}
+		else if (prop.railway){
+			x+=	(prop.start_date?"<br>Data terminarii variantei noi: "+prop.start_date:'');
+			x+= (prop.opening_date?"<br>Data terminarii reabilitarii: "+prop.opening_date:'');
+		}
+		x+=prop.access=='no'?"<br><font color='red'>Inchis traficului</font>":"";
     }
+	
+	if (prop.railway){
+		if (prop.signal_progress && !prop["railway:etcs"]){
+			x+="<br>Semnalizare ETCS: <font color="+clr(orange)+"><b>"+prop.signal_progress[0]+"</b></font><font size=-2><br>"
+			+prop.signal_progress.slice(1).reduce(function(s, e){return s+" "+e.trim();}, "")
+		}
+		else if (prop["railway:etcs"]) x+="<br>Semnalizare ETCS: nivel " + prop["railway:etcs"];
+		else if (prop["construction:railway:etcs"]) x+="<br>Semnalizare ETCS: implementare impreuna cu reabilitarea liniei, nivel " +prop["construction:railway:etcs"];
+		else x+="<br>Semnalizare ETCS: neimplementat";
+	}
+	
     x+=prop.bridge=='yes'?"<br>Pod":"";
-    
+    x+=prop.tunnel=='yes'?"<br>Tunel":"";
     return x;
 }
 
