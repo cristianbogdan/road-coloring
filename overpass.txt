@@ -3,6 +3,7 @@
 way(area.ro)[highway=proposed][proposed];
 way(area.ro)[highway=construction][construction];
 way(area.ro)[highway~motorway];
+way(area.ro)[highway~trunk][ref!~"^DN"][start_date][status];
 way(area.ro)[highway][ref~"^DN",i](if:is_date(t["start_date"])&&date(t["start_date"])>'2009-09-28');
 way(area.ro)[highway!~trunk][ref~"^DJ",i](if:is_date(t["start_date"])&&date(t["start_date"])>'2017-09-28');
 way(area.ro)[highway=services][start_date];
