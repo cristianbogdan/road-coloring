@@ -55,17 +55,14 @@ var computeStatus = function (p) {
             if (kv[0] == 'progress') {
                 p.progress = kv[1].split(' ');
                 p.latestProgress = parseFloat(p.progress[0].split('%')[0]);
-            }
-            else if (kv[0] == 'progress_estimate') {
+            } else if (kv[0] == 'progress_estimate') {
                 p.progress_estimate = kv[1].split(' ');
                 p.latestProgress = parseFloat(p.progress_estimate[0].split('%')[0]);
-            }
-            else if (kv[0] == 'signal_progress') {
+            } else if (kv[0] == 'signal_progress') {
                 p.signal_progress = kv[1].split(' ');
                 p.latestSignalProgress = parseFloat(p.signal_progress[0].split('%')[0]);
             }
-        }
-        else
+        } else
             p[kv[0]] = true;
     });
     //if(p.progress_estimate)
@@ -160,15 +157,15 @@ const legendClick = (e, span) => {
 
 var attrib = [new ol.Attribution({
     html: '<span style="font-size:14px;">'
-    + '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
-    + '<div style="text-align:left;line-height:115%;">'
-    + '<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br><span onclick="legendClick(event, this)">'
-    + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
-    + '</span><div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
-    + '<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
-    + 'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
-    + '<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>' +
-    '<div style:"font-size:2px"><br></div></div></span>'
+        + '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
+        + '<div style="text-align:left;line-height:115%;">'
+        + '<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br><span onclick="legendClick(event, this)">'
+        + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
+        + '</span><div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
+        + '<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
+        + 'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
+        + '<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>' +
+        '<div style:"font-size:2px"><br></div></div></span>'
 })];
 
 /*var roads=
@@ -201,8 +198,7 @@ function overpass() {
             if (!data.elements || data.elements.length < 5) {
                 if (data.remark)
                     console.error(data.remark)
-            }
-            else {
+            } else {
                 vectorSource.addFeatures(
                     vectorSource.getFormat().readFeatures(
                         osmtogeojson(
@@ -445,6 +441,8 @@ function refresh() {
 
 function treatFeature(rd) {
     var prop = rd.getProperties();
+	prop.osm_id=prop.id.split('/')[1];
+	
     if (prop.comentarii_problema) {
         return '<b>' + prop.nume + '</b><br/>'
             + prop.comentarii_problema + '<br/><br/>'
@@ -455,16 +453,16 @@ function treatFeature(rd) {
 
     }
     if (prop.highway == 'lot_limit' || prop.railway == 'lot_limit')
-        return 'Limita lot ' + (prop.highway ? 'autostrada' : 'CF') + ' <a href=\"http://openstreetmap.org/node/' + prop.id + '\" target="OSM">' + prop.name + '</a>';
+        return 'Limita lot ' + (prop.highway ? 'autostrada' : 'CF') + ' <a href=\"http://openstreetmap.org/node/' + prop.osm_id + '\" target="OSM">' + prop.name + '</a>';
 
     var x = (prop.highway ? prop.highway : prop.railway)
-        + ' <a href=\"http://openstreetmap.org/' + prop.id + '\" target="OSM">'
-        + (prop.ref ? prop.ref + (prop.name ? ('(' + prop.name + ')') : '') : (prop.name ? prop.name : prop.id))
+        + ' <a href=\"http://openstreetmap.org/way' + prop.osm_id+ '\" target="OSM">'
+        + (prop.ref ? prop.ref + (prop.name ? ('(' + prop.name + ')') : '') : (prop.name ? prop.name : prop.osm_id))
         + "</a>"
         //+"[<a href=\"http://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
         //    +"</a> [<a href=\"http://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
     ;
-	
+
     if (prop.status) computeStatus(prop);
 
     if (prop.highway == 'construction' || prop.highway == 'proposed' || (prop.railway && prop.latestProgress != 100) || (prop.railway && !prop.start_date)) {
@@ -500,14 +498,12 @@ function treatFeature(rd) {
                 }, "")
                 + "</font>";
         }
-    }
-    else {
+    } else {
         if (prop.highway) {
             x += (prop.start_date ? "<br>Data terminarii constructiei: " + prop.start_date : '');
             x += (prop.opening_date ? "<br>Dat in circulatie: " + prop.opening_date : "");
 
-        }
-        else if (prop.railway) {
+        } else if (prop.railway) {
             x += (prop.start_date ? "<br>Data terminarii variantei noi: " + prop.start_date : '');
             x += (prop.opening_date ? "<br>Data terminarii reabilitarii: " + prop.opening_date : '');
         }
@@ -520,8 +516,7 @@ function treatFeature(rd) {
                 + prop.signal_progress.slice(1).reduce(function (s, e) {
                     return s + " " + e.trim();
                 }, "")
-        }
-        else if (prop["railway:etcs"]) x += "<br>Semnalizare ETCS: nivel " + prop["railway:etcs"];
+        } else if (prop["railway:etcs"]) x += "<br>Semnalizare ETCS: nivel " + prop["railway:etcs"];
         else if (prop["construction:railway:etcs"]) x += "<br>Semnalizare ETCS: implementare impreuna cu reabilitarea liniei, nivel " + prop["construction:railway:etcs"];
         else x += "<br>Semnalizare ETCS: neimplementat";
     }
