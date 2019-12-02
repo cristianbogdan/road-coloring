@@ -441,10 +441,8 @@ function refresh() {
 
 function treatFeature(rd) {
     var prop = rd.getProperties();
-    if (prop.tags) {
-        prop = prop.tags;
-        prop.osm_id = rd.getProperties().id;
-    }
+	prop.osm_id=prop.id.split('/')[1];
+	
     if (prop.comentarii_problema) {
         return '<b>' + prop.nume + '</b><br/>'
             + prop.comentarii_problema + '<br/><br/>'
