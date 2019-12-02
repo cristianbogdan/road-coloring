@@ -34,27 +34,6 @@ if (window.location.hash !== '') {
   }
 }
 
-<<<<<<< HEAD
-var nextYear = '' + (new Date().getFullYear() + 1);
-
-var computeStatus = function (p) {
-    p.status.split(',').forEach(function (prop) {
-        var kv = prop.split(':');
-        if (kv.length > 1) {
-            p[kv[0]] = kv[1];
-            if (kv[0] == 'progress') {
-                p.progress = kv[1].split(' ');
-                p.latestProgress = parseFloat(p.progress[0].split('%')[0]);
-            } else if (kv[0] == 'progress_estimate') {
-                p.progress_estimate = kv[1].split(' ');
-                p.latestProgress = parseFloat(p.progress_estimate[0].split('%')[0]);
-            } else if (kv[0] == 'signal_progress') {
-                p.signal_progress = kv[1].split(' ');
-                p.latestSignalProgress = parseFloat(p.signal_progress[0].split('%')[0]);
-            }
-        } else
-            p[kv[0]] = true;
-=======
 var nextYear= ''+(new Date().getFullYear()+1);
 
 var computeStatus=function(p)
@@ -78,7 +57,6 @@ var computeStatus=function(p)
 	}
 	else
 	    p[kv[0]]=true;
->>>>>>> parent of 985e960... Fix OSM ID on segments
     });
     //if(p.progress_estimate)
 	//p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);
@@ -170,21 +148,6 @@ const legendClick= (e, span)=>{
     roads.getSource().changed();
 }
 
-<<<<<<< HEAD
-var attrib = [new ol.Attribution({
-    html: '<span style="font-size:14px;">'
-        + '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
-        + '<div style="text-align:left;line-height:115%;">'
-        + '<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br><span onclick="legendClick(event, this)">'
-        + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
-        + '</span><div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
-        + '<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
-        + 'AC= autorizație de construire<br>PT= proiect tehnic<br>AM= acord de mediu<br>'
-        + '<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>' +
-        '<div style:"font-size:2px"><br></div></div></span>'
-})];
-
-=======
 var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
 				 +'<div style="text-align:left;line-height:115%;">'
@@ -196,7 +159,6 @@ var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 				 +'<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>'+
 '<div style:"font-size:2px"><br></div></div></span>'})];
 	
->>>>>>> parent of 985e960... Fix OSM ID on segments
 /*var roads=
 	new ol.layer.Vector({
 	    source: new ol.source.Vector({
@@ -222,34 +184,6 @@ function overpass()
 	console.error("Overpass error "+xhr.statusText);
     }
     xhr.onerror = onError;
-<<<<<<< HEAD
-    xhr.onload = function () {
-        if (xhr.status == 200) {
-            let data = JSON.parse(xhr.responseText);
-            if (!data.elements || data.elements.length < 5) {
-                if (data.remark)
-                    console.error(data.remark)
-            } else {
-                vectorSource.addFeatures(
-                    vectorSource.getFormat().readFeatures(
-                        osmtogeojson(
-                            data
-                        )
-                        , {
-                            featureProjection: map.getView().getProjection()
-                        }
-                    ));
-                document.getElementById("text").innerHTML = "" + new Date(data.osm3s.timestamp_osm_base);
-            }
-        } else {
-            onError();
-        }
-    }
-    try {
-        xhr.send();
-    } catch (e) {
-        onError();
-=======
     xhr.onload = function() {
 	if (xhr.status == 200) {
 	    let data=JSON.parse(xhr.responseText);
@@ -272,7 +206,6 @@ function overpass()
 	} else {
 		onError();
 	}
->>>>>>> parent of 985e960... Fix OSM ID on segments
     }
     try{
 	xhr.send();
@@ -496,88 +429,6 @@ function refresh(){
     roads.getSource().changed();
 }
 
-<<<<<<< HEAD
-function treatFeature(rd) {
-    var prop = rd.getProperties();
-	prop.osm_id=prop.id.split('/')[1];
-	
-    if (prop.comentarii_problema) {
-        return '<b>' + prop.nume + '</b><br/>'
-            + prop.comentarii_problema + '<br/><br/>'
-            + prop.comentarii_rezolvare_curenta + '<br/>'
-            + 'Estimare: ' + prop.estimare_rezolvare +
-            (prop.link ? ('<br/><a href="' + prop.link + '" target="PUM">detalii</a>') : '');
-
-
-    }
-    if (prop.highway == 'lot_limit' || prop.railway == 'lot_limit')
-        return 'Limita lot ' + (prop.highway ? 'autostrada' : 'CF') + ' <a href=\"http://openstreetmap.org/node/' + prop.osm_id + '\" target="OSM">' + prop.name + '</a>';
-
-    var x = (prop.highway ? prop.highway : prop.railway)
-        + ' <a href=\"http://openstreetmap.org/way' + prop.osm_id+ '\" target="OSM">'
-        + (prop.ref ? prop.ref + (prop.name ? ('(' + prop.name + ')') : '') : (prop.name ? prop.name : prop.osm_id))
-        + "</a>"
-        //+"[<a href=\"http://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
-        //    +"</a> [<a href=\"http://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
-    ;
-
-    if (prop.status) computeStatus(prop);
-
-    if (prop.highway == 'construction' || prop.highway == 'proposed' || (prop.railway && prop.latestProgress != 100) || (prop.railway && !prop.start_date)) {
-        x += (prop.opening_date ? "<br>Estimarea terminarii constructiei: " + prop.opening_date : '');
-        x += (prop.access == 'no' ? "<br><font color='red'>Inchis traficului la terminarea constructiei</font>" : '');
-
-        if (prop.hadStatus)
-            if (prop.highway) x += "<br>" + (prop.AC ? '<font color=' + clr(deepSkyBlue) + '>Autorizatie de construire</font>' : prop.PTE ? '<font color=' + clr(orange) + '>Are Proiect Tehnic aprobat dar nu Autorizatie de Construire</font>' : prop.AM ? '<font color=' + clr(orangeRed) + '>Are Acord de Mediu dar nu Proiect Tehnic aprobat, deci nu are Autorizatie de Construire</font>' : '<font color=' + clr(red) + '>Nu are Acord de Mediu, deci nu are Autorizatie de Construire</font>');
-            else x += (prop.AC ? "<br>" + '<font color=' + clr(deepSkyBlue) + '>Autorizatie de construire</font>' : '');
-        else if (prop.highway)
-            x += "<br>Progresul constructiei necunoscut";
-        if (prop.tender) {
-            x += "<br>In licitatie " + prop.tender;
-            if (prop.winner) x += "<br> castigator " + prop.winner;
-        }
-        x += (prop.builder ? "<br>Constructor: " + prop.builder : '');
-        x += (prop.severance ? "<br>Reziliat: " + prop.severance : '');
-        x += (prop.funding ? "<br>Finantare: " + prop.severance : '');
-
-        if (prop.progress) {
-            var color = prop.latestProgress > 75 ? clr(dodgerBlue) : prop.latestProgress > 50 ? clr(deepSkyBlue) : prop.latestProgress > 25 ? clr(lightSkyBlue) : prop.latestProgress > 0 ? clr(powderBlue) : clr(gray);
-            x += "<br>Stadiul lucrarilor: <font color=" + color + "><b>" + prop.progress[0] + "</b></font><font size=-2>"
-                + prop.progress.slice(1).reduce(function (s, e) {
-                    return s + " " + e.trim();
-                }, "")
-                + "</font>";
-        }
-        if (prop.progress_estimate) {
-            var color_e = prop.latestProgress > 75 ? clr(dodgerBlue) : prop.latestProgress > 50 ? clr(deepSkyBlue) : prop.latestProgress > 25 ? clr(lightSkyBlue) : prop.latestProgress > 0 ? clr(powderBlue) : clr(gray);
-            x += "<br>Estimare stadiu: <font color=" + color_e + "><b>" + prop.progress_estimate[0] + "</b></font><font size=-2>"
-                + prop.progress_estimate.slice(1).reduce(function (s, e) {
-                    return s + " " + e.trim();
-                }, "")
-                + "</font>";
-        }
-    } else {
-        if (prop.highway) {
-            x += (prop.start_date ? "<br>Data terminarii constructiei: " + prop.start_date : '');
-            x += (prop.opening_date ? "<br>Dat in circulatie: " + prop.opening_date : "");
-
-        } else if (prop.railway) {
-            x += (prop.start_date ? "<br>Data terminarii variantei noi: " + prop.start_date : '');
-            x += (prop.opening_date ? "<br>Data terminarii reabilitarii: " + prop.opening_date : '');
-        }
-        x += prop.access == 'no' ? "<br><font color='red'>Inchis traficului</font>" : "";
-    }
-
-    if (prop.railway) {
-        if (prop.signal_progress && !prop["railway:etcs"]) {
-            x += "<br>Semnalizare ETCS: <font color=" + clr(orange) + "><b>" + prop.signal_progress[0] + "</b></font><font size=-2><br>"
-                + prop.signal_progress.slice(1).reduce(function (s, e) {
-                    return s + " " + e.trim();
-                }, "")
-        } else if (prop["railway:etcs"]) x += "<br>Semnalizare ETCS: nivel " + prop["railway:etcs"];
-        else if (prop["construction:railway:etcs"]) x += "<br>Semnalizare ETCS: implementare impreuna cu reabilitarea liniei, nivel " + prop["construction:railway:etcs"];
-        else x += "<br>Semnalizare ETCS: neimplementat";
-=======
 function treatFeature(rd){
     var prop= rd.getProperties();
     if(prop.tags){
@@ -647,7 +498,6 @@ function treatFeature(rd){
 			x+= (prop.opening_date?"<br>Data terminarii reabilitarii: "+prop.opening_date:'');
 		}
 		x+=prop.access=='no'?"<br><font color='red'>Inchis traficului</font>":"";
->>>>>>> parent of 985e960... Fix OSM ID on segments
     }
 	
 	if (prop.railway){
@@ -702,7 +552,6 @@ window.addEventListener('popstate', function(event) {
   map.getView().setRotation(event.state.rotation);
   shouldUpdate = false;
 });
-
 
 
 
