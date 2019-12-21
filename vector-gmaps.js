@@ -456,7 +456,7 @@ function treatFeature(rd) {
         return 'Limita lot ' + (prop.highway ? 'autostrada' : 'CF') + ' <a href=\"http://openstreetmap.org/node/' + prop.osm_id + '\" target="OSM">' + prop.name + '</a>';
 
     var x = (prop.highway ? prop.highway : prop.railway)
-        + ' <a href=\"http://openstreetmap.org/way' + prop.osm_id+ '\" target="OSM">'
+        + ' <a href=\"http://openstreetmap.org/way/' + prop.osm_id + '\" target="OSM">'
         + (prop.ref ? prop.ref + (prop.name ? ('(' + prop.name + ')') : '') : (prop.name ? prop.name : prop.osm_id))
         + "</a>"
         //+"[<a href=\"http://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
@@ -563,7 +563,3 @@ window.addEventListener('popstate', function (event) {
     map.getView().setRotation(event.state.rotation);
     shouldUpdate = false;
 });
-
-
-
-
