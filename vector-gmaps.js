@@ -465,7 +465,7 @@ function treatFeature(rd) {
 
     if (prop.status) computeStatus(prop);
 
-    if (prop.highway == 'construction' || prop.highway == 'proposed' || (prop.railway && prop.latestProgress != 100) || (prop.railway && !prop.start_date)) {
+    if (prop.highway == 'construction' || prop.highway == 'proposed' || (prop.railway && prop.latestProgress != 100)) {
         x += (prop.opening_date ? "<br>Estimarea terminarii constructiei: " + prop.opening_date : '');
         x += (prop.access == 'no' ? "<br><font color='red'>Inchis traficului la terminarea constructiei</font>" : '');
 
