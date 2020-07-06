@@ -9,6 +9,5 @@ way(area.ro)[highway=services][start_date];
 way(area.ro)[railway=construction];
 way(area.ro)[railway=proposed];
 way(area.ro)[railway=rail][status];
-way[highway=construction][construction][status][name=M4];
 );
 out geom;
