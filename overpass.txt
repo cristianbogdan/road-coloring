@@ -8,6 +8,6 @@ way(area.ro)[highway~"^(tertiary|tertiary_link|secondary|secondary_link|primary|
 way(area.ro)[highway~"^(rest_area|services)$"][start_date];
 way(area.ro)[railway=proposed];
 way(area.ro)[railway=construction];
-way(area.ro)[railway=rail][status];
+way(area.ro)[railway=rail][usage~"^(main|branch)$"][status];
 );
 out geom;
