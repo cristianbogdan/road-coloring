@@ -12,7 +12,7 @@ SELECT row_to_json(fc)
 			     WHERE lg.osm_id>0 AND (
                                              lg.highway in('motorway', 'motorway_link') 
 					     or lg.highway not in ('construction','proposed') and lg.opening_date is not null
-					     or lg.highway in ('trunk', 'trunk_link', 'primary', 'primary_link', 'services', 'service') and lg.start_date >'1989'
+					     or lg.highway in ('trunk', 'trunk_link', 'primary', 'primary_link', 'services', 'service') and lg.start_date >'2017'
 					     or lg.construction in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'services', 'service')
 					     or lg.proposed in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link','tertiary', 'tertiary_link', 'services', 'service')
 					     or lg.railway in('proposed', 'construction')
