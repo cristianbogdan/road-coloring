@@ -14,7 +14,6 @@ mapnik/mapquest*
 mapnik/*bak*
 mapnik/*my*
 mapnik/osm.xml.*
-mapnik/*noent*
 mapnik/*py
 mapnik/*pl
 mapnik/*sh
