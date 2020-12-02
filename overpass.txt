@@ -1,6 +1,6 @@
-[out:json][timeout:240];(area[boundary=administrative]["name:en"=Romania];)->.ro;
+[timeout:240];(area[boundary=administrative]["name:en"=Romania];)->.ro;
 (
-way(area.ro)[highway=proposed][proposed];
+way(area.ro)[highway=proposed][proposed]; 
 way(area.ro)[highway=construction][construction];
 way(area.ro)[highway~motorway];
 way(area.ro)[highway~trunk][ref~"^A"];
