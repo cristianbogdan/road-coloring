@@ -27,7 +27,7 @@
 	(select way,
 	case when opening_date is null then start_date else opening_date end as date,
 	case when construction is null and proposed is null  and opening_date> start_date or construction is not null and access='no' then 'red' else 'blue' end as color
-       from lines_old
+       from planet_osm_line
        where (opening_date is not null or start_date is not null ) and (highway in ('motorway', 'motorway_link') or highway in ('trunk', 'primary') or construction in ('motorway', 'trunk', 'primary') or proposed in ('motorway', 'trunk', 'primary'))
       ) as roads
       </Parameter>
