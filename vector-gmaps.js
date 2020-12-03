@@ -167,7 +167,7 @@ var attrib= [new ol.Attribution({html:'<span style="font-size:14px;">'
 */
 function overpass()
 {
-    var url=SCRIPT_ROOT+'/data/data-overpass.json';
+    var url=SCRIPT_ROOT+'/data/data-overpass-infra.geo.json';
     
     var xhr = new XMLHttpRequest();
 
@@ -179,16 +179,16 @@ function overpass()
     xhr.onload = function() {
 	if (xhr.status == 200) {
 	    let data=JSON.parse(xhr.responseText);
-	    if(!data.elements || data.elements.length<5){
+/*	    if(!data.elements || data.elements.length<5){
 		if(data.remark)
 		    console.error(data.remark)
 	    }
-	    else{
+	    else*/{
 		vectorSource.addFeatures(
 		    vectorSource.getFormat().readFeatures(
-			osmtogeojson(
+//			osmtogeojson(
 			    data
-			)
+//			)
 			,{
 			    featureProjection: map.getView().getProjection()
 			}
