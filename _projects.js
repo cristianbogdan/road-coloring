@@ -39,7 +39,7 @@ loadScript([
 //   "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js",
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
-    "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
+//    "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
     "http://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
     "gmap.js",
     "project-colors.js",
@@ -47,4 +47,3 @@ loadScript([
     "vector-gmaps.js"
 ], 0);
 }
-
