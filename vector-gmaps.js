@@ -208,7 +208,7 @@ function overpass() {
                             featureProjection: map.getView().getProjection()
                         }
                     ));
-                document.getElementById("text").innerHTML = "" + new Date(data.osm3s.timestamp_osm_base);
+//                document.getElementById("text").innerHTML = "" + new Date(data.osm3s.timestamp_osm_base);
             }
         } else {
             onError();
