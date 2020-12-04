@@ -1,0 +1,5 @@
+[maxsize:1000000000][timeout:420];(area[boundary=administrative]["name:en"=Romania];)->.ro;
+(
+way(area.ro)[highway][highway!=construction][highway!=proposed]; node(w);
+);
+out meta;
