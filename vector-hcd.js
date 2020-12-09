@@ -56,17 +56,19 @@ var attrib= ['<span style="font-size:14px;">'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:blue;"></div> excelent<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#376f00;"></div> bun<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#ff9f00;"></div> intermediar<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:red;"></div> rau sau foarte rau<br>'
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:red;"></div> rău sau foarte rău<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#ff00ff;"></div> oribil sau nepracticabil<br>'
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color: red; border-top:dotted blue"></div> (rau) in reabilitare<br>'
+				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color: red; border-top:dotted blue"></div> (rau) în reabilitare<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #376f00;"></div> (bun) neasfaltat<br>'
-				 +'<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>'+
+	     +'<br><a href="'+
+	     MAP_ROOT
+	     +'maps/edit.html" id="editlink" onmouseover="this.href=MAP_ROOT+\'/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">Editează harta!</a><br>'+
 				 '<div style:"font-size:2px"><br></div></div></span>'];
 
 var mapnik= new ol.layer.Tile({
     title:"Calitatea drumurilor",
     source: new ol.source.OSM({
-	url:'/tiles/{z}/{x}/{y}.png'
+	url:MAP_ROOT+'/tiles/{z}/{x}/{y}.png'
 	,crossOrigin:null
 	,    attributions: attrib
 
