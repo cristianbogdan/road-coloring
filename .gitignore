@@ -27,7 +27,7 @@ mapnik/.*
 mapnik/*noent*
 demo
 tilestache/template
-
+googleMapsKey.js
 
 
 ol-*

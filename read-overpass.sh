@@ -11,3 +11,4 @@ osmtogeojson data/data-overpass-infra.osm > data/data-overpass-infra.geo.json
 osmconvert data/data-overpass-infra.osm -o=data/data-overpass-infra.osm.pbf
 osm2pgsql --style osm2pgsql.style --slim --drop -d gis1 -c data/data-overpass-infra.osm.pbf
 psql -t -A -d gis1 -f lot_limits.sql >  data/lot_limits.json
+
