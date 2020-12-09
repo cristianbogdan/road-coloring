@@ -5,6 +5,7 @@ if [ $(stat -c%s data/data-overpass-infra.osm.new) -gt 5000 ] ; then
     mv data/data-overpass-infra.osm.new data/data-overpass-infra.osm
 else
     mv data/data-overpass-infra.osm.new $(mktemp data/error_XXXXXX)
+    exit 1;
 fi
 osmtogeojson data/data-overpass-infra.osm > data/data-overpass-infra.geo.json
 osmconvert data/data-overpass-infra.osm -o=data/data-overpass-infra.osm.pbf
