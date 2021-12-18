@@ -70,8 +70,8 @@ function setCurrentText(lastSelected){
 		
 		//txt+=')';
 	    }
-	    txt+=' (<a href="http://openstreetmap.org/way/'+lastSelected.getProperties().osm_id+'" target="OSM">detalii</a> si '+
-		'<a href="http://openstreetmap.org/way/'+lastSelected.getProperties().osm_id+'/history" target="OSM">istoric</a> OSM)';
+	    txt+=' (<a href="https://openstreetmap.org/way/'+lastSelected.getProperties().osm_id+'" target="OSM">detalii</a> si '+
+		'<a href="https://openstreetmap.org/way/'+lastSelected.getProperties().osm_id+'/history" target="OSM">istoric</a> OSM)';
 	    document.getElementById('current').innerHTML=txt;
 	    
 	    document.getElementById('current_smoothness').innerHTML=lastSelected.getProperties().smoothness;
@@ -81,6 +81,11 @@ function setCurrentText(lastSelected){
 		
 		if(i!=-1)
 		    surf="<a href=\""+surf.substring(i+1)+"\" target=\"peundemerg\">"+surf.substring(0, i)+"</a>";
+		else{
+		    i= surf.indexOf("_https://");
+		    if(i!=-1)
+			surf="<a href=\""+surf.substring(i+1)+"\" target=\"peundemerg\">"+surf.substring(0, i)+"</a>";
+		}		    
 	    }
 	    
 	    document.getElementById('current_survey').innerHTML=surf;
@@ -129,7 +134,7 @@ function submit(){
 	}
 	
 	if (http.readyState == 4 && http.status == 200) {
-	    resultNode.innerHTML= '<a href="http://openstreetmap.org/changeset/'+http.responseText+'" target="OSM">'+http.responseText+'</a> ';
+	    resultNode.innerHTML= '<a href="https://openstreetmap.org/changeset/'+http.responseText+'" target="OSM">'+http.responseText+'</a> ';
 	}
 	
     };

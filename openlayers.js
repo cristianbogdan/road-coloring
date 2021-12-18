@@ -41,6 +41,7 @@ var roadLayer=
 	//             if (selectedIds.indexOf(f.getId())!=-1 ) 
         //        return selectStyle;
 
+	    
              if(ways[f.getProperties().osm_id])
 	 	 return selectStyle;	
 	
@@ -88,7 +89,7 @@ var landscape=  new ol.layer.Tile({
     title: 'Landscape',
     type: 'base',
     source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
+	url:'https://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 

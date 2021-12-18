@@ -256,7 +256,7 @@ var speed= new ol.layer.Vector({
 	format: new ol.format.GeoJSON(),
 	tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
 	tilePixelRatio: 16,
-	url: 'http://standup.csc.kth.se:8081/speed/{z}/{x}/{y}.json'	
+	url: 'https://standup.csc.kth.se:8081/speed/{z}/{x}/{y}.json'	
     }),
     style: styleFunction
 });
@@ -269,8 +269,8 @@ var selectClick = new ol.interaction.Select({
 
 var mapnik= new ol.layer.Tile({
     source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
-//	url:'http://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
+	url:'https://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
+//	url:'https://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 
@@ -396,11 +396,11 @@ function treatFeature(rd){
 
     }
     var x=(prop.highway?prop.highway:prop.railway)
-	+' <a href=\"http://openstreetmap.org/way/'+prop.osm_id+'\" target="OSM">'
+	+' <a href=\"https://openstreetmap.org/way/'+prop.osm_id+'\" target="OSM">'
 	+(prop.ref?prop.ref+(prop.name?('('+prop.name+')'):''):(prop.name?prop.name:prop.osm_id))
 	+"</a>"
-	//+"[<a href=\"http://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
-    //    +"</a> [<a href=\"http://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
+	//+"[<a href=\"https://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
+    //    +"</a> [<a href=\"https://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
     ;
     
     if(prop.highway=='construction'|| prop.highway=='proposed' ){

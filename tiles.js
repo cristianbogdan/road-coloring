@@ -5,11 +5,11 @@
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <script src="http://roads2.enjoymaps.ro/geo/radare.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script src="https://roads2.enjoymaps.ro/geo/radare.js"></script>
     <script src="main-roads.topo.json.js"></script>
     <script src="other-roads.topo.json.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
     <script src="leaflet.js"></script>
     <script src="smoothness.js" ></script>
     <script src="index.js" ></script>
@@ -30,15 +30,15 @@ function loadDoc(zoom) {
     });
     // create the OpenStreetMap layer
 
-    const osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>',
-    thunLink = '<a href="http://thunderforest.com/">Thunderforest</a>';
+    const osmLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>',
+    thunLink = '<a href="https://thunderforest.com/">Thunderforest</a>';
     
-    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
 	roadQUrl= MAP_ROOT+'/tiles/{z}/{x}/{y}.png',
 	osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
 	landUrl='https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey,
-	//        landUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
+	//        landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
 	hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
 	
         thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
@@ -76,7 +76,7 @@ function loadDoc(zoom) {
 function popup(feature, layer){
     var surf= feature.properties.surface_survey;
     surf= surf||"";
-    var x= surf.indexOf("_http://");
+    var x= surf.indexOf("_https://");
 
     if(x!=-1)
 	surf="<a href="+surf.substring(x+1)+">"+surf.substring(0, x)+"</a>";

@@ -49,9 +49,9 @@ function clr(style){
 }
 
 var attrib= ['<span style="font-size:14px;">'
-				 +'© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
+				 +'© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors<br>'
 				 +'<div style="text-align:left;line-height:115%;">'
-				 +'<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
+				 +'<a href="https://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
 				 
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:blue;"></div> excelent<br>'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:#376f00;"></div> bun<br>'

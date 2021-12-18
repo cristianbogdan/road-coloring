@@ -83,8 +83,8 @@ var selectClick = new ol.interaction.Select({
 
 var mapnik= new ol.layer.Tile({
     source: new ol.source.OSM({
-	url:'http://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
-//	url:'http://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
+	url:'https://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png'
+//	url:'https://a.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png'
 	,crossOrigin:null
     })
     , tileOptions: {crossOriginKeyword: null} 
@@ -111,9 +111,9 @@ map.addInteraction(selectClick);
 
 selectClick.on('select', function(event){
     document.getElementById('text').innerHTML=selectClick.getFeatures().getArray().map(function(rd){
-	return rd.getProperties().highway +' <a href=\"http://openstreetmap.org/way/'+rd.getProperties().osm_id+'\" target="OSM">'+(rd.getProperties().ref?rd.getProperties().ref:(rd.getProperties().name?rd.getProperties().name:rd.getProperties().osm_id))
-	    +"</a> [<a href=\"http://openstreetmap.org/edit?way="+rd.getProperties().osm_id+"\" target=\"OSMEdit\">edit-id</a>] "
-	    +"</a> [<a href=\"http://openstreetmap.org/edit?editor=potlatch2&way="+rd.getProperties().osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
+	return rd.getProperties().highway +' <a href=\"https://openstreetmap.org/way/'+rd.getProperties().osm_id+'\" target="OSM">'+(rd.getProperties().ref?rd.getProperties().ref:(rd.getProperties().name?rd.getProperties().name:rd.getProperties().osm_id))
+	    +"</a> [<a href=\"https://openstreetmap.org/edit?way="+rd.getProperties().osm_id+"\" target=\"OSMEdit\">edit-id</a>] "
+	    +"</a> [<a href=\"https://openstreetmap.org/edit?editor=potlatch2&way="+rd.getProperties().osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
 	    +" maxspeed: "
 	    +rd.getProperties().maxspeed
 	    +", surface: "+rd.getProperties().surface;

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Harta proiectelor de infrastructură din România</title>
-<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="https://unpkg.com/jquery@1.11.2/dist/jquery.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="http://pum.project-online.se/maps/lib/ol-3.11.1.css" type="text/css">
-<script src="http://pum.project-online.se/maps/lib/ol-3.11.1.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js"></script>
 
 <style>
 body,html{height:100%;width:100%;}
@@ -22,8 +22,13 @@ div.ol-attribution button{position: absolute; bottom: 12px;right: 0;  }
     <div id="olmap" class="map"><div id="popup"></div></div>
   </div>
   <div id="text"></div>
-  <script>var MAP_ROOT=""</script>
-  <script src="thunderforestKey.js"></script>
+  <script>
+    var ROOT= location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '');
+    var SCRIPT_ROOT=ROOT+"/maps/";
+    var MAP_ROOT=ROOT;
+  </script>
+  <script src="project-colors.js"></script>
+  <script src="projects-legend.js"></script>
   <script src="vector-gmaps.js"></script>    
 </body>
 </html>

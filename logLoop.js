@@ -26,7 +26,7 @@
 	var places= x.cities||'';
 	var changesets=x.changesets.split(',');
 	if(changesets.length>0){
-	    places="<a href='http://openstreetmap.org/way/"+changesets[0]+"' target='osm'>"+(x.cities || "_")+"</a>";
+	    places="<a href='https://openstreetmap.org/way/"+changesets[0]+"' target='osm'>"+(x.cities || "_")+"</a>";
 	}
 	tz+="<tr><td>"+dateFormat(dt, "d_mmm_H:MM_yyyy")
 //	    +"</td><td>"+x.osm_user
@@ -39,7 +39,7 @@
 	    var cnt=1;
 	sep="";
 	changesets.forEach(function(chg){
-	    tz+=sep+"<a href='http://openstreetmap.org/changeset/"+chg+"' target='osm'>"+(cnt++)+"</a>";
+	    tz+=sep+"<a href='https://openstreetmap.org/changeset/"+chg+"' target='osm'>"+(cnt++)+"</a>";
 	    sep=",";
 	});
 	

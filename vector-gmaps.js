@@ -157,9 +157,9 @@ const legendClick = (e, span) => {
 
 var attrib = [new ol.Attribution({
     html: '<span style="font-size:14px;">'
-        + '© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors<br>'
+        + '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors<br>'
         + '<div style="text-align:left;line-height:115%;">'
-        + '<a href="http://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br><span onclick="legendClick(event, this)">'
+        + '<a href="https://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br><span onclick="legendClick(event, this)">'
         + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
         + '</span><div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:blue;">2017</div> deschidere (estimată)<br>'
         + '<div style="position:relative; display:inline-block; width:35px; font-size:10px; font-weight:bold; color:red;">2017</div> deschidere fără acces<br>'
@@ -454,14 +454,14 @@ function treatFeature(rd) {
 
     }
     if (prop.highway == 'lot_limit' || prop.railway == 'lot_limit')
-        return 'Limita lot ' + (prop.highway ? 'autostrada' : 'CF') + ' <a href=\"http://openstreetmap.org/node/' + prop.osm_id + '\" target="OSM">' + prop.name + '</a>';
+        return 'Limita lot ' + (prop.highway ? 'autostrada' : 'CF') + ' <a href=\"https://openstreetmap.org/node/' + prop.osm_id + '\" target="OSM">' + prop.name + '</a>';
 
     var x = (prop.highway ? prop.highway : prop.railway)
-        + ' <a href=\"http://openstreetmap.org/way/' + prop.osm_id + '\" target="OSM">'
+        + ' <a href=\"https://openstreetmap.org/way/' + prop.osm_id + '\" target="OSM">'
         + (prop.ref ? prop.ref + (prop.name ? ('(' + prop.name + ')') : '') : (prop.name ? prop.name : prop.osm_id))
         + "</a>"
-        //+"[<a href=\"http://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
-        //    +"</a> [<a href=\"http://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
+        //+"[<a href=\"https://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
+        //    +"</a> [<a href=\"https://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
     ;
 
     if (prop.status) computeStatus(prop);
