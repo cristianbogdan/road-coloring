@@ -36,21 +36,32 @@ RUN apt-get -qq install --yes \
    postgresql-9.5-postgis   osm2pgsql \
    nginx-extras passenger \
    python-mapnik ttf-unifont tilestache python-psycopg2 python-shapely \
-   python-setuptools python-pip
+   python-setuptools #python-pip
 
 # was: python3-mapnik gir1.2-pango-1.0 gir1.2-rsvg-2.0 python3-gi-cairo
 RUN ln -s /usr/bin/tilestache-seed /usr/bin/tilestache-seed.py
 
-RUN pip install --upgrade pip
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output /tmp/get-pip.py
+RUN python /tmp/get-pip.py
+
+RUN apt-get install osmctools
 
 # osmapi available only in pip 
-RUN pip install -U osmapi
+RUN pip2 install -U osmapi
 
-# configure the postgress db, add postgis extension
+# configure the postgress db, addostgis extension
 RUN adduser cristi
 USER postgres
 RUN service postgresql start && createuser cristi && psql -c "alter user cristi with superuser" && createdb -E UTF-8 -O cristi gis  && psql -d gis -c "CREATE EXTENSION postgis" && service postgresql stop
+
+RUN printf "host	gis		cristi		 127.0.0.1/32		trust" >>/etc/postgresql/9.5/main/pg_hba.conf
+
+RUN service postgresql start && createdb -E UTF-8 -O cristi gis1  && psql -d gis1 -c "CREATE EXTENSION postgis"&& service postgresql stop
+
 USER root
+RUN apt-get -qq install nodejs npm
+RUN npm install -g osmtogeojson
+RUN ln -s `which nodejs` /usr/bin/node
 
 # configure passenger and nginx
 COPY etc/default /etc/nginx/sites-enabled/default
@@ -58,7 +69,7 @@ EXPOSE 80
 
 # crontab
 USER cristi
-RUN printf "30 0 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n" | crontab
+RUN printf "30 0 * * * /home/cristi/maps/daily.sh >> /home/cristi/maps/data/daily.log 2>&1\n0,30 * * * * /home/cristi/maps/read-overpass.sh >> /home/cristi/maps/data/read-overpass.log 2>&1\n" | crontab
 USER root
 
 # volumes, though recommended to map them to host folders using -v
