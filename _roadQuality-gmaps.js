@@ -1,4 +1,4 @@
-document.title='Harta proiectelor de infrastructură din România';
+document.title='Harta calitatii drumurilor din România';
 
 var yr= new Date().getFullYear();
 
@@ -28,7 +28,7 @@ document.body.insertAdjacentHTML
   +'<div id="olmap" class="map"><div id="popup"></div></div>'
   +'</div>'
   +'  <div id="text"></div>'
-  +'  <a href="http://proinfrastructura.ro"><img id="api" src="http://proinfrastructura.ro/images/logos/api/logo_api_portrait_big.png" width="50"/></a>'
+  +'  <a href="https://proinfrastructura.ro"><img id="api" src="https://proinfrastructura.ro/images/logos/api/logo_api_portrait_big.png" width="50"/></a>'
 
 
 )  ;
@@ -38,7 +38,7 @@ loadScript(["googleMapsKey.js", loadAll],0);
 
 function loadAll(){
 loadScript([
-    "http://code.jquery.com/jquery-1.11.2.min.js",
+    "https://unpkg.com/jquery@1.11.2/dist/jquery.min.js",
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", 
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",
     insertHTML,
@@ -46,10 +46,10 @@ loadScript([
 //        "https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.js",
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
-    "http://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.css",
-    "http://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js",
+    "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.css",
+    "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js",
 //    "ol-debug10.js",
-    "http://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
+    "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
     "gmap.js",
     "vector-hcd.js"
 ], 0);
