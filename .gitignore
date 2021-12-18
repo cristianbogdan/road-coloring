@@ -25,7 +25,6 @@ mapnik/osm_holdea.xml
 mapnik/utils
 mapnik/zoom-to-scale.txt
 mapnik/.*
-mapnik/*noent*
 demo
 tilestache/template
 googleMapsKey.js
