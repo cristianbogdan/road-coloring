@@ -210,17 +210,17 @@ function zoomOn(props){
 }
 
 function findPlace(input){
- 	let s= input.value.trim();	
- 	if(s.startsWith("44.") || s.startsWith("45.") || s.startsWith("46.") || s.startsWith("47.") || s.indexOf("/")!=-1)
-		input.val=s;
-
-	else	
-	 fetch("https://nominatim.openstreetmap.org/search?q="+input.value+"&format=json&countrycodes=RO")
-	 .then(r=>r.json())
-	 .then(d=>d.filter(e=>e.type!='administrative' && e.type!='archaeological_site'))
-	 .then(d=> {
-		    input.val=input.value=(d&&d[0])?d[0].display_name:"?"+input.value;
-		})
+    let s= input.value.trim();	
+    if(s.startsWith("44.") || s.startsWith("45.") || s.startsWith("46.") || s.startsWith("47.") || s.indexOf("/")!=-1)
+	input.val=s;
+    
+    else	
+	fetch("https://nominatim.openstreetmap.org/search?q="+input.value+"&format=json&countrycodes=RO")
+	.then(r=>r.json())
+	.then(d=>d.filter(e=>/*e.type!='administrative'  && */e.type!='archaeological_site'))  // administrative= judete dar nu chiar...
+	.then(d=> {
+	    input.val=input.value=(d&&d[0])?d[0].display_name:"?"+input.value;
+	});
 }
 
 function getCookie(cname) {
