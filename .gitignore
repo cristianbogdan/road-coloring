@@ -1,5 +1,6 @@
 *~
-data/
+data
+data/*
 test/
 *.pyc
 .DS_Store
@@ -28,6 +29,7 @@ mapnik/*noent*
 demo
 tilestache/template
 googleMapsKey.js
-
+thunderforestKey.js
+analytics.js
 
 ol-*
