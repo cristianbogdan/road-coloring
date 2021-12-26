@@ -152,7 +152,7 @@ function search(){
     searchLayer.getSource().clear();
 
     var http=new XMLHttpRequest();
-    var url= "/mapsearch?search="+encodeURIComponent(document.querySelector('input[name="search"]').value.trim())
+    var url= "/mapsearch/?search="+encodeURIComponent(document.querySelector('input[name="search"]').value.trim())
     ;
     
     http.open("GET", url);
