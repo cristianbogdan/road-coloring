@@ -117,7 +117,7 @@ function submit(){
     
 
     var http=new XMLHttpRequest();
-    var url= "/mapedit?username="+encodeURIComponent(document.querySelector('input[name="osm_user"]').value)
+    var url= "/mapedit/?username="+encodeURIComponent(document.querySelector('input[name="osm_user"]').value)
 	+"&password="+encodeURIComponent(document.querySelector('input[name="osm_pass"]').value)
 	+"&smoothness="+document.querySelector('input[name="quality"]:checked').value
 	+"&comment="+encodeURIComponent(document.querySelector('input[name="comment"]').value)

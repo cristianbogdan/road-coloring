@@ -47,7 +47,7 @@ RUN python /tmp/get-pip.py
 RUN apt-get install osmctools
 
 # osmapi available only in pip 
-RUN pip2 install -U osmapi
+RUN pip2 install -U osmapi==1.3.0
 
 # configure the postgress db, addostgis extension
 RUN adduser cristi
