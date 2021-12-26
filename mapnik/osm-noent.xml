@@ -353,10 +353,7 @@ Note: feel free to leave password, host, port, or use blank
 -->
 
 <Parameter name="type">postgis</Parameter>
-<Parameter name="password"/>
-<Parameter name="host"></Parameter>
-<Parameter name="port"/>
-<Parameter name="user"/>
+<Parameter name="user">postgres</Parameter>
 <Parameter name="dbname">gis</Parameter>
 <!-- this should be 'false' if you are manually providing the 'extent' -->
 <Parameter name="estimate_extent">false</Parameter>
@@ -437,10 +434,7 @@ Note: feel free to leave password, host, port, or use blank
 -->
 
 <Parameter name="type">postgis</Parameter>
-<Parameter name="password"/>
-<Parameter name="host"></Parameter>
-<Parameter name="port"/>
-<Parameter name="user"/>
+<Parameter name="user">postgres</Parameter>
 <Parameter name="dbname">gis</Parameter>
 <!-- this should be 'false' if you are manually providing the 'extent' -->
 <Parameter name="estimate_extent">false</Parameter>
@@ -515,10 +509,7 @@ Note: feel free to leave password, host, port, or use blank
 -->
 
 <Parameter name="type">postgis</Parameter>
-<Parameter name="password"/>
-<Parameter name="host"></Parameter>
-<Parameter name="port"/>
-<Parameter name="user"/>
+<Parameter name="user">postgres</Parameter>
 <Parameter name="dbname">gis</Parameter>
 <!-- this should be 'false' if you are manually providing the 'extent' -->
 <Parameter name="estimate_extent">false</Parameter>

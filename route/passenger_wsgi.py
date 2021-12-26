@@ -16,7 +16,7 @@ def readCoords(str):
         return {"lat":str[:comma], "lon":str[comma+1:].strip()}
     if("/" in str):
         slash=str.index("/")
-        conn=psycopg2.connect('dbname=gis user=cristi')
+        conn=psycopg2.connect('dbname=gis user=postgres')
         cursor=conn.cursor()
         cursor.execute("select row_to_json(t) from "+
 "(select st_asGeoJSON(st_transform(pnt.point,4326))::text as point from "+
@@ -74,7 +74,7 @@ def application(environ, start_response):
             progress+="\nmap matching\n"+route
             response_body=progress
             
-            conn=psycopg2.connect('dbname=gis user=cristi')
+            conn=psycopg2.connect('dbname=gis user=postgres')
             cursor=conn.cursor()        
             cursor.execute("with route as (select st_transform( st_setSrid(ST_GeomFromGeoJSON(%s), 4326), 900913) as geo) "+
 #"select row_to_json(t) from "+
