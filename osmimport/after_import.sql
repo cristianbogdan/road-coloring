@@ -1,6 +1,6 @@
----SELECT UpdateGeometrySRID('planet_osm_line','way',900913);
----SELECT UpdateGeometrySRID('planet_osm_point','way',900913);
----SELECT UpdateGeometrySRID('planet_osm_polygon','way',900913);
+SELECT UpdateGeometrySRID('planet_osm_line','way',900913);
+SELECT UpdateGeometrySRID('planet_osm_point','way',900913);
+SELECT UpdateGeometrySRID('planet_osm_polygon','way',900913);
 
 create index planet_osm_line_smo on planet_osm_line(smoothness);
 CREATE INDEX planet_osm_point_name ON planet_osm_point USING btree(unaccent_string(lower(name)));
