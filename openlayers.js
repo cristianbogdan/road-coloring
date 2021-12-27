@@ -52,6 +52,8 @@ var roadLayer=
 var route=function(frm, to){
 fetch(location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+
       "/route/?from="+encodeURIComponent(frm.val)+"&to="+encodeURIComponent(to.val)).then(r=>r.json()).then(function(dt){
+	  if(dt.error)
+	      throw dt.error;
 	let data=dt.segments;
 	document.getElementById("error").innerHTML="";	
 	oldways=ways;
