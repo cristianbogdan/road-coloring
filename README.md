@@ -2,6 +2,10 @@
 
 Each sub-project has its own README: [infra-projects](infra-projects),  [road-coloring](road-coloring),  [road-coloring-edit](road-coloring-edit),  [osm-check](osm-check)
 
+Docker containers: 
+- [docker-mapnik](docker-mapnik) is used for map rendering and running the sub-projects. Uses a `postgis` database provided by a standard container (user `postgresql`)
+- [docker-osmimport](docker-osmimport) is used for retrieving OSM data regularly, saving it in the `postgis` database and in the /data/ folder for serving directly to clients
+
 Production sites:
 - `infra-projects` https://proinfrastructura.ro/proiecteinfrastructura.html  
 - `road-quality` https://proinfrastructura.ro/harta-calitatii-drumurilor.html
