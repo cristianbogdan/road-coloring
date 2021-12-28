@@ -1,5 +1,5 @@
-- `index.js` loads the sub-project. You can test it with `test-projects.html` 
-- `vector-gmaps.js` renders the sub-project at the client. Most rendering of this sub-project is there.
+- `_index.js` loads the sub-project. You can test it with `test-projects.html` 
+- `vector-gmaps.js` renders the sub-project at the client. 
   * the only part rendered at the server is the years over the segments, see  `nginx-infra.conf`   below
 - `osmimport` takes care of fetching from OSM (overpass) the infrastructure project data, mostly runs in the [osmimport-docker](../osmimport-docker) container 
   * `osmimport/read-overpass.sh` reads data from OSM and places it in the `/data` folder
