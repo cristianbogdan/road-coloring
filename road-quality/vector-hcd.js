@@ -62,7 +62,7 @@ var attrib= ['<span style="font-size:14px;">'
 				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; border-top:dotted #376f00;"></div> (bun) neasfaltat<br>'
 	     +'<br><a href="'+
 	     MAP_ROOT
-	     +'maps/road-color-edit/edit.html" id="editlink" onmouseover="this.href=MAP_ROOT+\'/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">Editează harta!</a><br>'+
+	     +'maps/road-quality-edit/edit.html" id="editlink" onmouseover="this.href=MAP_ROOT+\'/maps/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">Editează harta!</a><br>'+
 				 '<div style:"font-size:2px"><br></div></div></span>'];
 
 var mapnik= new ol.layer.Tile({

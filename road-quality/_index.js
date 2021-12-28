@@ -21,7 +21,7 @@ document.body.insertAdjacentHTML
 	+'<font size="smaller">Vezi <a href="hcd-log.html">ultimele noutăți</a> în privința calității drumurilor!</font></br>'      
 	+'<font size="smaller">Lipsește drumul tău "favorit"? Treci în <a href="'+
 	MAP_ROOT
-+'maps/road-color-edit/edit.html" id="editlink" onmouseover="this.href=MAP_ROOT+\'/maps/road-color-edit/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">modul de editare!</a> (ai nevoie de un cont OSM). Vezi <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161439#msg161439">instrucțiuni</a>, <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161411#msg161411">TODO</a> și <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161442#msg161442">idei de dezvoltare</a>.</font>'
++'maps/road-quality-edit/edit.html" id="editlink" onmouseover="this.href=MAP_ROOT+\'/maps/road-quality-edit/edit.html#map=\'+window.location.href.split(\'#map=\')[1]">modul de editare!</a> (ai nevoie de un cont OSM). Vezi <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161439#msg161439">instrucțiuni</a>, <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161411#msg161411">TODO</a> și <a href="http://forum.peundemerg.ro/index.php?topic=836.msg161442#msg161442">idei de dezvoltare</a>.</font>'
 
     
 	+'<h2>Harta calității drumurilor din România, varianta Open Data / OSM</h2>'
