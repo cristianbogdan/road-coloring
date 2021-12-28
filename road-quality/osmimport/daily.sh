@@ -8,7 +8,7 @@ echo "DB gis configuration, if it does not exist"
 createdb -Upostgres -E UTF-8 gis && psql -Upostgres -d gis -c "CREATE EXTENSION postgis" && psql -Upostgres -d gis < /data/smoothness-dump.sql
 
 OUTPUT=/data/data-roads-new.osm
-cd /work/maps/osmimport
+cd /work/maps/road-quality/osmimport
 curl --fail-with-body --silent --show-error -d @overpass-roads.txt https://www.overpass-api.de/api/interpreter > $OUTPUT
 if [ $(stat -c%s $OUTPUT) -gt 5000 ] ; then
     mv $OUTPUT /data/data-roads.osm
@@ -21,7 +21,7 @@ else
 fi
 
 echo `date` osm to psql
-osm2pgsql -Upostgres --style osm2pgsql.style --slim --drop -d gis -c --extra-attributes /data/data-roads.osm.pbf
+osm2pgsql -Upostgres --style /work/maps/common/osm2pgsql.style --slim --drop -d gis -c --extra-attributes /data/data-roads.osm.pbf
 
 if [[ $? -ne 0 ]] ; then
     echo "osm2pgsql failed, exiting..."
@@ -31,8 +31,6 @@ fi
 
 
 echo `date` creating log, cleaning up, creating json files for download
-
-psql -Upostgres -d gis -f search.sql
 
 psql -Upostgres -d gis -f after_import.sql 
 

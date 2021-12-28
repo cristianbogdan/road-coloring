@@ -1,1 +1,1 @@
-15,45   *       *       *       *       /work/maps/osmimport/read-overpass.sh >> /data/read-overpass.log 2>&1
+15,45   *       *       *       *       /work/maps/infra-projects/osmimport/read-overpass.sh >> /data/read-overpass.log 2>&1
