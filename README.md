@@ -4,7 +4,7 @@ Each sub-project has its own README: [infra-projects](infra-projects),  [road-co
 
 Docker containers: 
 - [docker-mapnik](docker-mapnik) is used for map rendering and running the sub-projects. Uses a `postgis` database provided by a standard container (user `postgresql`)
-- [docker-osmimport](docker-osmimport) is used for retrieving OSM data regularly, saving it in the `postgis` database and in the /data/ folder for serving directly to clients
+- [docker-osmimport](docker-osmimport) is used for retrieving OSM data regularly, saving it in the `postgis` database for rendering by `docker-mapnik` and in `/data/` for serving directly to clients
 
 Production sites:
 - `infra-projects` https://proinfrastructura.ro/proiecteinfrastructura.html  
