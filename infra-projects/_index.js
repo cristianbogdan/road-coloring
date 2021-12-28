@@ -1,3 +1,4 @@
+SCRIPT_ROOT+="/infra-projects/";
 document.title='Harta proiectelor de infrastructură din România';
 
 var yr= new Date().getFullYear();
@@ -27,7 +28,7 @@ document.body.insertAdjacentHTML
 )  ;
 }
 
-loadScript(["googleMapsKey.js", loadAll],0);
+loadScript(["../common/googleMapsKey.js", loadAll],0);
 
 function loadAll(){
 loadScript([
@@ -41,7 +42,7 @@ loadScript([
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
 //    "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
     "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
-    "gmap.js",
+    "../common/gmap.js",
     "project-colors.js",
     "projects-legend.js",
     "vector-gmaps.js"

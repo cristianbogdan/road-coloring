@@ -31,9 +31,6 @@ RUN python /tmp/get-pip.py
 # osmapi available only in pip 
 RUN pip2 install -U osmapi==1.3.0
 
-# configure passenger and nginx
-RUN rm /etc/nginx/sites-enabled/*
-COPY etc/nginx.conf /etc/nginx/sites-enabled/
 EXPOSE 80
 
 COPY start.sh /

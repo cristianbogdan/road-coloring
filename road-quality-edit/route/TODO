@@ -1,0 +1,31 @@
+feedback/spinner
+restrict nominatim to Romania
+nominatim only in browser?
+enlarge selection to all segments that have one point in the route box that are reasonably close
+OR find dominant road already in SQL, and select its ends?
+intersectii de drumuri a,start(b), or DNA;DNB, or A1/motorway_link/DNB... select point....
+intersectii de drumuri cu limita de judet
+ref?ref:name
+
+crowdsourcing
+-------------
+google maps sau OSM b/w
+oras sursa sau click, destinatie sau click
+ruta, determinat drumul
+calitatea
+thanks, next
+incurajat si pt strazi din oras...
+
+
+probleme:
+---------
+primul si ultimul segment
+segmente care nu au REF desi ar trebui sa aiba
+din centru poate o ia pe alt drum decat cel principal
+
+done:
+zoom on result
+call nominatim from browser
+! fix ways
+show lat+long
+drumul dominant ales dupa lungime nu dupa nr de segmente

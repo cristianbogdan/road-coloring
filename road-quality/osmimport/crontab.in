@@ -1,0 +1,1 @@
+32      1       *       *       *       /work/maps/osmimport/daily.sh >> /data/daily.log 2>&1

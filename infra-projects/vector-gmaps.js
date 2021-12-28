@@ -183,7 +183,7 @@ var attrib = [new ol.Attribution({
 
 */
 function overpass() {
-    var url = SCRIPT_ROOT + '/data/data-overpass-infra.geo.json';
+    var url =MAP_ROOT+'/maps/data/data-overpass-infra.geo.json';
 
     var xhr = new XMLHttpRequest();
 

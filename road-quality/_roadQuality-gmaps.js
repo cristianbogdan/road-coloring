@@ -1,3 +1,4 @@
+SCRIPT_ROOT+="/road-quality/";
 document.title='Harta calitatii drumurilor din România';
 
 var yr= new Date().getFullYear();
@@ -34,7 +35,7 @@ document.body.insertAdjacentHTML
 )  ;
 }
 
-loadScript(["googleMapsKey.js", loadAll],0);
+loadScript(["../common/googleMapsKey.js", loadAll],0);
 
 function loadAll(){
 loadScript([
@@ -50,7 +51,7 @@ loadScript([
     "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js",
 //    "ol-debug10.js",
     "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
-    "gmap.js",
+    "../common/gmap.js",
     "vector-hcd.js"
 ], 0);
 }
