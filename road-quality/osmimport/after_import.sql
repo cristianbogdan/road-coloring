@@ -1,6 +1,9 @@
 SELECT UpdateGeometrySRID('planet_osm_line','way',900913);
 SELECT UpdateGeometrySRID('planet_osm_point','way',900913);
 SELECT UpdateGeometrySRID('planet_osm_polygon','way',900913);
+SET client_encoding = 'UTF8';
+DROP FUNCTION unaccent_string(text);
+CREATE FUNCTION unaccent_string (text) RETURNS text as $$ SELECT translate(  $1,  'ăîșțâ', 'aista') $$ LANGUAGE SQL;
 
 create index planet_osm_line_smo on planet_osm_line(smoothness);
 CREATE INDEX planet_osm_point_name ON planet_osm_point USING btree(unaccent_string(lower(name)));
