@@ -111,7 +111,7 @@ RETURN ret;
  $$
 LANGUAGE plpgsql;
 
-SELECT rep();
+-- SELECT rep();
 
 create index roads_way on roads using gist (way);
 create index roads_smoothness on roads using btree (smoothness);
