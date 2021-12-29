@@ -483,7 +483,8 @@ Note: feel free to leave password, host, port, or use blank
       <Parameter name="table">
 	(select way,highway, 
 	case when ref is not null then ref else name end as name,
-	case when surface_survey is not null then (regexp_matches(surface_survey, '\d\d\d\d'))[1] else '' end as survey_year,
+--	case when surface_survey is not null then (regexp_matches(surface_survey, '\d\d\d\d'))[1] else '' end as survey_year,
+	case when surface_survey is not null then (regexp_match(surface_survey, '\d\d\d\d'))[1] else '' end as survey_year,
 	smoothness is not null as has_smoothness
 	
        from roads
