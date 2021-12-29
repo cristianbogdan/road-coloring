@@ -12,7 +12,8 @@
   * `tilestache/quality.cfg` is the tilestache configuration for the `tiles` layer. It makes use of the mapnik file `tilestache/osm-noent.xml` 
   * JS files are served from `/work/maps/road-quality`  
 
-TODO: 
+TODO:
+- incremental update from OSM so more frequent updates can be made
 - the `log` file are supposed to show the a log of road quality editing by various OSM users. 
    * Stopped working propertly a few years ago when geofabrik stopped including user data in their export files due to GDPR. 
    * We are not using geofabrik any longer but an overpass script. So Maybe this can be fixed

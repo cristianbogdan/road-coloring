@@ -8,5 +8,6 @@
   * JS files are served from `/work/maps/road-quality-edit`  
 
 TODO: 
+- the `roads` vector tiles do not seem to work correctly with Postgis 3+, latitude is about one unit higher. They only work with Postgis 2.5, which limits Postgresql version to 11. Postgis 3 prints `proj_create: crs not found` on each query
 - non-ASCII characters in the edit comments do not seem to be accepted somewhere in the stack (maybe osmapi?)
 - when the user enters From or To, the map could be zoomed there if the respective point is found. Show an error otherwise.
