@@ -13,6 +13,7 @@
   * JS files are served from `/work/maps/road-quality`  
 
 TODO:
+- update mapnik, python-mapnik, tilestache, Passenger
 - incremental update from OSM so more frequent updates can be made
 - the `log` file are supposed to show the a log of road quality editing by various OSM users. 
    * Stopped working propertly a few years ago when geofabrik stopped including user data in their export files due to GDPR. 
