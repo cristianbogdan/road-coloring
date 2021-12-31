@@ -9,10 +9,10 @@ Node/JS stack
 - Google "openlayers nodejs mapnik"
 
 MVT (mapbox vector tiles) used with openlayers
-https://stackoverflow.com/questions/47982534/not-able-to-dispay-pbfmapbox-vector-tile-using-openlayers
-https://gis.stackexchange.com/questions/418036/displaying-geoserver-mapbox-vector-tiles-with-a-custom-gridset
-https://docs.geoserver.org/latest/en/user/extensions/vectortiles/tutorial.html
-https://stackoverflow.com/questions/46505559/openlayers-mvt-layers-and-setting-a-style
+ - https://stackoverflow.com/questions/47982534/not-able-to-dispay-pbfmapbox-vector-tile-using-openlayers
+ - https://gis.stackexchange.com/questions/418036/displaying-geoserver-mapbox-vector-tiles-with-a-custom-gridset
+ - https://docs.geoserver.org/latest/en/user/extensions/vectortiles/tutorial.html
+ - https://stackoverflow.com/questions/46505559/openlayers-mvt-layers-and-setting-a-style
 
 
 https://www.postgresql.org/about/news/pg_tileserv-for-postgresqlpostgis-2016
