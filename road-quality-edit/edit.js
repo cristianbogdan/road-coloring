@@ -117,16 +117,17 @@ function submit(){
     
 
     var http=new XMLHttpRequest();
-    var url= "/mapedit/?username="+encodeURIComponent(document.querySelector('input[name="osm_user"]').value)
-	+"&password="+encodeURIComponent(document.querySelector('input[name="osm_pass"]').value)
-	+"&smoothness="+document.querySelector('input[name="quality"]:checked').value
-	+"&comment="+encodeURIComponent(document.querySelector('input[name="comment"]').value)
-	+"&surface_survey="+encodeURIComponent(document.querySelector('input[name="surface_survey"]').value)
-    	+"&surface="+encodeURIComponent(document.querySelector('input[name="surface"]').value)
-    ;
+    const payload={
+	username:       document.querySelector('input[name="osm_user"]').value,
+	password:       document.querySelector('input[name="osm_pass"]').value,
+	smoothness:     document.querySelector('input[name="quality"]:checked').value,
+	comment:        document.querySelector('input[name="comment"]').value,
+	surface_survey: document.querySelector('input[name="surface_survey"]').value,
+	surface:        document.querySelector('input[name="surface"]').value,
+	ways:           Object.keys(ways).reduce(function(partial, key){ return partial+"&way="+key; }, ""),
+    }
     
-    url= Object.keys(ways).reduce(function(partial, key){ return partial+"&way="+key; }, url);
-    http.open("GET", url);
+    http.open("POST", "/mapedit/");
     http.onreadystatechange = function() {
 	changedComment=false;
 	if (http.readyState == 4 && http.status != 200) {
@@ -139,7 +140,7 @@ function submit(){
 	
     };
     
-    http.send();
+    http.send(JSON.stringify(payload));
 }
 
 

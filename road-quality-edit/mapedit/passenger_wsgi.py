@@ -2,30 +2,37 @@ import sys
 from cgi import parse_qs, escape
 import osmapi
 import traceback
+import json
 
 def application(environ, start_response):
     status = '200 OK'
+    try:
+        request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+    except (ValueError):
+        request_body_size = 0
+    request_body = environ['wsgi.input'].read(request_body_size)
 
-    d = parse_qs(environ['QUERY_STRING'])
-    ways = d.get('way', [])
+    d = json.loads(request_body) 
+    ways_string = parse_qs(d["ways"])
+    ways=ways_string.get('way', [])
     if len(ways)==0:
         status= '400 Bad request'
         response_body='no ways indicated'
 
-    elif d.get('username')==None or d.get('password')==None or d.get('comment')==None:
+    elif d["username"]==None or d["password"]==None or d["comment"]==None:
         status= '400 Bad request'
         response_body='no username, password, or comment indicated'
 
     else:
         try:    
-            api= osmapi.OsmApi(username = d.get('username')[0], password = d.get('password')[0], created_by="peundemerg.ro-0.1")
-            api.ChangesetCreate({u"comment": d.get('comment')[0]})
+            api= osmapi.OsmApi(username = d["username"], password = d["password"], created_by="peundemerg.ro-0.1")
+            api.ChangesetCreate({u"comment": d["comment"]})
         
             for way in ways:
                 x=api.WayGet(way)
-                x['tag'][u'smoothness']=d.get('smoothness')[0]
-                x['tag'][u'surface_survey']=d.get('surface_survey')[0]
-                x['tag'][u'surface']=d.get('surface')[0]
+                x['tag'][u'smoothness']=d["smoothness"]
+                x['tag'][u'surface_survey']=d["surface_survey"]
+                x['tag'][u'surface']=d["surface"]
                 api.WayUpdate(x)
             
             response_body= str(api.ChangesetClose())            
@@ -33,7 +40,7 @@ def application(environ, start_response):
         except Exception as inst:
             traceback.print_exc()
             status= '400 Bad request'
-            response_body=str(inst)
+            response_body=str(inst)+"\n"+str(d)
                 
 
     response_headers = [('Content-type', 'text/plain'),
