@@ -100,10 +100,10 @@ def application(environ, start_response):
         except Exception as inst:
             traceback.print_exc()
             status= '400 Bad request'
-            response_body=["{","\"error\": \"", str(inst).replace('\n',';'), "\"}"]
+            response_body=''.join(["{","\"error\": \"", str(inst).replace('\n',';'), "\"}"])
             
-    response_headers = [('Content-type', 'application/json;charset=utf-8')
-                    ]
+    response_headers = [('Content-type', 'application/json;charset=utf-8'),
+                    ('Content-Length', str(len(response_body)))]
     start_response(status, response_headers)
     return [response_body]
 
