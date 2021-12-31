@@ -40,7 +40,7 @@ def application(environ, start_response):
         except Exception as inst:
             traceback.print_exc()
             status= '400 Bad request'
-            response_body=str(inst)+"\n"+str(d)
+            response_body=str(inst)
                 
 
     response_headers = [('Content-type', 'text/plain'),
