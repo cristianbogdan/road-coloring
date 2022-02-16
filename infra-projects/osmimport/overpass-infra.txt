@@ -1,4 +1,4 @@
-[timeout:390];(area[boundary=administrative]["name:en"=Romania];)->.ro;
+[timeout:420];(area[boundary=administrative]["name:en"=Romania];)->.ro;
 (
 way(area.ro)[highway=proposed][proposed];  node(w);
 way(area.ro)[highway=construction][construction];  node(w);
