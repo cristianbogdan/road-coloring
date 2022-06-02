@@ -1,6 +1,6 @@
 # Road coloring
 
-Each sub-project has its own README: [infra-projects](infra-projects),  [road-coloring](road-coloring),  [road-coloring-edit](road-coloring-edit),  [osm-check](osm-check)
+Each sub-project has its own README: [infra-projects](infra-projects),  [road-quality](road-quality),  [road-quality-edit](road-quality-edit),  [osm-check](osm-check)
 
 Docker containers: 
 - [docker-mapnik](docker-mapnik) is used for map rendering and running the sub-projects. Uses a `postgis` database provided by a standard container (user `postgresql`)
