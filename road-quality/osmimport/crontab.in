@@ -1,1 +1,1 @@
-32      1       *       *       *       /work/maps/road-quality/osmimport/daily.sh >> /data/daily.log 2>&1
+32      1       *       *       *       /work/maps/road-quality/osmimport/daily.sh
