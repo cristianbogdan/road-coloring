@@ -1,5 +1,5 @@
 #!/bin/bash
-echo `date` DB gis1 configuration, if it does not exist
+echo DB gis1 configuration, if it does not exist
 createdb -Upostgres -E UTF-8 gis1 && psql -Upostgres -d gis1 -c "CREATE EXTENSION postgis"
 
 cd /work/maps/infra-projects/osmimport
@@ -7,16 +7,21 @@ curl --insecure --fail-with-body --silent  --show-error -d @overpass-infra.txt h
 if [ $(stat -c%s /data/data-overpass-infra.osm.new) -gt 5000 ] ; then
     mv /data/data-overpass-infra.osm.new /data/data-overpass-infra.osm
 else
-    echo `date` FAIL
+    echo overpass FAIL
     cat /data/data-overpass-infra.osm.new 
     mv /data/data-overpass-infra.osm.new $(mktemp /data/error_XXXXXX)
     exit 1;
 fi
-echo `date` attempting to geojson
+echo attempting to geojson
 osmtogeojson /data/data-overpass-infra.osm > /data/data-overpass-infra.geo.json
 osmconvert /data/data-overpass-infra.osm -o=/data/data-overpass-infra.osm.pbf
 osm2pgsql -Upostgres --style /work/maps/common/osm2pgsql.style --slim --drop -d gis1 -c /data/data-overpass-infra.osm.pbf
+
+echo lot limits
 psql -Upostgres -t -A -d gis1 -f lot_limits.sql >  /data/lot_limits.json
+
+echo duplicating planet_osm_line
+psql -Upostgres -d gis1 -c "drop table planet_osm_line1; select * into planet_osm_line1 from planet_osm_line"
 
 # send the USR2 signal to the rendering container, so the "infra" tiles are removed because they are stale
 # see docker-mapnik/start.sh
