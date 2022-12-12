@@ -7,7 +7,7 @@ services:
     environment:
     - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
-    - /srv/data/postgis11-2.5/:/var/lib/postgresql/data/
+    - /POSTGRES_DATA:/var/lib/postgresql/data/
     - postgresRun:/var/run/postgresql
   osmimport:
     image: osmimport
@@ -16,18 +16,18 @@ services:
       service:maps2
     depends_on: [maps2,postgis]
     volumes:
-     - /srv/data/maps-devel:/data
-     - /home/azureuser/maps-devel:/work/maps:ro
+     - /MAPS_DATA:/data
+     - ./:/work/maps:ro
      - postgresRun:/var/run/postgresql
   maps2:
     image: mapnik2
     depends_on: [postgis]
     restart: always
     volumes:
-     - /home/azureuser/maps-devel:/work/maps:ro
-     - /home/azureuser/maps-devel/docker-mapnik/etc:/etc/nginx/sites-enabled
-     - /srv/data/maps-devel:/data
-     - /srv/data/stache-devel:/tmp/stache
+     - ./:/work/maps:ro
+     - ./docker-mapnik/etc:/etc/nginx/sites-enabled
+     - /MAPS_DATA:/data
+     - /TILESTACHE:/tmp/stache
      - postgresRun:/var/run/postgresql
 
 volumes:
