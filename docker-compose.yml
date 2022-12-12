@@ -1,5 +1,5 @@
 version: '3.5'
-
+# for testing purposes
 services:
   postgis:
     image: postgis/postgis:11-2.5-alpine
@@ -10,17 +10,19 @@ services:
     - /POSTGRES_DATA:/var/lib/postgresql/data/
     - postgresRun:/var/run/postgresql
   osmimport:
-    image: osmimport
+    build: docker-osmimport
     restart: always
     pid:
-      service:maps2
-    depends_on: [maps2,postgis]
+      service:maps
+    depends_on: [maps,postgis]
     volumes:
      - /MAPS_DATA:/data
      - ./:/work/maps:ro
      - postgresRun:/var/run/postgresql
-  maps2:
-    image: mapnik2
+  maps:
+    ports:
+      - 8080:80
+    build: docker-mapnik
     depends_on: [postgis]
     restart: always
     volumes:
