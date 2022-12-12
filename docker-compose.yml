@@ -7,7 +7,7 @@ services:
     environment:
     - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
-    - /POSTGRES_DATA:/var/lib/postgresql/data/
+    - postgresData:/var/lib/postgresql/data/
     - postgresRun:/var/run/postgresql
   osmimport:
     build: docker-osmimport
@@ -16,7 +16,7 @@ services:
       service:maps
     depends_on: [maps,postgis]
     volumes:
-     - /MAPS_DATA:/data
+     - mapsData:/data
      - ./:/work/maps:ro
      - postgresRun:/var/run/postgresql
   maps:
@@ -28,9 +28,12 @@ services:
     volumes:
      - ./:/work/maps:ro
      - ./docker-mapnik/etc:/etc/nginx/sites-enabled
-     - /MAPS_DATA:/data
-     - /TILESTACHE:/tmp/stache
+     - mapsData:/data
+     - tilestacheTmp:/tmp/stache
      - postgresRun:/var/run/postgresql
 
 volumes:
    postgresRun:
+   postgresData:
+   mapsData:
+   tilestacheTmp:
