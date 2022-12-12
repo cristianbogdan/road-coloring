@@ -1,0 +1,34 @@
+version: '3.5'
+
+services:
+  postgis:
+    image: postgis/postgis:11-2.5-alpine
+    restart: always
+    environment:
+    - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+    - /srv/data/postgis11-2.5/:/var/lib/postgresql/data/
+    - postgresRun:/var/run/postgresql
+  osmimport:
+    image: osmimport
+    restart: always
+    pid:
+      service:maps2
+    depends_on: [maps2,postgis]
+    volumes:
+     - /srv/data/maps-devel:/data
+     - /home/azureuser/maps-devel:/work/maps:ro
+     - postgresRun:/var/run/postgresql
+  maps2:
+    image: mapnik2
+    depends_on: [postgis]
+    restart: always
+    volumes:
+     - /home/azureuser/maps-devel:/work/maps:ro
+     - /home/azureuser/maps-devel/docker-mapnik/etc:/etc/nginx/sites-enabled
+     - /srv/data/maps-devel:/data
+     - /srv/data/stache-devel:/tmp/stache
+     - postgresRun:/var/run/postgresql
+
+volumes:
+   postgresRun:
