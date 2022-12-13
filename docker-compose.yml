@@ -1,5 +1,27 @@
 version: '3.5'
-# for testing purposes
+# for testing purposes. Installation:
+# download the following files:
+# https://pum.project-online.se/maps/common/thunderforestKey.js  --> common
+# https://pum.project-online.se/maps//common/googleMapsKey.js    --> common
+# https://pum.project-online.se/maps/images/layers-2x.png        --> images
+# https://pum.project-online.se/maps/images/pin.png              --> images
+# https://pum.project-online.se/maps/road-quality/leaflet.js     --> road-quality
+# https://pum.project-online.se/maps/road-quality/leaflet.css    --> road-quality
+
+# make an empty road-quality/analytics.js
+
+# build and start the docker containers:
+# docker-compose up
+
+# in another shell, retrieve OSM data (executed by crontab normally)
+# docker-compose exec osmimport /work/maps/road-quality/osmimport/daily.sh
+# docker-compose exec osmimport /work/maps/infra-projects/osmimport/read-overpass.sh
+
+# after that, the following sub-project links should work:
+# http://localhost:8090/maps/road-quality/index.html
+# http://localhost:8090/maps/road-quality-edit/edit.html
+# http://localhost:8090/maps/infra-projects/test-projects.html
+
 services:
   postgis:
     image: postgis/postgis:11-2.5-alpine
@@ -21,7 +43,7 @@ services:
      - postgresRun:/var/run/postgresql
   maps:
     ports:
-      - 8080:80
+      - 8090:80
     build: docker-mapnik
     depends_on: [postgis]
     restart: always
