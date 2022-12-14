@@ -7,6 +7,7 @@ echo `date` reading the map
 echo "DB gis configuration, if it does not exist"
 createdb -Upostgres -E UTF-8 gis && psql -Upostgres -d gis -c "CREATE EXTENSION postgis" && psql -Upostgres -d gis < /data/smoothness-dump.sql
 
+echo  `date` reading from overpass. This may take some time
 OUTPUT=/data/data-roads-new.osm
 cd /work/maps/road-quality/osmimport
 curl --fail-with-body --silent --show-error -d @overpass-roads.txt https://www.overpass-api.de/api/interpreter > $OUTPUT

@@ -2,6 +2,7 @@
 echo DB gis1 configuration, if it does not exist
 createdb -Upostgres -E UTF-8 gis1 && psql -Upostgres -d gis1 -c "CREATE EXTENSION postgis"
 
+echo Reading from overpass. This may take some time
 cd /work/maps/infra-projects/osmimport
 curl --insecure --fail-with-body --silent  --show-error -d @overpass-infra.txt https://www.overpass-api.de/api/interpreter > /data/data-overpass-infra.osm.new
 if [ $(stat -c%s /data/data-overpass-infra.osm.new) -gt 5000 ] ; then
