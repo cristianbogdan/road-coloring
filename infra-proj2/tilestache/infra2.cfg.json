@@ -33,17 +33,17 @@
             	    "queries":[
 			null, null, null, null, null,
         		null, null,
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway FROM planet_osm_line1"
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
+			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1"
 		    ]
 		}   
 	    }
