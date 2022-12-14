@@ -1,0 +1,93 @@
+{
+    "cache": {
+        "name": "Multi",
+        "tiers": [
+            {
+                "name": "Disk",
+                "path": "/tmp/stache",
+                "dirs":"portable",
+                "gzip": []
+            }
+        ]
+    },
+    "layers": {
+        "infraGraphic1":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic2":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic3":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic4":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic5":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic6":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic7":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+        
+        ,
+        "infraGraphic8":
+        {
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
+        }
+    }
+}

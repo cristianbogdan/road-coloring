@@ -3,9 +3,6 @@ try { MAP_ROOT }catch(e) {
     MAP_ROOT="";
 }
 
-try{ gmap } catch(e){
-    gmap=false;
-}
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -38,25 +35,27 @@ if (window.location.hash !== '') {
 function toHex(n){
     var ret= new Number(n).toString(16);
     if (ret.length==1)
-	return '0'+ret;
+        return '0'+ret;
     return ret;
 }
 
 var attrib= ['<span style="font-size:14px;">'
-				 +'© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors<br>'
-				 +'<div style="text-align:left;line-height:115%;">'
-				 +'<a href="https://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
-				 
-				 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:blue;"></div> Legend will be here<br>'
-				 + '<div style:"font-size:2px"><br></div></div></span>'];
+                                 +'© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors<br>'
+                                 +'<div style="text-align:left;line-height:115%;">'
+                                 +'<a href="https://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
+                                 
+                                 +'<div style="position:relative; display:inline-block; width:35px; height:3px; bottom:2px; background-color:blue;"></div> Legend will be here<br>'
+                                 + '<div style:"font-size:2px"><br></div></div></span>'];
 
 
 var mapnik= new ol.layer.Tile({
     title:"Projects",
     source: new ol.source.OSM({
-	url:MAP_ROOT+'/infraGraphic/{z}/{x}/{y}.png'
-	,crossOrigin:null
-	,    attributions: attrib
+        url:MAP_ROOT+'/infraGraphic/{z}/{x}/{y}.png'
+        ,crossOrigin:null
+        ,    attributions: attrib
+        , opaque: false
+
 
     })
     , tileOptions: {crossOriginKeyword: null}
@@ -65,8 +64,8 @@ var mapnik= new ol.layer.Tile({
 
 var defaultStyle=       new ol.style.Style({
     stroke: new ol.style.Stroke({
-	width: 6,
-	color: [0xff,0xff,0x00,0.25]
+        width: 6,
+        color: [0xff,0xff,0x00,0.25]
     })
 })
 ;
@@ -75,23 +74,23 @@ var selectedIds=[];
 
 var infoLayer=
     new ol.layer.VectorTile({
-	title:"segment info",
-//	visible:false,
-	source: new ol.source.VectorTile({
-	    format: new ol.format.GeoJSON(),
-	    tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
-	    tilePixelRatio: 16,
-	    url: '/infraVector/{z}/{x}/{y}.json'
-	})
-	,style:
-	function(f, resolution) {
-	    return [transp];
-/*	    if (selectedIds.indexOf(f.getId())!=-1 ) {
-		return selectStyle;
-	    }
-	    return  defaultStyle ;
+        title:"segment info",
+//      visible:false,
+        source: new ol.source.VectorTile({
+            format: new ol.format.GeoJSON(),
+            tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
+            tilePixelRatio: 16,
+            url: '/infraVector/{z}/{x}/{y}.json'
+        })
+        ,style:
+        function(f, resolution) {
+            return [transp];
+/*          if (selectedIds.indexOf(f.getId())!=-1 ) {
+                return selectStyle;
+            }
+            return  defaultStyle ;
 */
-	}
+        }
     });
 
 
@@ -105,25 +104,14 @@ var view = new ol.View({
     minZoom:7,
     maxZoom:17
 });
-view.on('change:center', function() {
-    if(gmap){
-	var center = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
-	gmap.setCenter(new google.maps.LatLng(center[1], center[0]));
-    }
-});
-view.on('change:resolution', function() {
-    if(gmap)
-	gmap.setZoom(view.getZoom());
-});
-
-
 
 var olMapDiv = document.getElementById('olmap');
 
-var map = gmap?new ol.Map({
+var map =
+/*gmap?new ol.Map({
     layers: [mapnik
-	     , infoLayer
-	    ],
+          //   , infoLayer
+            ],
     interactions: ol.interaction.defaults({
     altShiftDragRotate: false,
     dragPan: false,
@@ -132,16 +120,23 @@ var map = gmap?new ol.Map({
   target: olMapDiv,
     view: view
 //    ,controls: ol.control.defaults({attribution: false})
-}):new ol.Map({
+}):*/
+    new ol.Map({
     layers: [
-	mapnik, infoLayer
+        new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
+            })
+        }),
+        mapnik,
+        infoLayer
 //,
-//	roads
-	
+//      roads
+        
     ],
     target: 'olmap',
-    view: view
-});;
+    view: view,
+});
 
 
 var popupElement = document.getElementById('popup');
@@ -153,21 +148,17 @@ var popup = new ol.Overlay({
 });
 map.addOverlay(popup);
 
-var layerSwitcher = new ol.control.LayerSwitcher({
-    tipLabel: 'Légende' // Optional label for button
-});
-map.addControl(layerSwitcher);
+//var layerSwitcher = new ol.control.LayerSwitcher({
+//    tipLabel: 'Légende' // Optional label for button
+//});
+//map.addControl(layerSwitcher);
 
-if(gmap){
-    olMapDiv.parentNode.removeChild(olMapDiv);
-    gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
-}
 view.setCenter( ol.proj.fromLonLat(center));
 view.setZoom(zoom);
 
 map.getControls().forEach(control=>{
     if(control instanceof ol.control.Attribution)
-	control.setCollapsed(false);
+        control.setCollapsed(false);
 })
 
 selectClick.on('select', function(event){
@@ -190,25 +181,25 @@ map.on('click', function(evt) {
 
     if(evt.originalEvent.target.parentElement.className=='popover-content' ||
        evt.originalEvent.target.className=='popover-content'){
-	$(popupElement).popover('hide');
-	return;
+        $(popupElement).popover('hide');
+        return;
     }
     
     features=[];
     map.forEachFeatureAtPixel(evt.pixel,
-			      function(feature, layer) {
-				  features.push(feature);
-			      });
+                              function(feature, layer) {
+                                  features.push(feature);
+                              });
     if(features[0]){
-	$(popupElement).popover({
-	    'placement': 'auto',
-	    'html': true,
-	    'content': function(){ return treatFeature(features[0]);},
-	});
-	popup.setPosition(evt.coordinate);
-	$(popupElement).popover('show');
+        $(popupElement).popover({
+            'placement': 'auto',
+            'html': true,
+            'content': function(){ return treatFeature(features[0]);},
+        });
+        popup.setPosition(evt.coordinate);
+        $(popupElement).popover('show');
     } else {
-	$(popupElement).popover('hide');
+        $(popupElement).popover('hide');
     }
 });
 
@@ -252,8 +243,8 @@ window.addEventListener('popstate', function(event) {
 
 function treatFeature(rd) {
     var prop = rd.getProperties();
-	if (!prop.osm_id) prop.osm_id=prop.id.split('/')[1];
-	
+        if (!prop.osm_id) prop.osm_id=prop.id.split('/')[1];
+        
     if (prop.comentarii_problema) {
         return '<b>' + prop.nume + '</b><br/>'
             + prop.comentarii_problema + '<br/><br/>'
@@ -343,17 +334,17 @@ var computeStatus = function (p) {
         if (kv.length > 1) {
             p[kv[0]] = kv[1];
             if (kv[0] == 'progress') {
-	        p.progress = kv[1].split(' ');
-	        p.latestProgress = parseFloat(p.progress[0].split('%')[0]);
-	    } else if (kv[0] == 'progress_estimate') {
+                p.progress = kv[1].split(' ');
+                p.latestProgress = parseFloat(p.progress[0].split('%')[0]);
+            } else if (kv[0] == 'progress_estimate') {
                 p.progress_estimate = kv[1].split(' ');
-		p.latestProgress = parseFloat(p.progress_estimate[0].split('%')[0]);
+                p.latestProgress = parseFloat(p.progress_estimate[0].split('%')[0]);
             } else if (kv[0] == 'signal_progress') {
                 p.signal_progress = kv[1].split(' ');
-	        p.latestSignalProgress = parseFloat(p.signal_progress[0].split('%')[0]);
-	    }
-	} else
-	    p[kv[0]] = true;
+                p.latestSignalProgress = parseFloat(p.signal_progress[0].split('%')[0]);
+            }
+        } else
+            p[kv[0]] = true;
     });
     //if(p.progress_estimate)                                                                                              
     //p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);                                                      

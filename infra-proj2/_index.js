@@ -25,7 +25,7 @@ function insertHTML(){
 document.body.insertAdjacentHTML
 ( 'afterbegin',
   '<div id="map" class="map"> '
-+'<div id="gmap" class="map"></div>'
+//+'<div id="gmap" class="map"></div>'
   +'<div id="olmap" class="map"><div id="popup"></div></div>'
   +'</div>'
   +'  <div id="text"></div>'
@@ -44,14 +44,17 @@ loadScript([
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",
     insertHTML,
 //   "https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.css",
-//        "https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
-    "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.css",
-    "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js",
+//    "https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.js",
+
+    "https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css",
+    "https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js",
+//    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
+//    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
+//    "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.css",
+//    "https://rawgit.com/walkermatt/ol3-layerswitcher/master/src/ol3-layerswitcher.js",
 //    "ol-debug10.js",
-    "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
-    "../common/gmap.js",
+//    "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
+//    "../common/gmap.js",
     "../infra-projects/project-colors.js",
     "vector-gmaps.js"
 ], 0);
