@@ -1,52 +1,53 @@
 {
     "cache": {
-	"name": "Multi",
-	"tiers": [
+        "name": "Multi",
+        "tiers": [
             {
-		"name": "Disk",
-		"path": "/tmp/stache",
-		"dirs":"portable",
-		"gzip": []
+                "name": "Disk",
+                "path": "/tmp/stache",
+                "dirs":"portable",
+                "gzip": []
             }
-	]
+        ]
     },
     "layers": {
-	"infraGraphic":
+        "infraGraphic":
         {
-    	    "provider":
-            {		  
-		"name": "mapnik",
-		"mapfile": "projects-mapnik-noent.xml"
-	    }
+            "provider":
+            {             
+                "name": "mapnik",
+                "mapfile": "projects-mapnik-noent.xml"
+            }
         }
-	
-	,
-	"infraVector":{ 
-	    "allowed origin": "*", 
-    	    "provider":{     
-		"class":"TileStache.Goodies.VecTiles:Provider",
-		"kwargs":{
-            	    "dbinfo":{
-			"user": "postgres",
-			"database": "gis1"
-            	    },
-            	    "queries":[
-			null, null, null, null, null,
-        		null, null,
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1 where not(highway in ('motorway_link', 'trunk_link' ))",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1",
-			"SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, start_date, opening_date FROM planet_osm_line1"
-		    ]
-		}   
-	    }
-	}
+        
+        ,
+        "infraVector":{ 
+            "allowed origin": "*", 
+            "provider":{     
+                "class":"TileStache.Goodies.VecTiles:Provider",
+                "kwargs":{
+                    "dbinfo":{
+                        "user": "postgres",
+                        "database": "gis1"
+                    },
+                    "queries":[
+                        null, null, null, null, null,
+                        null, null,
+                        "SELECT osm_id, ST_Simplify(way, 4000) AS __geometry__, ref, name, highway, railway, construction, proposed, start_date, opening_date FROM planet_osm_line1 WHERE railway in ('rail', 'construction', 'proposed') or highway in ('motorway', 'trunk') or construction in ('rail', 'motorway', 'trunk') or proposed in ('rail', 'motorway', 'trunk')",
+                        "SELECT osm_id, ST_Simplify(way, 2000) AS __geometry__, ref, name, highway, railway, construction, proposed, start_date, opening_date FROM planet_osm_line1 WHERE railway in ('rail', 'construction', 'proposed') or highway in ('motorway', 'trunk') or construction in ('rail', 'motorway', 'trunk') or proposed in ('rail', 'motorway', 'trunk')",
+                        "SELECT osm_id, ST_Simplify(way, 1000) AS __geometry__, status, ref, name, highway, railway, construction, proposed, start_date, opening_date FROM planet_osm_line1 WHERE railway in ('rail', 'construction', 'proposed') or highway in ('motorway', 'trunk') or construction in ('rail', 'motorway', 'trunk') or proposed in ('rail', 'motorway', 'trunk')",
+                        "SELECT osm_id, ST_Simplify(way,80) AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, maxspeed, start_date, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1",
+                        "SELECT osm_id, way AS __geometry__, status, ref, name, highway, railway, construction, proposed, bridge, tunnel, layer, start_date, maxspeed, opening_date FROM planet_osm_line1"
+                    ]
+                }   
+            }
+        }
     }
 }
