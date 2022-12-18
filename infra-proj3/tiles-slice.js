@@ -86,21 +86,24 @@ function loadDoc(zoom) {
         "fillOpacity": 0.5
     };
 
-/*            rendererFactory: L.svg.tile,
+    fetch("https://pum.project-online.se/maps/data/data-overpass-infra.geo.json").then(r=>r.json()).then(function(data){
+        L.vectorGrid.slicer(data, {
+            rendererFactory: L.svg.tile,
             vectorTileLayerStyles: {
                 sliced: style,
             }
-*/
-    pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
-        interactive: true,
+        }).bindPopup("hello world").addTo(map);
+    });
+
+/*    var pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
+        getFeatureId: function(f) {
+            console.log(f);
+            return f.properties.osm_id;
+        },
         vectorTileLayerStyles:{
-            geojsonLayer(properties, zoom){
-                console.log(properties.ref);
-                return style;
-            }
+            way:style
         },
 
-        /*
         onEachFeature: function (feature, layer) {
             if (feature.properties) {
                 var popupString = '<div class="popup">';
@@ -112,15 +115,16 @@ function loadDoc(zoom) {
                 popupString += '</div>';
                 layer.bindPopup(popupString);
             }
+
         }
-        */
+        
     }
                                        );
-
+*/
     var yearsLayer= L.tileLayer(MAP_ROOT+'/infra/{z}/{x}/{y}.png', {pane: "years"});
-
+// map.addLayer(landMap);
     map.addLayer(googleMap);
-    map.addLayer(pbfLayer);
+    //map.addLayer(pbfLayer);
     map.addLayer(yearsLayer);
     
     map.on('dragend', changeUrl);
@@ -137,7 +141,7 @@ function loadDoc(zoom) {
             //  "OSM B&W":osmBwMap
             },
             {
-                "Projects":pbfLayer,
+                //"Projects":pbfLayer,
                 "Years": yearsLayer,
             }       
     ).addTo(map);
