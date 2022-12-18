@@ -1,5 +1,5 @@
 // attempt to convert GeoJSON tiles to PBF. does not seem to work well so far
-// meant to be invoked by json2pbf.sh
+// meant to be invoked by json2pbf.sh 
 
 var fs=require('fs')
 var vtpbf = require('vt-pbf')
