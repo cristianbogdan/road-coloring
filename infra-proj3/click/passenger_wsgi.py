@@ -20,14 +20,19 @@ def application(environ, start_response):
         comma= latLng.index(",")
         lat= float(latLng[:comma].strip())
         lon= float(latLng[comma+1:].strip());
+        max= float(d.get('max')[0])
 
         conn=psycopg2.connect('dbname=gis1 user=postgres')
         cursor=conn.cursor()
         cursor.execute(
-            "select row_to_json(t)::text from (select  osm_id, ref, name, highway, railway, construction, status, proposed, start_date, maxspeed, opening_date, st_distance(way, st_transform(ST_setSRID(ST_point("+str(lon)+","+str(lat)+" ), 4326), 900913)) as distance from planet_osm_line1 order by distance asc limit 1) t"
+            "select row_to_json(t)::text from ("+
+            "select  osm_id, ref, name, highway, railway, construction, status, proposed, start_date, maxspeed, opening_date "+
+            "from planet_osm_line1 "
+            "where st_distance(way, st_transform(ST_setSRID(ST_point("+str(lon)+","+str(lat)+" ), 4326), 900913))< "+str(max)+
+            ") t"
             ,())
         if(cursor.rowcount==0):
-            response_body="{}"
+            response_body="null"
         else:
             response_body= cursor.fetchone()[0]
     except Exception as inst:
