@@ -12,7 +12,6 @@ sys.setdefaultencoding('utf8')
 
 def application(environ, start_response):
     status = '200 OK'
-    progress=''
     d = parse_qs(environ['QUERY_STRING'])
 
     try:
