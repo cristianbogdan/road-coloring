@@ -74,14 +74,34 @@ function loadDoc(zoom) {
     }
 
 
-     var style = {
-        "clickable": true,
-        "color": "#ff0000",
-        "fillColor": "#00D",
-        "weight": 2.0,
-        "opacity": 0.8,
-        "fillOpacity": 0.2
+    // SLD style
+     const defaultStyle = {
+        clickable: true,
+        color: "#000",
+        // "fillColor": "#00D",
+        weight: 3.0,
+        // "opacity": 0.6,
+        // "fillOpacity": 0.2,        
+        // fillOpacity: 0.8,
     };
+
+    const invisibleStyle = {
+        opacity: 0.000001
+    };
+    const greenStyle = {
+        color: "#00FF00",
+    };
+    const highwayStyle = {
+        clickable: true,
+        color: "#0000ff",
+        weight: 3.0,
+    };
+    const proposedHighwayStyle = {
+        clickable: true,
+        color: "#ffbdbd",
+        weight: 3.0,
+    };
+
     var hoverStyle = {
         "fillOpacity": 0.5
     };
@@ -92,10 +112,53 @@ function loadDoc(zoom) {
         tolerance: 5,
         debug: true,
         solidChildren: true,
-        style(properties){
-            return style;
+        style(feature){
+            const tags = feature.tags;
+            if (feature.type == 1) console.log(feature.type, tags)
+            
+            if (tags.highway === 'proposed') return proposedHighwayStyle;
+            if(['motorway', 'primary', 'trunk', 'rest_area'].includes(tags.highway)) return highwayStyle;   
+
+            if(tags.highway === 'lot_limit' || tags.railway === 'lot_limit') return invisibleStyle;
+
+            // if(props.bridge ) return {
+            //     "clickable": true,
+            //     "color": "#000",
+            //     "fillColor": "#00D",
+            //     "weight": 2.0,
+            //     "opacity": 0.8,
+            //     "fillOpacity": 0.2,
+            // }
+            return defaultStyle;
+        },
+        filter: function(feature, layer) {
+            // return false;
+            if (!feature.tags) return true;
+            // id: "node/326930529"
+            // information: "guidepost"
+            // tourism: "information"
+            // {abandoned: 'yes', disused:railway: 'station', id: 'node/243742782'}
+            
+            const { railway, highway, amenity, public_transport, tourism, traffic_sign } = feature.tags;
+            // return true;
+            return !(['motorway_junction', 'crossing', 'give_way', 'traffic_signals', 'stop', 'milestone'].includes(highway)
+            || ['level_crossing', 'halt', 'crossing', 'station', 'tram_level_crossing', 'switch', 'buffer_stop', 'signal', 'railway_crossing'].includes(railway) // tram_level_crossing
+            || jsonHasAnyKey(feature.tags, ['amenity', 'public_transport', 'tourism', 'traffic_sign',
+             'traffic_calming', 'barrier', 'disused:railway' ,'noexit', 'power', 'traffic_sign:forward', 'crossing',
+            'man_made', 'emergency', 'border', 'entrance']));
+
+            // return feature.geometry.type=="LineString" || feature.geometry.type=="Polygon" || feature.properties.railway=="lot_limit" || feature.properties.highway=="lot_limit"  ;
         }
     };
+
+    //checks if any element from within a list is a key in an object
+    function jsonHasAnyKey(obj, list) {
+        for (const element of list) {
+            if (element in obj) {
+                return true;
+            }
+        }
+    }
 
     fetch("https://pum.project-online.se/maps/data/data-overpass-infra.geo.json").then(r=>r.json()).then(function(data){
         layer= L.geoJson.vt(data, options);
