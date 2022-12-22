@@ -102,7 +102,7 @@ function loadDoc(zoom) {
             }
         }
     );
-    fetch("https://pum.project-online.se/maps/data/data-overpass-infra.geo.json").then(r=>r.json()).then(data=>geojsonLayer.addData(data));
+    fetch("/maps/data/data-sql-infra.geo.json").then(r=>r.json()).then(data=>geojsonLayer.addData(data));
     
 // map.addLayer(landMap);
     var yearsLayer= L.tileLayer(MAP_ROOT+'/infra/{z}/{x}/{y}.png',{pane:"years"});

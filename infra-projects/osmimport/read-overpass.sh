@@ -23,8 +23,9 @@ psql -Upostgres -t -A -d gis1 -f lot_limits.sql >  /data/lot_limits.json
 
 echo duplicating planet_osm_line
 psql -Upostgres -d gis1 -c "drop table planet_osm_line1;"
+psql -Upostgres -d gis1 -c "SELECT UpdateGeometrySRID('planet_osm_line','way',900913);"
 psql -Upostgres -d gis1 -c "select * into planet_osm_line1 from planet_osm_line;"
-psql -Upostgres -d gis1 -c "SELECT UpdateGeometrySRID('planet_osm_line1','way',900913);"
+psql -Upostgres -t -A -d gis1 -f infra-projects.sql > /data/data-sql-infra.geo.json
 
 # send the USR1 signal to the rendering container, so the "infra" tiles are removed because they are stale
 # see docker-mapnik/start.sh
