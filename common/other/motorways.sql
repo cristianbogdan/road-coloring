@@ -9,15 +9,15 @@ SELECT row_to_json(fc)
                   select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, bridge, tunnel, status, start_date, opening_date) t
            ) AS properties
                              FROM planet_osm_line1 As lg 
-                             WHERE lg.osm_id>0 AND (
-                                             lg.highway in('motorway', 'motorway_link') 
-                                             or lg.highway not in ('construction','proposed') and lg.opening_date is not null
-                                             or lg.highway in ('trunk', 'trunk_link', 'primary', 'primary_link', 'services', 'service') and lg.start_date >'2017'
-                                             or lg.construction in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'services', 'service')
-                                             or lg.proposed in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link','tertiary', 'tertiary_link', 'services', 'service')
-                                             or lg.railway in('proposed', 'construction')
-                                             or lg.railway='rail' and lg.status is not null
-                                             )
+--                             WHERE lg.osm_id>0 AND (
+--                                             lg.highway in('motorway', 'motorway_link') 
+--                                             or lg.highway not in ('construction','proposed') and lg.opening_date is not null
+--                                             or lg.highway in ('trunk', 'trunk_link', 'primary', 'primary_link', 'services', 'service') and lg.start_date >'2017'
+--                                             or lg.construction in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'services', 'service')
+--                                             or lg.proposed in ('railway', 'motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary', 'secondary_link','tertiary', 'tertiary_link', 'services', 'service')
+--                                             or lg.railway in('proposed', 'construction')
+--                                             or lg.railway='rail' and lg.status is not null
+--                                             )
                              order by  
                                 (case when highway='construction' then 100 when highway='proposed' then 1 else 2 end),
                                 (case when status is null then 'Z' else status end),
