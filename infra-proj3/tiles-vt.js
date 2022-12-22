@@ -160,8 +160,8 @@ function loadDoc(zoom) {
         }
     }
 
-    fetch("https://pum.project-online.se/maps/data/data-overpass-infra.geo.json").then(r=>r.json()).then(function(data){
-        layer= L.geoJson.vt(data, options);
+    fetch("/maps/data/data-sql-infra.geo.json").then(r=>r.json()).then(function(data){
+        const layer= L.geoJson.vt(data, options);
         layer.addTo(map);
         layer.bindPopup('Hi There!');
         map.on('click', function (e) {

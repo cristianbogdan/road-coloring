@@ -86,9 +86,10 @@ function loadDoc(zoom) {
         "fillOpacity": 0.5
     };
 
-    fetch("https://pum.project-online.se/maps/data/data-overpass-infra.geo.json").then(r=>r.json()).then(function(data){
+    fetch("/maps/data/data-sql-infra.geo.json").then(r=>r.json()).then(function(data){
         L.vectorGrid.slicer(data, {
             rendererFactory: L.svg.tile,
+            interactive:true,
             vectorTileLayerStyles: {
                 sliced: style,
             }
