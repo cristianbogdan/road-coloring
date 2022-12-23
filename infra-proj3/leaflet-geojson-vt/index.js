@@ -47,7 +47,6 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
             if(imgCached)
                 ctx.drawImage(imgCached, 0, 0);
             else{
-                console.log(coords);
                 var img = new window.Image();
                 
                 img.addEventListener("load", function(){
