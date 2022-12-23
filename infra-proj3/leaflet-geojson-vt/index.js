@@ -22,8 +22,6 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
     createTile: function (coords, done) {
         // create a <canvas> element for drawing
         var tile = L.DomUtil.create("canvas", "leaflet-tile");
-        var img = new window.Image();
-        img.addEventListener("load", drawLater.bind(this));
         
         function drawLater(){
             // setup tile width and height according to the options
@@ -41,12 +39,16 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
             for (const feature of features) {
                 this.drawFeature(ctx, feature);
             }
-            ctx.drawImage(img, 0, 0);
+
+            var img = new window.Image();
+            img.addEventListener("load", function(){ ctx.drawImage(img, 0, 0);});
+            img.setAttribute("src", `/infra/${coords.z}/${coords.x}/${coords.y}.png`);
+            
             // return the tile so it can be rendered on screen
             done(undefined,tile);
         };
-        img.setAttribute("src", `/infra/${coords.z}/${coords.x}/${coords.y}.png`);
 
+        setTimeout(drawLater.bind(this));
         return tile;
     },
 
