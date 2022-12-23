@@ -54,8 +54,8 @@ function computeStatus(props) {
 };
 
 function getPopupHtmlContent(props) {
-	if (!props.osm_id) props.osm_id=props.id.split('/')[1];
-	
+        if (!props.osm_id) props.osm_id=props.id.split('/')[1];
+        
     if (props.comentarii_problema) {
         return '<b>' + props.nume + '</b><br/>'
             + props.comentarii_problema + '<br/><br/>'
@@ -297,7 +297,8 @@ function loadDoc(zoom) {
             //  "OSM B&W":osmBwMap
             },
             {
-                "Projects":layer,
+                "Projects (client)":layer,
+                "Projects (server)":   L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
                 "Years": yearsLayer,
             }       
     ).addTo(map);
