@@ -166,10 +166,6 @@ function loadDoc(zoom) {
         maxZoom:18
     });
 
-    map.createPane('years');
-    map.getPane('years').style.zIndex = 650;;                                                                                                                          
-    map.getPane('years').style.pointerEvents = 'none'; 
-    
     // create the OpenStreetMap layer
 
     const osmLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>',
@@ -299,7 +295,6 @@ function loadDoc(zoom) {
             {
                 "Projects (client)":layer,
                 "Projects (server)":   L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
-                "Years": yearsLayer,
             }       
     ).addTo(map);
         /*layer.bindPopup(function(layer){
@@ -333,11 +328,9 @@ function loadDoc(zoom) {
     }
                                        );
 */
-    var yearsLayer= L.tileLayer(MAP_ROOT+'/infra/{z}/{x}/{y}.png', {pane: "years"});
 // map.addLayer(landMap);
     map.addLayer(googleMap);
     //map.addLayer(pbfLayer);
-    map.addLayer(yearsLayer);
     
     map.on('dragend', changeUrl);
     map.on('zoomend', changeUrl);
@@ -347,6 +340,5 @@ function loadDoc(zoom) {
 
 
     changeUrl();
-    yearsLayer.bringToFront();
 }
 

@@ -3,41 +3,50 @@
   https://github.com/iamtekson/leaflet-geojson-vt
 */
 
-L.GeoJSON.VT = L.TileLayer.extend({
+const tileLayer= true;
+L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
   options: {
     async: false,
   },
 
     initialize: function (geojson, options) {
         L.setOptions(this, options);
-        L.TileLayer.prototype.initialize.call(this, "", options);
+        if(tileLayer)
+            L.TileLayer.prototype.initialize.call(this, "",options);
+        else
+            L.GridLayer.prototype.initialize.call(this, options);
+
         this.tileIndex = geojsonvt(geojson, this.options);
     },
     
     createTile: function (coords, done) {
         // create a <canvas> element for drawing
         var tile = L.DomUtil.create("canvas", "leaflet-tile");
+        var img = new window.Image();
+        img.addEventListener("load", drawLater.bind(this));
         
         function drawLater(){
             // setup tile width and height according to the options
-            var size = this.getTileSize();
+            var size = this.getTileSize();            
             tile.width = size.x;
             tile.height = size.y;
             // get a canvas context and draw something on it using coords.x, coords.y and coords.z
             var ctx = tile.getContext("2d");
             
             // ctx.font = "12px Arial";
-            // ctx.fillText(`${coords.x}/${coords.y}/${coords.z}`, 0, 10);
+            // ctx.fillText(`${coords.z}/${coords.x}/${coords.y}`, 0, 10);
             
             var tileInfo = this.tileIndex.getTile(coords.z, coords.x, coords.y);
             var features = tileInfo ? tileInfo.features : [];
             for (const feature of features) {
                 this.drawFeature(ctx, feature);
             }
+            ctx.drawImage(img, 0, 0);
             // return the tile so it can be rendered on screen
             done(undefined,tile);
         };
-        setTimeout(drawLater.bind(this));
+        img.setAttribute("src", `/infra/${coords.z}/${coords.x}/${coords.y}.png`);
+
         return tile;
     },
 
