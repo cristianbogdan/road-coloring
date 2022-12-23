@@ -3,7 +3,9 @@
   https://github.com/iamtekson/leaflet-geojson-vt
 */
 
-const tileLayer= true;
+const tileLayer= false;
+const MAX=100;
+
 L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
   options: {
     async: false,
@@ -18,13 +20,23 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
 
         this.tileIndex = geojsonvt(geojson, this.options);
         // TODO: should be a WeakMap
-        this.yearMap= new Map();
+        this.cache= new Map();
+        this.keys=[];
     },
-    
+
+
     createTile: function (coords, done) {
-        // create a <canvas> element for drawing
+        const strKey= `/infra/${coords.z}/${coords.x}/${coords.y}.png`;
+
+        const cachedTile= this.cache.get(strKey);
+        if(cachedTile){
+            done(null, cachedTile);
+            return cachedTile;
+        }
+        // create a <canvas> element for drawing       
         var tile = L.DomUtil.create("canvas", "leaflet-tile");
-        
+
+
         function drawLater(){
             // setup tile width and height according to the options
             var size = this.getTileSize();            
@@ -33,8 +45,8 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
             // get a canvas context and draw something on it using coords.x, coords.y and coords.z
             var ctx = tile.getContext("2d");
             
-            // ctx.font = "12px Arial";
-            // ctx.fillText(`${coords.z}/${coords.x}/${coords.y}`, 0, 10);
+//            ctx.font = "12px Arial";
+//            ctx.fillText(`${coords.z}/${coords.x}/${coords.y}`, 0, 10);
             
             var tileInfo = this.tileIndex.getTile(coords.z, coords.x, coords.y);
             var features = tileInfo ? tileInfo.features : [];
@@ -42,23 +54,25 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
                 this.drawFeature(ctx, feature);
             }
 
-            const strKey= `/infra/${coords.z}/${coords.x}/${coords.y}.png`;
-            var imgCached= this.yearMap.get(strKey);
-            if(imgCached)
-                ctx.drawImage(imgCached, 0, 0);
-            else{
-                var img = new window.Image();
-                
-                img.addEventListener("load", function(){
-                    ctx.drawImage(img, 0, 0);
-                });
-                img.setAttribute("src", strKey);
-                this.yearMap.set(strKey, img);
+            
+            var img = new window.Image();
+            
+            img.addEventListener("load", function(){
+                ctx.drawImage(img, 0, 0);
+            });
+            img.setAttribute("src", strKey);
+            this.cache.set(strKey, tile);
+            this.keys.push(strKey);
+            if(this.keys.length==MAX){
+                for(let i=0; i<10;i++)
+                    this.cache.delete(this.keys[i]);
+                this.keys.splice(0, 10);
             }
+                    
             // return the tile so it can be rendered on screen
             done(undefined,tile);
         };
-
+        //looks like if there's a few ms timeout, Leaflet will not have the "zoom level mix" problem
         setTimeout(drawLater.bind(this));
         return tile;
     },
