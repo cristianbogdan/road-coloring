@@ -3,34 +3,43 @@
   https://github.com/iamtekson/leaflet-geojson-vt
 */
 
-L.GeoJSON.VT = L.GridLayer.extend({
+L.GeoJSON.VT = L.TileLayer.extend({
   options: {
     async: false,
   },
 
-  initialize: function (geojson, options) {
-    L.setOptions(this, options);
-    L.GridLayer.prototype.initialize.call(this, options);
-    this.tileIndex = geojsonvt(geojson, this.options);
-  },
-
-  createTile: function (coords) {
-    // create a <canvas> element for drawing
-    var tile = L.DomUtil.create("canvas", "leaflet-tile");
-    // setup tile width and height according to the options
-    var size = this.getTileSize();
-    tile.width = size.x;
-    tile.height = size.y;
-    // get a canvas context and draw something on it using coords.x, coords.y and coords.z
-    var ctx = tile.getContext("2d");
-    // return the tile so it can be rendered on screen
-    var tileInfo = this.tileIndex.getTile(coords.z, coords.x, coords.y);
-    var features = tileInfo ? tileInfo.features : [];
-    for (const feature of features) {
-      this.drawFeature(ctx, feature);
-    }
-    return tile;
-  },
+    initialize: function (geojson, options) {
+        L.setOptions(this, options);
+        L.TileLayer.prototype.initialize.call(this, "", options);
+        this.tileIndex = geojsonvt(geojson, this.options);
+    },
+    
+    createTile: function (coords, done) {
+        // create a <canvas> element for drawing
+        var tile = L.DomUtil.create("canvas", "leaflet-tile");
+        
+        function drawLater(){
+            // setup tile width and height according to the options
+            var size = this.getTileSize();
+            tile.width = size.x;
+            tile.height = size.y;
+            // get a canvas context and draw something on it using coords.x, coords.y and coords.z
+            var ctx = tile.getContext("2d");
+            
+            // ctx.font = "12px Arial";
+            // ctx.fillText(`${coords.x}/${coords.y}/${coords.z}`, 0, 10);
+            
+            var tileInfo = this.tileIndex.getTile(coords.z, coords.x, coords.y);
+            var features = tileInfo ? tileInfo.features : [];
+            for (const feature of features) {
+                this.drawFeature(ctx, feature);
+            }
+            // return the tile so it can be rendered on screen
+            done(undefined,tile);
+        };
+        setTimeout(drawLater.bind(this));
+        return tile;
+    },
 
   drawFeature: function (ctx, feature) {
     if (this.options.filter instanceof Function) {
