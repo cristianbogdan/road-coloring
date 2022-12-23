@@ -17,6 +17,8 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
             L.GridLayer.prototype.initialize.call(this, options);
 
         this.tileIndex = geojsonvt(geojson, this.options);
+        // TODO: should be a WeakMap
+        this.yearMap= new Map();
     },
     
     createTile: function (coords, done) {
@@ -40,10 +42,20 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
                 this.drawFeature(ctx, feature);
             }
 
-            var img = new window.Image();
-            img.addEventListener("load", function(){ ctx.drawImage(img, 0, 0);});
-            img.setAttribute("src", `/infra/${coords.z}/${coords.x}/${coords.y}.png`);
-            
+            const strKey= `/infra/${coords.z}/${coords.x}/${coords.y}.png`;
+            var imgCached= this.yearMap.get(strKey);
+            if(imgCached)
+                ctx.drawImage(imgCached, 0, 0);
+            else{
+                console.log(coords);
+                var img = new window.Image();
+                
+                img.addEventListener("load", function(){
+                    ctx.drawImage(img, 0, 0);
+                });
+                img.setAttribute("src", strKey);
+                this.yearMap.set(strKey, img);
+            }
             // return the tile so it can be rendered on screen
             done(undefined,tile);
         };
