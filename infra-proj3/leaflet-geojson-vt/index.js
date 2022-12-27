@@ -19,18 +19,21 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
             L.GridLayer.prototype.initialize.call(this, options);
 
         this.tileIndex = geojsonvt(geojson, this.options);
+        this.initCache();
+    },
+
+
+    initCache(){
         // TODO: should be a WeakMap
         this.cache= new Map();
         this.keys=[];
     },
-
-
     createTile: function (coords, done) {
         const strKey= `/infra/${coords.z}/${coords.x}/${coords.y}.png`;
 
         const cachedTile= this.cache.get(strKey);
         if(cachedTile){
-            done(null, cachedTile);
+            setTimeout(function(){ done(null, cachedTile);});
             return cachedTile;
         }
         // create a <canvas> element for drawing       
