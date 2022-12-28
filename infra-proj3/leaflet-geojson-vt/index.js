@@ -4,7 +4,7 @@
 */
 
 const tileLayer= false;
-const MAX=100;
+const MAX=200;
 
 L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
   options: {
@@ -33,6 +33,7 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
 
         const cachedTile= this.cache.get(strKey);
         if(cachedTile){
+            // console.log("hit "+`${coords.z}/${coords.x}/${coords.y}`);
             setTimeout(function(){ done(null, cachedTile);});
             return cachedTile;
         }
@@ -64,14 +65,17 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
                 ctx.drawImage(img, 0, 0);
             });
             img.setAttribute("src", strKey);
-            this.cache.set(strKey, tile);
-            this.keys.push(strKey);
-            if(this.keys.length==MAX){
-                for(let i=0; i<10;i++)
-                    this.cache.delete(this.keys[i]);
-                this.keys.splice(0, 10);
+
+            if(coords.z<12){
+                this.cache.set(strKey, tile);
+                this.keys.push(strKey);
+                if(this.keys.length==MAX){
+                    for(let i=0; i<10;i++)
+                        this.cache.delete(this.keys[i]);
+                    this.keys.splice(0, 10);
+                }
             }
-                    
+            
             // return the tile so it can be rendered on screen
             done(undefined,tile);
         };
