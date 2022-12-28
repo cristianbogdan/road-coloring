@@ -29,6 +29,9 @@ try { MAP_ROOT }catch(e) {
 }
 var map = undefined;
 
+// larger values tend to block Safari on iPhone after lots of panning and deep zoom-in
+const EDGE=1;
+
 function computeStatus(props) {
     props.status.split(',').forEach(function (prop) {
         var kv = prop.split(':');
@@ -181,10 +184,10 @@ function loadDoc(zoom) {
         googleUrl= 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
     ,        thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
     
-    var osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib}),
-        googleMap= L.tileLayer(googleUrl),
+    var //osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib, edgeBufferTiles:2}),
+        googleMap= L.tileLayer(googleUrl, {edgeBufferTiles:EDGE}),
 //      osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
-        landMap = L.tileLayer(landUrl, {attribution: thunAttrib}),
+        landMap = L.tileLayer(landUrl, {attribution: thunAttrib, edgeBufferTiles:EDGE}),
 //      osmHikeBikeMap = L.tileLayer(hikeBikeUrl, {attribution: thunAttrib}),
 //      roadQMap1= L.tileLayer(roadQUrl1),
         dummy=0;
@@ -252,6 +255,8 @@ function loadDoc(zoom) {
         tolerance: 5,
         debug: true,
         solidChildren: true,
+        edgeBufferTiles: EDGE,
+        keepBuffer:4,
         style(feature){
             const tags = feature.tags;
             // if (feature.type == 1) console.log(feature.type, tags)
