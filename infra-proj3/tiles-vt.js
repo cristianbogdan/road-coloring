@@ -263,7 +263,6 @@ function loadDoc(zoom) {
         keepBuffer: 4,
         style(feature) {
             const tags = feature.tags;
-//            console.log(tags)
             // if (feature.type == 1) console.log(feature.type, tags)
 
             if (tags.highway === 'proposed') return proposedHighwayStyle;
