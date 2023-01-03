@@ -34,23 +34,24 @@ var map = undefined;
 var roadsLayer = undefined;
 
 function computeStatus(props) {
-    props.status.split(',').forEach(function (prop) {
-        var kv = prop.split(':');
-        if (kv.length > 1) {
-            props[kv[0]] = kv[1];
-            if (kv[0] == 'progress') {
-                props.progress = kv[1].split(' ');
+    if(!props.status) return;
+    for (const prop of props.status.split(',')) {
+        const [prop_key, prop_value] = prop.split(':');
+        if (prop_value) {
+            props[prop_key] =prop_value;
+            if (prop_key == 'progress') {
+                props.progress = prop_value.split(' ');
                 props.latestProgress = parseFloat(props.progress[0].split('%')[0]);
-            } else if (kv[0] == 'progress_estimate') {
-                props.progress_estimate = kv[1].split(' ');
+            } else if (prop_key == 'progress_estimate') {
+                props.progress_estimate = prop_value.split(' ');
                 props.latestProgress = parseFloat(props.progress_estimate[0].split('%')[0]);
-            } else if (kv[0] == 'signal_progress') {
-                props.signal_progress = kv[1].split(' ');
+            } else if (prop_key == 'signal_progress') {
+                props.signal_progress = prop_value.split(' ');
                 props.latestSignalProgress = parseFloat(props.signal_progress[0].split('%')[0]);
             }
         } else
-            props[kv[0]] = true;
-    });
+            props[prop_key] = true;
+    };
     //if(p.progress_estimate)
     //p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);
     props.hadStatus = true;
@@ -287,6 +288,10 @@ function loadDoc(zoom) {
     };
 
     fetch("/maps/data/data-sql-infra.geo.json").then(r=>r.json()).then(function(data){
+        console.time("Preprocess geoJson");
+        for(const feature of data.features) computeStatus(feature.properties);
+        console.timeEnd("Preprocess geoJson");
+
         roadsLayer= L.geoJson.vt(data, options);
         roadsLayer.addTo(map);
         roadsLayer.bindPopup('Hi There!');
