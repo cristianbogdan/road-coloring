@@ -17,12 +17,10 @@ const filters =
     + '</div>';
 
 function legendContent() {
-    return '<div style="background-color: rgba(255, 255, 255, 0.8); padding: 4px 8px 4px 8px; font-size:14px; border-radius: 5px;" onclick="event.stopPropagation()">'
-        + contributors
+    return contributors
         + filters
         + legendText
         + getInvolved
-        + '</div>'
 }
 
 const legendFilterClickHandler = (e, div) => {
@@ -37,9 +35,11 @@ const legendFilterClickHandler = (e, div) => {
 function createLegend() {
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function (map) {
-        const div = L.DomUtil.create('div', '');
+        const div = L.DomUtil.create('div', 'legend-container');
+        L.DomEvent.disableClickPropagation(div)
         div.innerHTML = legendContent();
         return div;
     }
+
     return legend;
 }
