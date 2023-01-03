@@ -263,7 +263,7 @@ function loadDoc(zoom) {
         keepBuffer: 4,
         style(feature) {
             const tags = feature.tags;
-            console.log(tags)
+//            console.log(tags)
             // if (feature.type == 1) console.log(feature.type, tags)
 
             if (tags.highway === 'proposed') return proposedHighwayStyle;
@@ -289,6 +289,22 @@ function loadDoc(zoom) {
         }
     };
 
+    const lotLimits= L.geoJSON(null, {
+        onEachFeature: function (feature, layer) {
+            if (feature.properties) {
+                var popupString = '<div class="popup">';
+                for (var k in feature.properties) {
+                    var v = feature.properties[k];
+                    if(v)
+                        popupString += k + ': ' + v + '<br />';
+                }
+                popupString += '</div>';
+                layer.bindPopup(popupString);
+            }
+        }
+    });
+    fetch("/maps/data/lot_limits.json").then(r=> r.json()).then(function(data){ lotLimits.addData(data); });
+    
     fetch("/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
         console.time("Preprocess geoJson");
         for (const feature of data.features) computeStatus(feature.properties);
@@ -296,10 +312,9 @@ function loadDoc(zoom) {
 
         roadsLayer = L.geoJson.vt(data, options);
         roadsLayer.addTo(map);
-        roadsLayer.bindPopup('Hi There!');
+        lotLimits.addTo(map);
+        //roadsLayer.bindPopup('Hi There!');
         map.on('click', mapClick);
-
-
 
         L.control.layers(
             {
@@ -311,6 +326,7 @@ function loadDoc(zoom) {
             {
                 "Projects (client)": roadsLayer,
                 "Projects (server)": L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
+                "Limite de lot": lotLimits,
             }
         ).addTo(map);
         /*layer.bindPopup(function(layer){
