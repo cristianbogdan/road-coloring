@@ -12,19 +12,13 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
     },
 
     initialize: function (geojson, options) {
-        this.geojson = geojson;
-        L.setOptions(this, options);
-        if (tileLayer)
-            L.TileLayer.prototype.initialize.call(this, "", options);
-        else
-            L.GridLayer.prototype.initialize.call(this, options);
-
-        this.tileIndex = geojsonvt(geojson, this.options);
+        if (options) L.setOptions(this, options);
+        if (geojson) this.tileIndex = geojsonvt(geojson, this.options);
         this.initCache();
     },
 
     reinitialize: function () {
-        this.initialize(this.geojson, this.options);
+        this.initialize();
         this.redraw();
     },
 
@@ -38,24 +32,22 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
 
         const cachedTile = this.cache.get(strKey);
         if (cachedTile) {
-            // console.log("hit "+`${coords.z}/${coords.x}/${coords.y}`);
             setTimeout(function () { done(null, cachedTile); });
             return cachedTile;
         }
         // create a <canvas> element for drawing       
         var tile = L.DomUtil.create("canvas", "leaflet-tile");
 
-
         function drawLater() {
             // setup tile width and height according to the options
             var size = this.getTileSize();
             tile.width = size.x;
             tile.height = size.y;
+
             // get a canvas context and draw something on it using coords.x, coords.y and coords.z
             var ctx = tile.getContext("2d");
-
-            //            ctx.font = "12px Arial";
-            //            ctx.fillText(`${coords.z}/${coords.x}/${coords.y}`, 0, 10);
+            // ctx.font = "12px Arial";
+            // ctx.fillText(`${coords.z}/${coords.x}/${coords.y}`, 0, 10);
 
             var tileInfo = this.tileIndex.getTile(coords.z, coords.x, coords.y);
             var features = tileInfo ? tileInfo.features : [];
@@ -63,9 +55,7 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
                 this.drawFeature(ctx, feature);
             }
 
-
             var img = new window.Image();
-
             img.addEventListener("load", function () {
                 ctx.drawImage(img, 0, 0);
             });
@@ -84,6 +74,7 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
             // return the tile so it can be rendered on screen
             done(undefined, tile);
         };
+
         //looks like if there's a few ms timeout, Leaflet will not have the "zoom level mix" problem
         setTimeout(drawLater.bind(this));
         return tile;
@@ -131,7 +122,7 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
             ctx.lineWidth = 0;
             ctx.strokeStyle = {};
         }
-        var fill = style.fill || true;
+        var fill = style.fill || false;
         if (fill) {
             ctx.fillStyle = style.fillColor || "#03f";
             var color = this.setOpacity(style.fillColor, style.fillOpacity);
