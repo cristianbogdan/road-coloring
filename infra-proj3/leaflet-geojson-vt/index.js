@@ -12,6 +12,7 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
   },
 
     initialize: function (geojson, options) {
+      this.geojson = geojson;
         L.setOptions(this, options);
         if(tileLayer)
             L.TileLayer.prototype.initialize.call(this, "",options);
@@ -22,6 +23,10 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
         this.initCache();
     },
 
+    reinitialize: function () {
+      this.initialize(this.geojson, this.options);
+      this.redraw();
+    },
 
     initCache(){
         // TODO: should be a WeakMap
@@ -93,7 +98,7 @@ L.GeoJSON.VT = (tileLayer?L.TileLayer:L.GridLayer).extend({
     const {type, geometry } = feature;
 
     ctx.beginPath();
-    
+    // ctx.setLineDash([10, 5]);  // 10px dashes, 5px spaces
     if (this.options.style) this.options.style instanceof Function ? this.setStyle(ctx, this.options.style(feature)) : this.setStyle(ctx, this.options.style);
     
     if (type === 2 || type === 3) {

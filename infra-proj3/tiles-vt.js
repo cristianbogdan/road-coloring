@@ -27,10 +27,11 @@ function jsonHasAnyKey(obj, list) {
 try { MAP_ROOT }catch(e) {
     MAP_ROOT="";
 }
-var map = undefined;
 
 // larger values tend to block Safari on iPhone after lots of panning and deep zoom-in
 const EDGE=1;
+var map = undefined;
+var roadsLayer = undefined;
 
 function computeStatus(props) {
     props.status.split(',').forEach(function (prop) {
@@ -183,6 +184,7 @@ function loadDoc(zoom) {
 //      hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
         googleUrl= 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
     ,        thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
+    createLegend().addTo(map);
     
     var //osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib, edgeBufferTiles:2}),
         googleMap= L.tileLayer(googleUrl, {edgeBufferTiles:EDGE}),
@@ -278,14 +280,16 @@ function loadDoc(zoom) {
             return defaultStyle;
         },
         filter: function(feature, layer) {
+            const found = legend.projectTypes.find(p => p.condition(feature.tags));
+            if(found) return !found.hidden;
             return true;
         }
     };
 
     fetch("/maps/data/data-sql-infra.geo.json").then(r=>r.json()).then(function(data){
-        const layer= L.geoJson.vt(data, options);
-        layer.addTo(map);
-        layer.bindPopup('Hi There!');
+        roadsLayer= L.geoJson.vt(data, options);
+        roadsLayer.addTo(map);
+        roadsLayer.bindPopup('Hi There!');
         map.on('click', mapClick);
 
 
@@ -298,7 +302,7 @@ function loadDoc(zoom) {
             //  "OSM B&W":osmBwMap
             },
             {
-                "Projects (client)":layer,
+                "Projects (client)":roadsLayer,
                 "Projects (server)":   L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
             }       
     ).addTo(map);
