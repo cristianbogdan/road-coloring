@@ -170,6 +170,7 @@ function loadDoc(zoom) {
         minZoom: 7,
         maxZoom: 18
     });
+    L.DomUtil.addClass(map._container, 'default-cursor');
 
     // create the OpenStreetMap layer
 
