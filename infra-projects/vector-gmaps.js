@@ -95,7 +95,7 @@ let old_render = function (p) {
         AC = colorProgress(p.latestProgress)
 
 //    if(p.construction&&p.opening_date>=nextYear || !p.opening_date)
-//	construction= (p.access=='no')?lightred:lightblue;
+//      construction= (p.access=='no')?lightred:lightblue;
 
     if (p.construction && !p.hadStatus)
         return [transp, unknown];
@@ -167,23 +167,23 @@ var attrib = [new ol.Attribution({
         + '<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>' +
         '<div style:"font-size:2px"><br></div></div></span>'
 })];
-	
+        
 /*var roads=
-	new ol.layer.Vector({
-	    source: new ol.source.Vector({
-		format: new ol.format.GeoJSON(),
-		tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
-		tilePixelRatio: 16,
-		url: MAP_ROOT+'/maps/data/motorways.json'
-		,attributions: attrib
-		
-	    }),
-	    style: styleFunction
-	});
+        new ol.layer.Vector({
+            source: new ol.source.Vector({
+                format: new ol.format.GeoJSON(),
+                tileGrid: ol.tilegrid.createXYZ({maxZoom: 17}),
+                tilePixelRatio: 16,
+                url: MAP_ROOT+'/maps/data/motorways.json'
+                ,attributions: attrib
+                
+            }),
+            style: styleFunction
+        });
 
 */
 function overpass() {
-    var url =MAP_ROOT+'/maps/data/data-overpass-infra.geo.json';
+    var url =MAP_ROOT+'/maps/data/data-sql-infra.geo.json';
 
     var xhr = new XMLHttpRequest();
 
@@ -334,7 +334,7 @@ var map = gmap ? new ol.Map({
         infra,
         icons,
 //,
-//	roads
+//      roads
 
     ],
     target: 'olmap',
@@ -394,9 +394,9 @@ map.on('click', function (evt) {
             features.push(feature);
         });
     if (features[0]) {
-        //	document.getElementById('text').innerHTML= treatFeature(features[0]);
+        //      document.getElementById('text').innerHTML= treatFeature(features[0]);
         //    else
-        //	document.getElementById('text').innerHTML="";
+        //      document.getElementById('text').innerHTML="";
         //features.map(treatFeature).join(", ");
 
         $(popupElement).popover({
@@ -416,7 +416,7 @@ map.on('click', function (evt) {
 /*
 $('body').on('click', function (e) {
     if(popupOn && popupOn.event_.screenX==e.originalEvent.screenX && popupOn.event_.screenY==e.originalEvent.screenY)
-	return;
+        return;
     $(popupElement).popover('hide');
     popupOn=false;
 });
@@ -426,13 +426,13 @@ $('body').on('click', function (e) {
 /*
 map.on('pointermove', function(e) {
     if (e.dragging) {
-	$(popupElement).popover('destroy');
-	return;
+        $(popupElement).popover('destroy');
+        return;
     }
     var pixel = map.getEventPixel(e.originalEvent);
     var hit = map.hasFeatureAtPixel(pixel);
     if(map.getTarget().style)
-	map.getTarget().style.cursor = hit ? 'pointer' : '';
+        map.getTarget().style.cursor = hit ? 'pointer' : '';
 });
 */
 
@@ -442,8 +442,8 @@ function refresh() {
 
 function treatFeature(rd) {
     var prop = rd.getProperties();
-	if (!prop.osm_id) prop.osm_id=prop.id.split('/')[1];
-	
+        if (!prop.osm_id) prop.osm_id=prop.id.split('/')[1];
+        
     if (prop.comentarii_problema) {
         return '<b>' + prop.nume + '</b><br/>'
             + prop.comentarii_problema + '<br/><br/>'
