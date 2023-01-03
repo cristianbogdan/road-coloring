@@ -24,21 +24,21 @@ function jsonHasAnyKey(obj, list) {
     }
 }
 
-try { MAP_ROOT }catch(e) {
-    MAP_ROOT="";
+try { MAP_ROOT } catch (e) {
+    MAP_ROOT = "";
 }
 
 // larger values tend to block Safari on iPhone after lots of panning and deep zoom-in
-const EDGE=1;
+const EDGE = 1;
 var map = undefined;
 var roadsLayer = undefined;
 
 function computeStatus(props) {
-    if(!props.status) return;
+    if (!props.status) return;
     for (const prop of props.status.split(',')) {
         const [prop_key, prop_value] = prop.split(':');
         if (prop_value) {
-            props[prop_key] =prop_value;
+            props[prop_key] = prop_value;
             if (prop_key == 'progress') {
                 props.progress = prop_value.split(' ');
                 props.latestProgress = parseFloat(props.progress[0].split('%')[0]);
@@ -59,8 +59,8 @@ function computeStatus(props) {
 };
 
 function getPopupHtmlContent(props) {
-        if (!props.osm_id) props.osm_id=props.id.split('/')[1];
-        
+    if (!props.osm_id) props.osm_id = props.id.split('/')[1];
+
     if (props.comentarii_problema) {
         return '<b>' + props.nume + '</b><br/>'
             + props.comentarii_problema + '<br/><br/>'
@@ -79,7 +79,7 @@ function getPopupHtmlContent(props) {
         + "</a>"
         //+"[<a href=\"https://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
         //    +"</a> [<a href=\"https://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
-    ;
+        ;
 
     if (props.status) computeStatus(props);
 
@@ -153,7 +153,7 @@ function showPopupDetails(latlng, props) {
 }
 
 function mapClick(event) {
-    const { lat, lng } = event.latlng;  
+    const { lat, lng } = event.latlng;
     const latlngStr = `${lat},${lng}`;
     console.log(zoomPrecisionMap[map.getZoom()])
     fetch(`${MAP_ROOT}/click?latLng=${latlngStr}&max=${zoomPrecisionMap[map.getZoom()]}`).then(response => response.json()).then(data => {
@@ -163,59 +163,59 @@ function mapClick(event) {
 }
 
 function loadDoc(zoom) {
-    zoom=zoom||7;
-    
+    zoom = zoom || 7;
 
-    map= new L.Map('mymap',{
-        minZoom:7,
-        maxZoom:18
+
+    map = new L.Map('mymap', {
+        minZoom: 7,
+        maxZoom: 18
     });
 
     // create the OpenStreetMap layer
 
     const osmLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>',
-    thunLink = '<a href="https://thunderforest.com/">Thunderforest</a>';
-    
+        thunLink = '<a href="https://thunderforest.com/">Thunderforest</a>';
+
     var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         osmAttrib = '&copy; ' + osmLink + ' Contributors',
-        roadQUrl1= MAP_ROOT+'/infraPbf/{z}/{x}/{y}.pbf',
+        roadQUrl1 = MAP_ROOT + '/infraPbf/{z}/{x}/{y}.pbf',
         //osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-        landUrl='https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey,
+        landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=' + thunderforestKey,
         //        landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
-//      hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
-        googleUrl= 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
-    ,        thunAttrib = '&copy; '+osmLink+' Contributors & '+thunLink;
+        //      hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
+        googleUrl = 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
+        , thunAttrib = '&copy; ' + osmLink + ' Contributors & ' + thunLink;
     createLegend().addTo(map);
-    
-    var //osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib, edgeBufferTiles:2}),
-        googleMap= L.tileLayer(googleUrl, {edgeBufferTiles:EDGE}),
-//      osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
-        landMap = L.tileLayer(landUrl, {attribution: thunAttrib, edgeBufferTiles:EDGE}),
-//      osmHikeBikeMap = L.tileLayer(hikeBikeUrl, {attribution: thunAttrib}),
-//      roadQMap1= L.tileLayer(roadQUrl1),
-        dummy=0;
-    
-    function changeUrl(){
-        window.location.replace("#map="+map.getZoom()+"/"
-                                +Math.round(map.getCenter().lat*1000)/1000+"/"
-                                +Math.round(map.getCenter().lng*1000)/1000);
-    };
-    
 
-    var lat= 46;
-    var lng= 25;
-    
-    var x=window.location.href.split('#map=');
-    if(x.length==2){
-        var y= x[1].split("/");
-        zoom=y[0];
-        lat=y[1];
-        lng=y[2];
+    var //osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib, edgeBufferTiles:2}),
+        googleMap = L.tileLayer(googleUrl, { edgeBufferTiles: EDGE }),
+        //      osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
+        landMap = L.tileLayer(landUrl, { attribution: thunAttrib, edgeBufferTiles: EDGE }),
+        //      osmHikeBikeMap = L.tileLayer(hikeBikeUrl, {attribution: thunAttrib}),
+        //      roadQMap1= L.tileLayer(roadQUrl1),
+        dummy = 0;
+
+    function changeUrl() {
+        window.location.replace("#map=" + map.getZoom() + "/"
+            + Math.round(map.getCenter().lat * 1000) / 1000 + "/"
+            + Math.round(map.getCenter().lng * 1000) / 1000);
+    };
+
+
+    var lat = 46;
+    var lng = 25;
+
+    var x = window.location.href.split('#map=');
+    if (x.length == 2) {
+        var y = x[1].split("/");
+        zoom = y[0];
+        lat = y[1];
+        lng = y[2];
     }
 
 
     // SLD style
-     const defaultStyle = {
+    const defaultStyle = {
         clickable: true,
         color: "#000",
         // "fillColor": "#00D",
@@ -244,7 +244,7 @@ function loadDoc(zoom) {
 
     const underConstructionHighway = {
         clickable: true,
-        color: Color.DEEP_SKY_BLUE, 
+        color: Color.DEEP_SKY_BLUE,
         weight: 3.0,
     };
 
@@ -254,21 +254,22 @@ function loadDoc(zoom) {
 
     var options = {
         maxZoom: 18,
-        pane:'overlayPane',
+        pane: 'overlayPane',
         tolerance: 5,
         debug: true,
         solidChildren: true,
         edgeBufferTiles: EDGE,
-        keepBuffer:4,
-        style(feature){
+        keepBuffer: 4,
+        style(feature) {
             const tags = feature.tags;
+            console.log(tags)
             // if (feature.type == 1) console.log(feature.type, tags)
-            
+
             if (tags.highway === 'proposed') return proposedHighwayStyle;
             if (tags.highway === 'construction') return underConstructionHighway;
-            if(['motorway', 'primary', 'trunk', 'rest_area'].includes(tags.highway)) return highwayStyle;   
+            if (['motorway', 'primary', 'trunk', 'rest_area'].includes(tags.highway)) return highwayStyle;
 
-            if(tags.highway === 'lot_limit' || tags.railway === 'lot_limit') return invisibleStyle;
+            if (tags.highway === 'lot_limit' || tags.railway === 'lot_limit') return invisibleStyle;
 
             // if(props.bridge ) return {
             //     "clickable": true,
@@ -280,77 +281,77 @@ function loadDoc(zoom) {
             // }
             return defaultStyle;
         },
-        filter: function(feature, layer) {
+        filter: function (feature, layer) {
             const found = legend.projectTypes.find(p => p.condition(feature.tags));
-            if(found) return !found.hidden;
+            if (found) return !found.hidden;
             return true;
         }
     };
 
-    fetch("/maps/data/data-sql-infra.geo.json").then(r=>r.json()).then(function(data){
+    fetch("/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
         console.time("Preprocess geoJson");
-        for(const feature of data.features) computeStatus(feature.properties);
+        for (const feature of data.features) computeStatus(feature.properties);
         console.timeEnd("Preprocess geoJson");
 
-        roadsLayer= L.geoJson.vt(data, options);
+        roadsLayer = L.geoJson.vt(data, options);
         roadsLayer.addTo(map);
         roadsLayer.bindPopup('Hi There!');
         map.on('click', mapClick);
 
 
-        
+
         L.control.layers(
-        {
-            "Google": googleMap,
-            "Landscape":landMap,
-            //"Hike & bike": osmHikeBikeMap,
-            //  "OSM B&W":osmBwMap
+            {
+                "Google": googleMap,
+                "Landscape": landMap,
+                //"Hike & bike": osmHikeBikeMap,
+                //  "OSM B&W":osmBwMap
             },
             {
-                "Projects (client)":roadsLayer,
-                "Projects (server)":   L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
-            }       
-    ).addTo(map);
+                "Projects (client)": roadsLayer,
+                "Projects (server)": L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
+            }
+        ).addTo(map);
         /*layer.bindPopup(function(layer){
             console.log(layer);
         }).addTo(map);*/
     });
 
-/*    var pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
-        getFeatureId: function(f) {
-            console.log(f);
-            return f.properties.osm_id;
-        },
-        vectorTileLayerStyles:{
-            way:style
-        },
-
-        onEachFeature: function (feature, layer) {
-            if (feature.properties) {
-                var popupString = '<div class="popup">';
-                for (var k in feature.properties) {
-                    var v = feature.properties[k];
-                    if(v)
-                        popupString += k + ': ' + v + '<br />';
+    /*    var pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
+            getFeatureId: function(f) {
+                console.log(f);
+                return f.properties.osm_id;
+            },
+            vectorTileLayerStyles:{
+                way:style
+            },
+    
+            onEachFeature: function (feature, layer) {
+                if (feature.properties) {
+                    var popupString = '<div class="popup">';
+                    for (var k in feature.properties) {
+                        var v = feature.properties[k];
+                        if(v)
+                            popupString += k + ': ' + v + '<br />';
+                    }
+                    popupString += '</div>';
+                    layer.bindPopup(popupString);
                 }
-                popupString += '</div>';
-                layer.bindPopup(popupString);
+    
             }
-
+            
         }
-        
-    }
-                                       );
-*/
-// map.addLayer(landMap);
+                                           );
+    */
+    // map.addLayer(landMap);
     map.addLayer(googleMap);
     //map.addLayer(pbfLayer);
-    
+
     map.on('dragend', changeUrl);
     map.on('zoomend', changeUrl);
 
 
-    map.setView( new L.LatLng(lat, lng), zoom);
+    map.setView(new L.LatLng(lat, lng), zoom);
 
 
     changeUrl();
