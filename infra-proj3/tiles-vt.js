@@ -291,14 +291,8 @@ function loadDoc(zoom) {
     const lotLimits= L.geoJSON(null, {
         onEachFeature: function (feature, layer) {
             if (feature.properties) {
-                var popupString = '<div class="popup">';
-                for (var k in feature.properties) {
-                    var v = feature.properties[k];
-                    if(v)
-                        popupString += k + ': ' + v + '<br />';
-                }
-                popupString += '</div>';
-                layer.bindPopup(popupString);
+                const popupHtmlContent = getPopupHtmlContent(feature.properties);
+                layer.bindPopup(popupHtmlContent);
             }
         }
     });
