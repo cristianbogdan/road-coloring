@@ -7,12 +7,28 @@
     padding: 4px 8px 4px 8px;
     font-size: 14px;
     border-radius: 5px;
-    line-height: 110%;
+}
+
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    .legend-container {
+        line-height: 125%;
+    }
+}
+
+@media screen and (orientation: landscape) and (max-height: 540px) {
+    .legend-container {
+        line-height: 100%;
+    }
 }
 
 @media screen and (orientation: landscape) and (max-height: 480px) {
     .leaflet-bottom .leaflet-control {
         margin-bottom: 0px;
         margin-right: 0px;
+    }
+
+    .legend-container {
+        border-radius: 0;
+        border-top-left-radius: 5px;
     }
 }

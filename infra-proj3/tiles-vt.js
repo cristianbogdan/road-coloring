@@ -165,36 +165,34 @@ function mapClick(event) {
 function loadDoc(zoom) {
     zoom = zoom || 7;
 
-
     map = new L.Map('mymap', {
         minZoom: 7,
-        maxZoom: 18
+        maxZoom: 18,
     });
+
+    map.attributionControl.addAttribution('© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
+    map.attributionControl.addAttribution('<a href="https://proinfrastructura.ro">API</a>');
+    map.attributionControl.addAttribution('<a href="http://forum.peundemerg.ro">peundemerg.ro</a>');
+
     L.DomUtil.addClass(map._container, 'default-cursor');
-
-    // create the OpenStreetMap layer
-
-    const osmLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>',
-        thunLink = '<a href="https://thunderforest.com/">Thunderforest</a>';
-
-    var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        osmAttrib = '&copy; ' + osmLink + ' Contributors',
-        roadQUrl1 = MAP_ROOT + '/infraPbf/{z}/{x}/{y}.pbf',
-        //osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
-        landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=' + thunderforestKey,
-        //        landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
-        //      hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png',
-        googleUrl = 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}'
-        , thunAttrib = '&copy; ' + osmLink + ' Contributors & ' + thunLink;
     createLegend().addTo(map);
 
-    var //osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib, edgeBufferTiles:2}),
-        googleMap = L.tileLayer(googleUrl, { edgeBufferTiles: EDGE }),
-        //      osmBwMap=L.tileLayer(osmBwUrl, {attribution: osmAttrib}),
-        landMap = L.tileLayer(landUrl, { attribution: thunAttrib, edgeBufferTiles: EDGE }),
-        //      osmHikeBikeMap = L.tileLayer(hikeBikeUrl, {attribution: thunAttrib}),
-        //      roadQMap1= L.tileLayer(roadQUrl1),
-        dummy = 0;
+    const landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=' + thunderforestKey;
+    const googleUrl = 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}';
+    // const osmLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+    // const thunLink = '<a href="https://thunderforest.com/">Thunderforest</a>';
+    // const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    // const roadQUrl1 = MAP_ROOT + '/infraPbf/{z}/{x}/{y}.pbf';
+    // const osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png';
+    // const landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png';
+    // const  hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png';
+
+    const googleMap = L.tileLayer(googleUrl, { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" });
+    const landMap = L.tileLayer(landUrl, { edgeBufferTiles: EDGE });
+    // const osmBwMap = L.tileLayer(osmBwUrl);
+    // const osmMap = L.tileLayer(osmUrl, { edgeBufferTiles:2 });
+    // const osmHikeBikeMap = L.tileLayer(hikeBikeUrl, { attribution: thunAttrib });
+    // const roadQMap1= L.tileLayer(roadQUrl1);
 
     function changeUrl() {
         window.location.replace("#map=" + map.getZoom() + "/"
@@ -288,26 +286,26 @@ function loadDoc(zoom) {
         }
     };
 
-    const limitIcon= L.icon({
-        iconUrl:"/maps/images/pin.png",
-        iconSize:     [25, 25], // width and height of the image in pixels
-        iconAnchor:   [12, 25], // point of the icon which will correspond to marker's location
-        popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+    const limitIcon = L.icon({
+        iconUrl: "/maps/images/pin.png",
+        iconSize: [25, 25], // width and height of the image in pixels
+        iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
     });
-    const lotLimits= L.geoJSON(null, {
+    const lotLimits = L.geoJSON(null, {
         onEachFeature: function (feature, layer) {
             if (feature.properties) {
                 const popupHtmlContent = getPopupHtmlContent(feature.properties);
                 layer.bindPopup(popupHtmlContent);
             }
         },
-        
+
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, { icon: limitIcon});
-         }
+            return L.marker(latlng, { icon: limitIcon });
+        }
     });
-    fetch("/maps/data/lot_limits.json").then(r=> r.json()).then(function(data){ lotLimits.addData(data); });
-    
+    fetch("/maps/data/lot_limits.json").then(r => r.json()).then(function (data) { lotLimits.addData(data); });
+
     fetch("/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
         console.time("Preprocess geoJson");
         for (const feature of data.features) computeStatus(feature.properties);
@@ -323,8 +321,8 @@ function loadDoc(zoom) {
             {
                 "Google": googleMap,
                 "Landscape": landMap,
-                //"Hike & bike": osmHikeBikeMap,
-                //  "OSM B&W":osmBwMap
+                // "Hike & bike": osmHikeBikeMap,
+                // "OSM B&W":osmBwMap
             },
             {
                 "Projects (client)": roadsLayer,

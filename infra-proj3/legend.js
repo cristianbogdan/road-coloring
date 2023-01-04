@@ -17,10 +17,7 @@ const filters =
     + '</div>';
 
 function legendContent() {
-    return contributors
-        + filters
-        + legendText
-        // + getInvolved
+    return filters + legendText;
 }
 
 const legendFilterClickHandler = (e, div) => {
