@@ -288,13 +288,23 @@ function loadDoc(zoom) {
         }
     };
 
+    const limitIcon= L.icon({
+        iconUrl:"/maps/images/pin.png",
+        iconSize:     [25, 25], // width and height of the image in pixels
+        iconAnchor:   [12, 25], // point of the icon which will correspond to marker's location
+        popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+    });
     const lotLimits= L.geoJSON(null, {
         onEachFeature: function (feature, layer) {
             if (feature.properties) {
                 const popupHtmlContent = getPopupHtmlContent(feature.properties);
                 layer.bindPopup(popupHtmlContent);
             }
-        }
+        },
+        
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, { icon: limitIcon});
+         }
     });
     fetch("/maps/data/lot_limits.json").then(r=> r.json()).then(function(data){ lotLimits.addData(data); });
     
