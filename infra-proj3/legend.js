@@ -20,7 +20,7 @@ function legendContent() {
     return contributors
         + filters
         + legendText
-        + getInvolved
+        // + getInvolved
 }
 
 const legendFilterClickHandler = (e, div) => {

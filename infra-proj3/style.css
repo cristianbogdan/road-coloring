@@ -9,3 +9,10 @@
     border-radius: 5px;
     line-height: 110%;
 }
+
+@media screen and (orientation: landscape) and (max-height: 480px) {
+    .leaflet-bottom .leaflet-control {
+        margin-bottom: 0px;
+        margin-right: 0px;
+    }
+}
