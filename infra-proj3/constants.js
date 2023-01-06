@@ -11,7 +11,8 @@ const Color = {
     ORANGE_RED: '#ff4500',
     DODGER_BLUE: '#1e90ff',
     ROSE_PINK: '#ffbdbd',
-    SHIP_COVE: '#6c7b8b'
+    SHIP_COVE: '#6c7b8b',
+	GREEN:	'#d0f5e4'
 }
 
 const LineWeight = {
@@ -40,7 +41,7 @@ const zoomPrecisionMap = {
 }
 
 function colorProgress(latestProgress) {
-    return !latestProgress ? green : latestProgress > 75 ? dodgerBlue : latestProgress > 50 ? deepSkyBlue : latestProgress > 25 ? lightSkyBlue : latestProgress > 0 ? powderBlue : gray;
+    return !latestProgress ? Color.GREEN : latestProgress > 75 ? Color.DODGER_BLUE : latestProgress > 50 ? Color.DEEP_SKY_BLUE : latestProgress > 25 ? Color.LIGHT_SKY_BLUE : latestProgress > 0 ? Color.POWDER_BLUE : Color.GRAY;
 }
 
 function a_missing(p) {
@@ -137,8 +138,8 @@ const legend = {
             text: 'în construire, cu AC, stadiu:<br>'
                 + '<font color=' + Color.GRAY + '>0%</font> <font color=' + Color.POWDER_BLUE + '>&lt;25%</font> <font color=' + Color.LIGHT_SKY_BLUE + '>&lt;50%</font> <font color=' + Color.DEEP_SKY_BLUE + '>&lt;75%</font> <font color=' + Color.DODGER_BLUE + '>&lt;100%</font>',
             condition: p => p.highway && p.construction && p.AC && p.builder,
-            // lineType: [colorProgress(p.latestProgress)],
-            lineType: [lightBlueLine],
+            lineType: [colorProgress(p.latestProgress)],
+            //	lineType: [lightBlueLine],
             canHide: true
         },
         {
@@ -231,7 +232,7 @@ const legend = {
             condition: p => p.highway && (p.proposed || p.hadStatus && !p.AC && !p.AM && !p.PTE),
             lineType: [rosePinkLine, whiteDashLine],
             canHide: true,
-            // hidden: true
+            hidden: true
         },
         {
             symbol: `background-color: ${Color.SHIP_COVE};`,
@@ -239,6 +240,7 @@ const legend = {
             condition: p => p.highway && p.construction && !p.hadStatus,
             lineType: [shipCoveLine],
             canHide: true,
+			hidden: true
         },
 
     ]
