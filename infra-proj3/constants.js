@@ -4,6 +4,7 @@ const Color = {
     RED: '#ff0000',
     ORANGE: '#ff8000',
     GRAY: '#808080',
+	GREEN:	'#d0f5e4',
     BLUE: '#0000ff',
     POWDER_BLUE: '#b0e0e6',
     LIGHT_SKY_BLUE: '#87cefa',
@@ -11,8 +12,7 @@ const Color = {
     ORANGE_RED: '#ff4500',
     DODGER_BLUE: '#1e90ff',
     ROSE_PINK: '#ffbdbd',
-    SHIP_COVE: '#6c7b8b',
-	GREEN:	'#d0f5e4'
+    SHIP_COVE: '#6c7b8b'
 }
 
 const LineWeight = {
@@ -138,8 +138,8 @@ const legend = {
             text: 'în construire, cu AC, stadiu:<br>'
                 + '<font color=' + Color.GRAY + '>0%</font> <font color=' + Color.POWDER_BLUE + '>&lt;25%</font> <font color=' + Color.LIGHT_SKY_BLUE + '>&lt;50%</font> <font color=' + Color.DEEP_SKY_BLUE + '>&lt;75%</font> <font color=' + Color.DODGER_BLUE + '>&lt;100%</font>',
             condition: p => p.highway && p.construction && p.AC && p.builder,
-            lineType: [colorProgress(p.latestProgress)],
-            //	lineType: [lightBlueLine],
+            //lineType: [colorProgress(p.latestProgress)],
+            lineType: [lightBlueLine],
             canHide: true
         },
         {
