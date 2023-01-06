@@ -1,19 +1,4 @@
-/*global L smoothness mainRoads otherRoads radare*/
-
-/* Example use : 
-(make sure the large data js files are served gzipped)
-
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="https://d3js.org/topojson.v1.min.js"></script>
-    <script src="https://roads2.enjoymaps.ro/geo/radare.js"></script>
-    <script src="main-roads.topo.json.js"></script>
-    <script src="other-roads.topo.json.js"></script>
-    <link rel="stylesheet" href="https://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-    <script src="leaflet.js"></script>
-    <script src="index.js" ></script>
-  </head>
-*/
+/*global L MAP_ROOT fetch Color*/
 
 //checks if any element from within a list is a key in an object
 function jsonHasAnyKey(obj, list) {
@@ -155,7 +140,7 @@ function showPopupDetails(latlng, props) {
 function mapClick(event) {
     const { lat, lng } = event.latlng;
     const latlngStr = `${lat},${lng}`;
-    console.log(zoomPrecisionMap[map.getZoom()])
+//    console.log(zoomPrecisionMap[map.getZoom()])
     fetch(`${MAP_ROOT}/click?latLng=${latlngStr}&max=${zoomPrecisionMap[map.getZoom()]}`).then(response => response.json()).then(data => {
         if (data === null) return
         showPopupDetails(event.latlng, data);
@@ -266,7 +251,10 @@ function loadDoc(zoom) {
         L.control.layers(
             {
                 "Google": googleMap,
-                "Landscape": landMap,
+                "Google terrain":L.tileLayer("http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}", { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" }),
+                "Google satellite":L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" }),
+                "Google satellite & labels":L.tileLayer("http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}", { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" }),
+                "Thunderforest Landscape": landMap,
                 // "Hike & bike": osmHikeBikeMap,
                 // "OSM B&W":osmBwMap
             },
