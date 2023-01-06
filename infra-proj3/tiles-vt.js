@@ -212,45 +212,6 @@ function loadDoc(zoom) {
         lng = y[2];
     }
 
-
-    // SLD style
-    const defaultStyle = {
-        clickable: true,
-        color: "#000",
-        // "fillColor": "#00D",
-        weight: 3.0,
-        // "opacity": 0.6,
-        // "fillOpacity": 0.2,        
-        // fillOpacity: 0.8,
-    };
-
-    const invisibleStyle = {
-        opacity: 0.000001
-    };
-    const greenStyle = {
-        color: "#00FF00",
-    };
-    const highwayStyle = {
-        clickable: true,
-        color: "#0000ff",
-        weight: 3.0,
-    };
-    const proposedHighwayStyle = {
-        clickable: true,
-        color: "#ffbdbd",
-        weight: 3.0,
-    };
-
-    const underConstructionHighway = {
-        clickable: true,
-        color: Color.DEEP_SKY_BLUE,
-        weight: 3.0,
-    };
-
-    var hoverStyle = {
-        "fillOpacity": 0.5
-    };
-
     var options = {
         maxZoom: 18,
         pane: 'overlayPane',
@@ -260,24 +221,9 @@ function loadDoc(zoom) {
         edgeBufferTiles: EDGE,
         keepBuffer: 4,
         style(feature) {
-            const tags = feature.tags;
-            // if (feature.type == 1) console.log(feature.type, tags)
-
-            if (tags.highway === 'proposed') return proposedHighwayStyle;
-            if (tags.highway === 'construction') return underConstructionHighway;
-            if (['motorway', 'primary', 'trunk', 'rest_area'].includes(tags.highway)) return highwayStyle;
-
-            if (tags.highway === 'lot_limit' || tags.railway === 'lot_limit') return invisibleStyle;
-
-            // if(props.bridge ) return {
-            //     "clickable": true,
-            //     "color": "#000",
-            //     "fillColor": "#00D",
-            //     "weight": 2.0,
-            //     "opacity": 0.8,
-            //     "fillOpacity": 0.2,
-            // }
-            return defaultStyle;
+            const found = legend.projectTypes.find(p => p.condition(feature.tags));
+            if (found && found.lineType) return found.lineType;
+            else return { stroke: false }
         },
         filter: function (feature, layer) {
             const found = legend.projectTypes.find(p => p.condition(feature.tags));

@@ -85,48 +85,64 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
             if (!this.options.filter(feature)) {
                 return;
             }
-
         }
         const { type, geometry } = feature;
 
-        ctx.beginPath();
-        // ctx.setLineDash([10, 5]);  // 10px dashes, 5px spaces
-        if (this.options.style) this.options.style instanceof Function ? this.setStyle(ctx, this.options.style(feature)) : this.setStyle(ctx, this.options.style);
+        let style = this.options.style instanceof Function ? this.options.style(feature) : this.options.style;
+        if (!style) style = [{}];
+        else if (!Array.isArray(style)) style = [style];
 
-        if (type === 2 || type === 3) {
-            for (const ring of geometry) {
-                for (var k = 0; k < ring.length; k++) {
-                    var p = ring[k];
-                    if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
-                    else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
+        // console.log('style l', style.length)
+
+        for (const currentStyle of style) {
+            // console.log(ctx)
+            // ctx.save()
+            ctx.beginPath();
+
+            this.setStyle(ctx, currentStyle)
+            if (type === 2 || type === 3) {
+                for (const ring of geometry) {
+                    for (var k = 0; k < ring.length; k++) {
+                        var p = ring[k];
+                        if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
+                        else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
+                    }
+                }
+            } else if (type === 1) {
+                for (const point of geometry) {
+                    const [x, y] = point;
+                    ctx.arc(x / 16.0, y / 16.0, 2, 0, Math.PI * 2, true);
                 }
             }
-        } else if (type === 1) {
-            for (const point of geometry) {
-                const [x, y] = point;
-                ctx.arc(x / 16.0, y / 16.0, 2, 0, Math.PI * 2, true);
-            }
-        }
-        if (type === 3 && this.options.style.fill) ctx.fill(this.options.style.fillRule || "evenodd");
+            if (type === 3 && currentStyle.fill) ctx.fill(currentStyle.fillRule || "evenodd");
 
-        ctx.stroke();
+            ctx.stroke();
+            // ctx.restore();
+        }
     },
 
-    setStyle: function (ctx, style) {
-        var stroke = style.stroke || true;
-        if (stroke) {
-            ctx.lineWidth = style.weight || 5;
-            var color = this.setOpacity(style.color, style.opacity);
-            ctx.strokeStyle = color;
-        } else {
-            ctx.lineWidth = 0;
-            ctx.strokeStyle = {};
-        }
-        var fill = style.fill || false;
+    setStyle: function (ctx, style = {}) {
+        const {
+            stroke = true,
+            fill = false,
+            color = "#000",
+            weight = 1,
+            opacity,
+            dashArray = [],
+            dashOffset = 0
+        } = style;
+
+        ctx.setLineDash(dashArray);
+        ctx.lineDashOffset = dashOffset;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = weight;
+
+        if (!stroke) ctx.strokeStyle = "rgba(0,0,0,0)";
+
+
         if (fill) {
             ctx.fillStyle = style.fillColor || "#03f";
-            var color = this.setOpacity(style.fillColor, style.fillOpacity);
-            ctx.fillStyle = color;
+            ctx.fillStyle = this.setOpacity(style.fillColor, style.fillOpacity);
         } else {
             ctx.fillStyle = {};
         }

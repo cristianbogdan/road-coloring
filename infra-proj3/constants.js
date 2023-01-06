@@ -1,5 +1,6 @@
 const Color = {
     BLACK: '#000000',
+    WHITE: '#ffffff',
     RED: '#ff0000',
     ORANGE: '#ff8000',
     GRAY: '#808080',
@@ -8,7 +9,19 @@ const Color = {
     LIGHT_SKY_BLUE: '#87cefa',
     DEEP_SKY_BLUE: '#00bfff',
     ORANGE_RED: '#ff4500',
-    DODGER_BLUE: '#1e90ff'
+    DODGER_BLUE: '#1e90ff',
+    ROSE_PINK: '#ffbdbd',
+    SHIP_COVE: '#6c7b8b'
+}
+
+const LineWeight = {
+    THIN: 2.0,
+    THICK: 4.0
+}
+
+const DashArray = {
+    DENSE: [5, 7],
+    SPARSE: [10, 10]
 }
 
 const zoomPrecisionMap = {
@@ -26,127 +39,205 @@ const zoomPrecisionMap = {
     18: 10
 }
 
+function colorProgress(latestProgress) {
+    return !latestProgress ? green : latestProgress > 75 ? dodgerBlue : latestProgress > 50 ? deepSkyBlue : latestProgress > 25 ? lightSkyBlue : latestProgress > 0 ? powderBlue : gray;
+}
+
+function a_missing(p) {
+    return p.PTE ? orange : p.AM ? orangeRed : red;
+}
+
+const blackLine = {
+    weight: LineWeight.THICK,
+    color: Color.BLACK
+}
+
+const blueLine = {
+    weight: LineWeight.THICK,
+    color: Color.BLUE
+}
+
+const lightBlueLine = {
+    weight: LineWeight.THICK,
+    color: Color.DEEP_SKY_BLUE
+}
+
+const orangeLine = {
+    weight: LineWeight.THICK,
+    color: Color.ORANGE
+}
+
+const orangeRedLine = {
+    weight: LineWeight.THICK,
+    color: Color.ORANGE_RED
+}
+
+const redLine = {
+    weight: LineWeight.THICK,
+    color: Color.RED
+}
+
+const rosePinkLine = {
+    weight: LineWeight.THICK,
+    color: Color.ROSE_PINK
+}
+
+const shipCoveLine = {
+    weight: LineWeight.THICK,
+    color: Color.SHIP_COVE
+}
+
+// const transparentBlueLine = (percent) => {
+//     return {
+//         weight: LineWeight.THICK,
+//         color: `rgba(0, 0, 255, ${percent})`
+//     }
+
+// }
+
+const whiteDashLine = {
+    weight: LineWeight.THIN,
+    color: Color.WHITE,
+    dashArray: DashArray.DENSE
+}
+
+const redDashLine = {
+    weight: LineWeight.THIN,
+    color: Color.RED,
+    dashArray: DashArray.DENSE
+}
+
+const blackDashLine = {
+    weight: LineWeight.THIN,
+    color: Color.BLACK,
+    dashArray: DashArray.DENSE
+}
+
 const legend = {
-    basicStyle: 'position:relative; display:inline-block; width:35px; height:3px; bottom:2px;',
+    basicStyle: "position: relative; display: inline-block; width: 35px; height: 3px; bottom: 2px;",
     projectTypes: [
 
-        /* Rutier */
+        /* Highway */
         {
-            symbol: 'background-color:' + Color.BLUE + ';',
+            symbol: `background-color: ${Color.BLUE};`,
             text: "în circulație",
             condition: p => p.highway && !p.construction && !p.proposed && p.access != 'no',
-            lineType: p => [transp, blue],
+            lineType: [blueLine],
             canHide: true
         },
         {
-            symbol: 'background-color:' + Color.BLUE + '; border-top:dotted red',
+            symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.RED};`,
             text: "recepționat/circulabil fără acces",
             condition: p => p.highway && !p.construction && !p.proposed && p.access == 'no',
-            lineType: p => [transp, blue, redDash],
+            lineType: [blueLine, redDashLine],
             canHide: true
         },
         {
             symbol: 'background-color:' + Color.LIGHT_SKY_BLUE + ';',
-            text: 'în construcție, cu AC, stadiu:<br>'
+            text: 'în construire, cu AC, stadiu:<br>'
                 + '<font color=' + Color.GRAY + '>0%</font> <font color=' + Color.POWDER_BLUE + '>&lt;25%</font> <font color=' + Color.LIGHT_SKY_BLUE + '>&lt;50%</font> <font color=' + Color.DEEP_SKY_BLUE + '>&lt;75%</font> <font color=' + Color.DODGER_BLUE + '>&lt;100%</font>',
             condition: p => p.highway && p.construction && p.AC && p.builder,
-            lineType: p => [transp, colorProgress(p.latestProgress)],
+            // lineType: [colorProgress(p.latestProgress)],
+            lineType: [lightBlueLine],
             canHide: true
         },
         {
-            symbol: 'border-top:dotted ' + Color.DEEP_SKY_BLUE + '; ',
-            text: 'neatribuit sau reziliat, cu AC',
+            symbol: `border-top: dotted ${Color.DEEP_SKY_BLUE};`,
+            text: "neatribuit sau reziliat, cu AC",
             condition: p => p.highway && (p.proposed || !p.builder) && p.AC,
-            lineType: p => [transp, colorProgress(p.latestProgress), whiteDash],
+            // lineType: [colorProgress(p.latestProgress), whiteDash],
+            lineType: [lightBlueLine, whiteDashLine],
             canHide: true
         },
         {
-            symbol: 'background-color:' + Color.RED + ';',
-            text: ' atribuit, lipsă AM',
+            symbol: `background-color: ${Color.RED};`,
+            text: "atribuit, lipsă AM",
             condition: p => p.highway && p.builder && !p.AM && !p.PTE,
-            lineType: p => [transp, a_missing(p)],
+            lineType: [redLine],
             canHide: true
         },
         {
-            symbol: 'background-color:' + Color.ORANGE_RED + ';',
-            text: 'cu AM, fără PT aprobat',
+            symbol: `background-color: ${Color.ORANGE_RED};`,
+            text: "cu AM, fără PT aprobat",
             condition: p => p.highway && p.construction && p.builder && !p.PTE && p.AM,
-            lineType: p => [transp, a_missing(p)],
+            lineType: [orangeRedLine],
             canHide: true
         },
         {
-            symbol: 'background-color:' + Color.ORANGE + ';',
-            text: 'cu PT aprobat, fără AC',
+            symbol: `background-color: ${Color.ORANGE};`,
+            text: "cu PT aprobat, fără AC",
             condition: p => p.highway && p.builder && !p.AC && p.PTE,
-            lineType: p => [transp, a_missing(p)],
+            lineType: [orangeLine],
             canHide: true
         },
         {
-            symbol: 'border-top:dotted ' + Color.ORANGE_RED + ';',
-            text: 'neatribuit, lipsă AC/PT/AM',
+            symbol: `border-top: dotted ${Color.ORANGE_RED};`,
+            text: "neatribuit, lipsă AC/PT/AM",
             condition: p => p.highway && p.hadStatus && (!p.AC || !p.PTE || !p.AM),
-            lineType: p => [transp, a_missing(p), whiteDash],
+            lineType: [orangeRedLine, whiteDashLine],
             canHide: true
         },
 
-        /* Feroviar */
+        /* Railway */
         {
-            symbol: 'background-color:blue; border-top:dotted #000000 ;',
-            text: 'CF nouă finalizata',
+            symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.BLACK};`,
+            text: "CF nouă finalizată",
             condition: p => p.railway && p.latestProgress === 100 && !p.opening_date && p.start_date,
-            lineType: p => [transp, blue, railDash],
+            lineType: [blueLine, blackDashLine],
             canHide: true
         },
         {
-            symbol: 'border-top:dotted' + Color.BLACK + ' ;',
-            text: 'CF cu reabilitare finalizată',
+            symbol: `border-top: dotted ${Color.BLACK};`,
+            text: "CF cu reabilitare finalizată",
             condition: p => p.railway && p.latestProgress === 100 && p.opening_date && !p.start_date,
-            lineType: p => [transp, black, whiteDash],
+            lineType: [blackLine, whiteDashLine],
             canHide: true
         },
         {
-            symbol: 'background-color:red; border-top:dotted ' + Color.POWDER_BLUE + ';',
-            text: 'CF nouă cu AC, în construcție',
+            symbol: `background-color: ${Color.RED}; border-top: dotted ${Color.POWDER_BLUE};`,
+            text: "CF nouă cu AC, în construire",
             condition: p => p.railway && p.railway == 'construction',
-            lineType: p => [transp, colorProgress(p.latestProgress), redDash],
+            // lineType: [colorProgress(p.latestProgress), redDash],
+            lineType: [lightBlueLine, redDashLine],
             canHide: true
         },
         {
-            symbol: 'background-color:black; border-top:dotted ' + Color.POWDER_BLUE + ';',
-            text: 'CF cu AC, în reabilitare',
+            symbol: `background-color: ${Color.BLACK}; border-top: dotted ${Color.POWDER_BLUE};`,
+            text: "CF cu AC, în reabilitare",
             condition: p => p.railway && p.railway !== 'proposed' && !p.tender,
-            lineType: p => [transp, colorProgress(p.latestProgress), railDash],
+            // lineType: [colorProgress(p.latestProgress), railDash],
+            lineType: [lightBlueLine, blackDashLine],
             canHide: true
         },
         {
-            symbol: 'background-color:red; border-top:dotted #ffbdbd;',
-            text: 'CF nouă, neatribuită',
+            symbol: `background-color: ${Color.RED}; border-top: dotted ${Color.ROSE_PINK};`,
+            text: "CF nouă, neatribuită",
             condition: p => p.railway === 'proposed' /*&& p.tender*/,
-            lineType: p => [transp, lightred, redDash],
+            lineType: [rosePinkLine, redDashLine],
             canHide: true
         },
         {
-            symbol: 'background-color:black; border-top:dotted #ffbdbd;',
-            text: 'CF vechi, neatribuită',
+            symbol: `background-color: ${Color.BLACK}; border-top: dotted ${Color.ROSE_PINK};`,
+            text: "CF vechi, neatribuită",
             condition: p => p.railway === 'rail' && p.tender,
-            lineType: p => [transp, lightred, railDash],
+            lineType: [rosePinkLine, blackDashLine],
             canHide: true
         },
 
-        /* Proiecte propuse */
+        /* Proposed projects */
         {
-            symbol: 'border-top:dotted #ffbdbd;',
-            text: 'proiecte propuse',
+            symbol: `border-top: dotted ${Color.ROSE_PINK};`,
+            text: "proiecte propuse",
             condition: p => p.highway && (p.proposed || p.hadStatus && !p.AC && !p.AM && !p.PTE),
-            lineType: p => [transp, lightred, whiteDash],
+            lineType: [rosePinkLine, whiteDashLine],
             canHide: true,
-            hidden: true
+            // hidden: true
         },
         {
-            symbol: 'background-color:#809bc0;',
-            text: 'statut necunoscut',
+            symbol: `background-color: ${Color.SHIP_COVE};`,
+            text: "status necunoscut",
             condition: p => p.highway && p.construction && !p.hadStatus,
-            lineType: p => [transp, unknown],
+            lineType: [shipCoveLine],
             canHide: true,
         },
 
