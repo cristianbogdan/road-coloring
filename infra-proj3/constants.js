@@ -55,6 +55,11 @@ const thickerBlackLine = {
     color: Color.BLACK
 }
 
+const thickerWhiteLine = {
+    weight: LineWeight.THICKER,
+    color: Color.WHITE
+}
+
 const blueLine = {
     weight: LineWeight.THICK,
     color: Color.BLUE
