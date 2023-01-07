@@ -206,9 +206,14 @@ function loadDoc(zoom) {
         edgeBufferTiles: EDGE,
         keepBuffer: 4,
         style(feature) {
-            const found = legend.projectTypes.find(p => p.condition(feature.tags));
-            if (found && found.lineType) return found.lineType(feature.tags);
-            else return { stroke: false }
+            const { tags } = feature;
+            const styles = []
+            const found = legend.projectTypes.find(p => p.condition(tags));
+            if (found && found.lineType) styles.push(...found.lineType(tags));
+
+            if (map.getZoom() > 10 && (tags.bridge || tags.tunnel)) styles.unshift(thickerBlackLine);
+            if (!styles.length) styles.push[ { stroke: false }];
+            return styles;
         },
         filter: function (feature, layer) {
             const found = legend.projectTypes.find(p => p.condition(feature.tags));
