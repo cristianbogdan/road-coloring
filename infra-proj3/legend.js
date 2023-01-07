@@ -32,7 +32,7 @@ const legendFilterClickHandler = (e, div) => {
 function createLegend() {
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function (map) {
-        const div = L.DomUtil.create('div', 'legend-container');
+        const div = L.DomUtil.create('div', 'leaflet-control-layers legend-container');
         L.DomEvent.disableClickPropagation(div)
         div.innerHTML = legendContent();
         return div;

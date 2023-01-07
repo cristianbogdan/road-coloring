@@ -207,7 +207,7 @@ function loadDoc(zoom) {
         keepBuffer: 4,
         style(feature) {
             const found = legend.projectTypes.find(p => p.condition(feature.tags));
-            if (found && found.lineType) return found.lineType;
+            if (found && found.lineType) return found.lineType(feature.tags);
             else return { stroke: false }
         },
         filter: function (feature, layer) {
@@ -264,9 +264,12 @@ function loadDoc(zoom) {
                 "Limite de lot": lotLimits,
             }
         ).addTo(map);
-        /*layer.bindPopup(function(layer){
-            console.log(layer);
-        }).addTo(map);*/
+
+        L.control.logo({ 
+            position: "bottomleft",
+            url: "https://proinfrastructura.ro",
+            logoUrl: "https://proinfrastructura.ro/images/logos/api/logo_api_portrait_big.png"
+        }).addTo(map);
     });
 
     /*    var pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
@@ -309,3 +312,28 @@ function loadDoc(zoom) {
     changeUrl();
 }
 
+L.Control.Logo = L.Control.extend({
+    options: {
+      position: "bottomleft",
+      url: "",
+      logoUrl: ""
+    },
+
+    initialize(options) {
+        L.setOptions(this, options);
+    },
+    onAdd: function(map) {
+      const a = L.DomUtil.create('a', 'leaflet-control-layers logo-container');
+      a.innerHTML = `<img id="api" src="${this.options.logoUrl}" width="50"/>`;
+      if (this.options.url) {
+        a.setAttribute('href', this.options.url);
+        L.DomUtil.addClass(a, 'clickable')
+      }
+      return a;
+    },
+    onRemove: function(map) {},
+});
+
+L.control.logo = function(opts) {
+    return new L.Control.Logo(opts);
+  }

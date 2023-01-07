@@ -4,10 +4,20 @@
 
 .legend-container {
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 4px 8px 4px 8px;
+    padding: 8px;
     font-size: 14px;
-    border-radius: 5px;
+    /* border-radius: 5px;
+    border: 2px solid rgba(0,0,0, 0.2); */
     transition: all .5s ease-out;
+    /* background-clip: padding-box; */
+}
+
+.logo-container {
+    padding: 8px;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 @media screen and (orientation: landscape) and (max-height: 600px) {
@@ -22,14 +32,16 @@
     }
 }
 
-@media screen and (orientation: landscape) and (max-height: 480px) {
+@media screen and (orientation: landscape) and (max-height: 495px) {
     .leaflet-bottom .leaflet-control {
         margin-bottom: 0px;
     }
 
     .legend-container {
-        border-radius: 0;
+        /* border-radius: 0; */
+        padding: 4px;
         border-top-left-radius: 5px;
-        border-top-right-radius: 5px;        
+        border-top-right-radius: 5px;   
+        /* border-bottom: 0;      */
     }
 }
