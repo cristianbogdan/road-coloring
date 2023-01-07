@@ -19,13 +19,23 @@ osmconvert /data/data-overpass-infra.osm -o=/data/data-overpass-infra.osm.pbf
 osm2pgsql -Upostgres --style /work/maps/common/osm2pgsql.style --slim --drop -d gis1 -c /data/data-overpass-infra.osm.pbf
 
 echo lot limits
-psql -Upostgres -t -A -d gis1 -f lot_limits.sql >  /data/lot_limits.json
+psql -Upostgres -t -A -d gis1 -f lot_limits.sql >  /data/lot_limits.json.tmp
+
+if ! diff -q  /data/lot_limits.json.tmp  /data/lot_limits.json &>/dev/null; then
+    mv /data/lot_limits.json.tmp /data/lot_limits.json
+fi
+
 
 echo duplicating planet_osm_line
 psql -Upostgres -d gis1 -c "drop table planet_osm_line1;"
 psql -Upostgres -d gis1 -c "SELECT UpdateGeometrySRID('planet_osm_line','way',900913);"
 psql -Upostgres -d gis1 -c "select * into planet_osm_line1 from planet_osm_line;"
-psql -Upostgres -t -A -d gis1 -f infra-projects.sql > /data/data-sql-infra.geo.json
+
+psql -Upostgres -t -A -d gis1 -f infra-projects.sql > /data/data-sql-infra.geo.json.tmp
+
+if ! diff -q  /data/data-sql-infra.geo.json.tmp  /data/data-sql-infra.geo.json &>/dev/null; then
+    mv /data/data-sql-infra.geo.json.tmp /data/data-sql-infra.geo.json
+fi
 
 # send the USR1 signal to the rendering container, so the "infra" tiles are removed because they are stale
 # see docker-mapnik/start.sh
