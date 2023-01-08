@@ -81,14 +81,14 @@
 # end up in the tags hstore column regardless of the style file.
 
 # OsmType  Tag          DataType     Flags
-node,way   osm_user	text	     
-node,way   osm_uid	integer	     
-node,way   osm_version	integer	     
-node,way   osm_changeset	integer	
-node,way   osm_timestamp	timestamptz(0)	
+node,way   osm_user     text         
+node,way   osm_uid      integer      
+node,way   osm_version  integer      
+node,way   osm_changeset        integer 
+node,way   osm_timestamp        timestamptz(0)  
 node,way   access       text         linear
-way	   maxspeed	text	     linear
-way	   lanes	text	     linear
+way        maxspeed     text         linear
+way        lanes        text         linear
 #node,way   addr:housename      text  linear
 #node,way   addr:housenumber    text  linear
 #node,way   addr:interpolation  text  linear
@@ -105,7 +105,7 @@ node,way   boundary     text         linear
 #node,way   building     text         polygon
 #node       capital      text         linear
 node,way   construction text         linear
-node,way   proposed 	text         linear
+node,way   proposed     text         linear
 node,way   covered      text         linear
 node,way   culvert      text         linear
 node,way   cutting      text         linear
@@ -152,16 +152,18 @@ node,way   service      text         linear
 #node,way   shop         text         polygon
 #node,way   sport        text         polygon
 node,way   surface      text         linear
-way	   smoothness	text	     linear
-way	   surface_survey	text	     linear
-way	   opening_date	text	     linear
-way	   check_date	text	     linear
-way	   start_date	text	     linear
-way	   status	text	     linear
-node,way   wikipedia	text	     linear
-node,way   wikimedia_commons	text	     linear
-node,way   website	text	     linear
-node,way   url	text	     linear
+way        smoothness   text         linear
+way        surface_survey       text         linear
+way        opening_date text         linear
+way        check_date   text         linear
+way        start_date   text         linear
+way        start_date:note      text         linear
+node,way        access:note  text         linear
+way        status       text         linear
+node,way   wikipedia    text         linear
+node,way   wikimedia_commons    text         linear
+node,way   website      text         linear
+node,way   url  text         linear
 #node,way   toll         text         linear
 #node,way   tourism      text         polygon
 #node,way   tower:type   text         linear
