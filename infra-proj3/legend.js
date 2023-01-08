@@ -1,6 +1,6 @@
 const ShowLegendButtonText = {
-    SHOW: ">",
-    HIDE: "<"
+    SHOW: ">>",
+    HIDE: "<<"
 }
 let isLegendVisible = true;
 let showLegendButtonText = ShowLegendButtonText.SHOW;

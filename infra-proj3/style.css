@@ -18,6 +18,12 @@
 
 .show-legend-button {
     float: right;
+    border-radius: 5px;
+    border: 0px solid rgba(0, 0, 0, 0.2);
+    color: white;
+    font-family: cursive;
+    background-color: rgba(0, 81, 186, 0.2);
+    cursor: pointer;
 }
 
 .logo-container {
@@ -49,7 +55,7 @@
         /* border-radius: 0; */
         padding: 4px;
         border-top-left-radius: 5px;
-        border-top-right-radius: 5px;   
+        border-top-right-radius: 5px;
         /* border-bottom: 0;      */
     }
 }
