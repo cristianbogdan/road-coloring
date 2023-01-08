@@ -6,7 +6,7 @@ SELECT row_to_json(fc)
   FROM (SELECT 'Feature' As type,
       ST_AsGeoJSON(ST_Transform(ST_simplify(lg.way, 0), 4326))::json As geometry,
           (
-                  select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, bridge, tunnel, status, start_date, opening_date) t
+                  select row_to_json(t) from (select osm_id, ref, name, railway, highway, construction, proposed, bridge, tunnel, status, start_date, opening_date, access, access_note, start_date_note) t
            ) AS properties
                              FROM planet_osm_line1 As lg 
 --                             WHERE lg.osm_id>0 AND (
