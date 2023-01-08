@@ -12,6 +12,14 @@
     /* background-clip: padding-box; */
 }
 
+.legend-content-element {
+    display: contents;
+}
+
+.show-legend-button {
+    float: right;
+}
+
 .logo-container {
     padding: 8px;
 }
