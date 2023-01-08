@@ -25,7 +25,7 @@ def application(environ, start_response):
         cursor=conn.cursor()
         cursor.execute(
             "select row_to_json(t)::text from ("+
-            "select  osm_id, ref, name, highway, railway, construction, status, proposed, start_date, maxspeed, opening_date "+
+            "select  osm_id, ref, name, highway, railway, construction, status, proposed, start_date, maxspeed, opening_date, bridge, tunnel, access, access_note, start_date_note "+
             "from planet_osm_line1 "
             "where st_distance(way, st_transform(ST_setSRID(ST_point("+str(lon)+","+str(lat)+" ), 4326), 900913))< "+str(max)+
             ") t"
