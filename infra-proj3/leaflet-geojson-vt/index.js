@@ -92,11 +92,8 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
         if (!style) style = [{}];
         else if (!Array.isArray(style)) style = [style];
 
-        // console.log('style l', style.length)
-
         for (const currentStyle of style) {
-            // console.log(ctx)
-            // ctx.save()
+            ctx.save()
             ctx.beginPath();
 
             this.setStyle(ctx, currentStyle)
@@ -117,7 +114,7 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
             if (type === 3 && currentStyle.fill) ctx.fill(currentStyle.fillRule || "evenodd");
 
             ctx.stroke();
-            // ctx.restore();
+            ctx.restore();
         }
     },
 
