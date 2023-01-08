@@ -206,9 +206,15 @@ function loadDoc(zoom) {
         edgeBufferTiles: EDGE,
         keepBuffer: 4,
         style(feature) {
-            const found = legend.projectTypes.find(p => p.condition(feature.tags));
-            if (found && found.lineType) return found.lineType(feature.tags);
-            else return { stroke: false }
+            const { tags } = feature;
+            const styles = []
+            const found = legend.projectTypes.find(p => p.condition(tags));
+            if (found && found.lineType) styles.push(...found.lineType(tags));
+            
+            if (map.getZoom() > 10 && (tags.bridge || tags.tunnel)) styles.unshift(thickerBlackLine);
+            if(isSatelliteLayerSelected()) styles.unshift(thickerWhiteLine);
+            if (!styles.length) styles.push[ { stroke: false }];
+            return styles;
         },
         filter: function (feature, layer) {
             const found = legend.projectTypes.find(p => p.condition(feature.tags));
@@ -272,6 +278,25 @@ function loadDoc(zoom) {
         }).addTo(map);
     });
 
+    let selectedMapLayer = "Google";
+    map.addLayer(googleMap);
+    map.on('dragend', changeUrl);
+    map.on('zoomend', changeUrl);
+    map.on("baselayerchange", function (event) {
+        const wasSatelliteLayerSelected = isSatelliteLayerSelected();
+        selectedMapLayer = event.name;
+        if(wasSatelliteLayerSelected != isSatelliteLayerSelected()) roadsLayer.reinitialize();
+    });
+
+    function isSatelliteLayerSelected() {
+        // return selectedMapLayer.toLowerCase().includes("satellite");
+        return selectedMapLayer == "Google satellite & labels";
+    }
+
+    map.setView(new L.LatLng(lat, lng), zoom);
+
+
+    changeUrl();
     /*    var pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
             getFeatureId: function(f) {
                 console.log(f);
@@ -299,17 +324,7 @@ function loadDoc(zoom) {
                                            );
     */
     // map.addLayer(landMap);
-    map.addLayer(googleMap);
-    //map.addLayer(pbfLayer);
 
-    map.on('dragend', changeUrl);
-    map.on('zoomend', changeUrl);
-
-
-    map.setView(new L.LatLng(lat, lng), zoom);
-
-
-    changeUrl();
 }
 
 L.Control.Logo = L.Control.extend({

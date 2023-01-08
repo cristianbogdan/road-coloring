@@ -21,7 +21,8 @@ const Color = {
 
 const LineWeight = {
     THIN: 2.0,
-    THICK: 4.0
+    THICK: 4.0,
+    THICKER: 6.0
 }
 
 const DashArray = {
@@ -47,6 +48,16 @@ const zoomPrecisionMap = {
 const blackLine = {
     weight: LineWeight.THICK,
     color: Color.BLACK
+}
+
+const thickerBlackLine = {
+    weight: LineWeight.THICKER,
+    color: Color.BLACK
+}
+
+const thickerWhiteLine = {
+    weight: LineWeight.THICKER,
+    color: Color.WHITE
 }
 
 const blueLine = {
