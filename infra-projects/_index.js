@@ -1,4 +1,4 @@
-SCRIPT_ROOT+="/infra-proj3/";
+SCRIPT_ROOT+="/infra-projects/";
 document.title='Harta proiectelor de infrastructură din România';
 
 var yr= new Date().getFullYear();

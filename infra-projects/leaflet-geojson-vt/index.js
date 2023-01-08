@@ -28,7 +28,7 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
         this.keys = [];
     },
     createTile: function (coords, done) {
-        const strKey = `/infra/${coords.z}/${coords.x}/${coords.y}.png`;
+        const strKey = MAP_ROOT+`/infra/${coords.z}/${coords.x}/${coords.y}.png`;
 
         const cachedTile = this.cache.get(strKey);
         if (cachedTile) {

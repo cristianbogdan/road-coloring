@@ -236,7 +236,7 @@ function loadDoc(zoom) {
     };
 
     const limitIcon = L.icon({
-        iconUrl: "/maps/images/pin.png",
+        iconUrl: MAP_ROOT+"/maps/images/pin.png",
         iconSize: [25, 25], // width and height of the image in pixels
         iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
@@ -253,9 +253,9 @@ function loadDoc(zoom) {
             return L.marker(latlng, { icon: limitIcon });
         }
     });
-    fetch("/maps/data/lot_limits.json").then(r => r.json()).then(function (data) { lotLimits.addData(data); });
+    fetch(MAP_ROOT+"/maps/data/lot_limits.json").then(r => r.json()).then(function (data) { lotLimits.addData(data); });
 
-    fetch("/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
+    fetch(MAP_ROOT+"/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
         console.time("Preprocess geoJson");
         for (const feature of data.features) computeStatus(feature.properties);
         console.timeEnd("Preprocess geoJson");
@@ -278,7 +278,7 @@ function loadDoc(zoom) {
             },
             {
                 "Proiecte infrastructura": roadsLayer,
-//                "Projects (server)": L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
+//                "Projects (server)": L.tileLayer(MAP_ROOT+'/infraGraphic/{z}/{x}/{y}.png'),
                 "Limite de lot": lotLimits,
             }
         ).addTo(map);
