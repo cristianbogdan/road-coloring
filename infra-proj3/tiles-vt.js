@@ -83,7 +83,7 @@ function getPopupHtmlContent(props) {
         }
         x += (props.builder ? "<br>Constructor: " + props.builder : '');
         x += (props.severance ? "<br>Reziliat: " + props.severance : '');
-        x += (props.funding ? "<br>Finantare: " + props.severance : '');
+        x += (props.financing ? "<br>Finantare: " + props.financing : '');
 
         if (props.progress) {
             var color = props.latestProgress > 75 ? Color.DODGER_BLUE : props.latestProgress > 50 ? Color.DEEP_SKY_BLUE : props.latestProgress > 25 ? Color.LIGHT_SKY_BLUE : props.latestProgress > 0 ? Color.POWDER_BLUE : Color.GRAY;
