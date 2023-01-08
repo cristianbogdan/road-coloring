@@ -207,12 +207,18 @@ function loadDoc(zoom) {
         keepBuffer: 4,
         style(feature) {
             const { tags } = feature;
-            const styles = []
+            let styles = []
+
             const found = legend.projectTypes.find(p => p.condition(tags));
             if (found && found.lineType) styles.push(...found.lineType(tags));
             
-            if (map.getZoom() > 10 && (tags.bridge || tags.tunnel)) styles.unshift(thickerBlackLine);
+            if (map.getZoom() > 10) {
+                if(tags.bridge) styles.unshift(thickerBlackLine);
+                else if (tags.tunnel) styles = [blackLine];
+            }
+            
             if(isSatelliteLayerSelected()) styles.unshift(thickerWhiteLine);
+
             if (!styles.length) styles.push[ { stroke: false }];
             return styles;
         },
