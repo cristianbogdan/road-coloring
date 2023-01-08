@@ -1,3 +1,7 @@
+:root {
+    --transition: all .5s ease-out;
+}
+
 .default-cursor {
     cursor: default;
 }
@@ -8,8 +12,12 @@
     font-size: 14px;
     /* border-radius: 5px;
     border: 2px solid rgba(0,0,0, 0.2); */
-    transition: all .5s ease-out;
+    transition: var(--transition);
     /* background-clip: padding-box; */
+}
+
+.leaflet-bottom .leaflet-control{
+    transition: var(--transition);
 }
 
 .legend-content-element {

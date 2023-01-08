@@ -214,7 +214,13 @@ function loadDoc(zoom) {
             
             if (map.getZoom() > 10) {
                 if(tags.bridge) styles.unshift(thickerBlackLine);
-                else if (tags.tunnel) styles = [blackLine];
+                else if (tags.tunnel) {
+                    if (tags.highway) styles = [blackLine]
+                    else if (tags.railway) {
+                        styles.pop();
+                        styles.unshift(thickerBlackLine);
+                    }
+                }
             }
             
             if(isSatelliteLayerSelected()) styles.unshift(thickerWhiteLine);
