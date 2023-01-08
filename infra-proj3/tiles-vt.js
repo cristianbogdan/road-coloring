@@ -265,8 +265,8 @@ function loadDoc(zoom) {
                 // "OSM B&W":osmBwMap
             },
             {
-                "Projects (client)": roadsLayer,
-                "Projects (server)": L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
+                "Proiecte infrastructura": roadsLayer,
+//                "Projects (server)": L.tileLayer('/infraGraphic/{z}/{x}/{y}.png'),
                 "Limite de lot": lotLimits,
             }
         ).addTo(map);
