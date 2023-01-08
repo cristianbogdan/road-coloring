@@ -104,11 +104,11 @@ function getPopupHtmlContent(props) {
     } else {
         if (props.highway) {
             x += (props.start_date ? "<br>Data terminarii constructiei: " + props.start_date : '');
-            x += (props.opening_date ? "<br>Dat in circulatie: " + props.opening_date : "");
+            x += (props.access_note ? "<br>Dat in circulatie: " + props.access_note.split(' ').pop() : '');
 
         } else if (props.railway) {
             x += (props.start_date ? "<br>Data terminarii variantei noi: " + props.start_date : '');
-            x += (props.opening_date ? "<br>Data terminarii reabilitarii: " + props.opening_date : '');
+            x += (props.start_date_note ? "<br>Data terminarii reabilitarii: " + props.start_date_note.split(' ').pop() : '');
         }
         x += props.access == 'no' ? "<br><font color='red'>Inchis traficului</font>" : "";
     }
