@@ -4,6 +4,8 @@ const Color = {
 
     RED: '#ff0000',
     ORANGE: '#ff8000',
+    YELLOW: '#ffff00',
+    AMBER: '#ffbf00',
     GRAY: '#808080',
 
     BLUE: '#0000ff',
@@ -73,6 +75,16 @@ const lightBlueLine = {
 const orangeLine = {
     weight: LineWeight.THICK,
     color: Color.ORANGE
+}
+
+const yellowLine = {
+    weight: LineWeight.THICK,
+    color: Color.YELLOW
+}
+
+const amberLine = {
+    weight: LineWeight.THICK,
+    color: Color.AMBER
 }
 
 const orangeRedLine = {
@@ -169,10 +181,10 @@ const legend = {
             canHide: true
         },
         {
-            symbol: `background-color: ${Color.ORANGE};`,
+            symbol: `background-color: ${Color.AMBER};`,
             text: "cu PT aprobat, fără AC",
             condition: (p) => p.highway && p.builder && !p.AC && p.PTE,
-            lineType: (p) => [orangeLine],
+            lineType: (p) => [amberLine],
             canHide: true
         },
         {
