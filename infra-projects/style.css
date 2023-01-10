@@ -22,6 +22,7 @@
 
 .legend-content-element {
     display: contents;
+    line-height:12pt;
 }
 
 .show-legend-button {
@@ -44,13 +45,13 @@
 
 @media screen and (orientation: landscape) and (max-height: 600px) {
     .legend-container {
-        line-height: 125%;
+        line-height: 12pt;
     }
 }
 
 @media screen and (orientation: landscape) and (max-height: 540px) {
     .legend-container {
-        line-height: 100%;
+        line-height: 11pt;
     }
 }
 

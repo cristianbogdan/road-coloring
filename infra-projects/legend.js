@@ -22,7 +22,7 @@ const getInvolved = '<a href=http://forum.peundemerg.ro/index.php?topic=836.msg1
 
 const filters =
     '<div class="legend-content-element" onclick="legendFilterClickHandler(event, this)">'
-    + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
+    + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input style="margin:1pt" type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
     + '</div>';
 
 const showLegendButton = `<button id="show-legend-button" onclick="showLegendClicked()" class="show-legend-button">${showLegendButtonText}</button>`;
