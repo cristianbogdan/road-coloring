@@ -223,7 +223,7 @@ function loadDoc(zoom) {
                 }
             }
             
-            if(isSatelliteLayerSelected()) styles.unshift(thickerWhiteLine);
+        //    if(isSatelliteLayerSelected()) styles.unshift(thickerWhiteLine);
 
             if (!styles.length) styles.push[ { stroke: false }];
             return styles;
