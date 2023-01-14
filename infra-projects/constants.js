@@ -114,6 +114,13 @@ const progressLine = (percent) => {
     }
 }
 
+const statusLine = (props) => {
+    return {
+        weight: LineWeight.THICK,
+        color: props.PTE ? Color.AMBER : props.AM ? Color.ORANGE_RED : Color.RED
+    }
+}
+
 const whiteDashLine = {
     weight: LineWeight.THIN,
     color: Color.WHITE,
@@ -191,7 +198,7 @@ const legend = {
             symbol: `border-top: dotted ${Color.ORANGE_RED};`,
             text: "neatribuit, lipsă AC/PT/AM",
             condition: (p) => p.highway && p.hadStatus && (!p.AC || !p.PTE || !p.AM),
-            lineType: (p) => [orangeRedLine, whiteDashLine],
+            lineType: (p) => [statusLine(p), whiteDashLine],
             canHide: true
         },
 
