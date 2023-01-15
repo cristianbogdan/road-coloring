@@ -206,14 +206,14 @@ const legend = {
         {
             symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.BLACK};`,
             text: "CF nouă finalizată",
-            condition: (p) => p.railway && p.latestProgress === 100 && !p.opening_date && p.start_date,
+            condition: (p) => p.railway && p.latestProgress === 100 && p.start_date,
             lineType: (p) => [blueLine, blackDashLine],
             canHide: true
         },
         {
             symbol: `border-top: dotted ${Color.BLACK};`,
             text: "CF cu reabilitare finalizată",
-            condition: (p) => p.railway && p.latestProgress === 100 && p.opening_date && !p.start_date,
+            condition: (p) => p.railway && p.latestProgress === 100 && p.start_date_note,
             lineType: (p) => [blackLine, whiteDashLine],
             canHide: true
         },
