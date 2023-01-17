@@ -281,6 +281,16 @@ var icons = new ol.layer.Vector({
     style: iconStyle
 });
 
+var landscape=  new ol.layer.Tile({
+    title: 'Landscape',
+    type: 'base',
+    source: new ol.source.OSM({
+        url:'https://a.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey='+thunderforestKey
+	,crossOrigin:null
+    })
+    , tileOptions: {crossOriginKeyword: null}
+});
+
 
 var infra = new ol.layer.Tile({
     source: new ol.source.OSM({
@@ -330,6 +340,7 @@ var map = gmap ? new ol.Map({
 //    ,controls: ol.control.defaults({attribution: false})
 }) : new ol.Map({
     layers: [
+	landscape,
         roads,
         infra,
         icons,

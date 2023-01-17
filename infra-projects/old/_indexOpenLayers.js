@@ -18,7 +18,6 @@ function insertHTML(){
 document.body.insertAdjacentHTML
 ( 'afterbegin',
   '<div id="map" class="map"> '
-+'<div id="gmap" class="map"></div>'
   +'<div id="olmap" class="map"><div id="popup"></div></div>'
   +'</div>'
   +'  <div id="text"></div>'
@@ -28,7 +27,7 @@ document.body.insertAdjacentHTML
 )  ;
 }
 
-loadScript(["../../common/googleMapsKey.js", loadAll],0);
+loadScript(["../../common/thunderforestKey.js", loadAll],0);
 
 function loadAll(){
 loadScript([
@@ -37,12 +36,11 @@ loadScript([
     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",
     insertHTML,
 //    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css",
-//   "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js",
+    //   "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js",
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
     "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
 //    "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
     "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
-    "../../common/gmap.js",
     "project-colors.js",
     "projects-legend.js",
     "vector-gmaps.js"

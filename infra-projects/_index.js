@@ -16,7 +16,7 @@ document.body.insertAdjacentHTML
     ( 'afterbegin', '    <div id="mymap"></div>');
 }
 
-loadScript(["../common/googleMapsKey.js", loadAll],0);
+loadScript(["../common/thunderforestKey.js", loadAll],0);
 
 function loadAll(){
     loadScript([
@@ -27,7 +27,6 @@ function loadAll(){
         "leaflet-geojson-vt/index.js",
         "constants.js",
         "legend.js",
-        "../common/thunderforestKey.js",
         "leaflet.edgebuffer.js",
         "tiles-vt.js",
         insertHTML,
