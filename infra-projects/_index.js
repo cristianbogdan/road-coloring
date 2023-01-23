@@ -1,36 +1,26 @@
-SCRIPT_ROOT+="/infra-projects/";
-document.title='Harta proiectelor de infrastructură din România';
+SCRIPT_ROOT += "/infra-projects/";
 
-var yr= new Date().getFullYear();
-
-document.head.insertAdjacentHTML
-( 'afterbegin','<style>'
-+  'body {            padding: 0;            margin: 0;}'
-+ 'html,     body,        #mymap {            height: 100%;            width: 100%;        }'
-+'body,html{height:100%;width:100%;}'
-+'</style>'
-);
-
-function insertHTML(){
-document.body.insertAdjacentHTML
-    ( 'afterbegin', '    <div id="mymap"></div>');
+function recreateScriptElement(scriptElement) {
+    const newScriptElement = document.createElement("script");
+    for (const attribute of scriptElement.attributes) newScriptElement.setAttribute(attribute.name, attribute.value);
+    const scriptText = document.createTextNode(scriptElement.textContent);
+    newScriptElement.appendChild(scriptText);
+    return newScriptElement;
 }
 
-loadScript(["../common/thunderforestKey.js", loadAll],0);
-
-function loadAll(){
-    loadScript([
-        "leaflet-1.9.3.css",
-        "style.css",
-        "leaflet-1.9.3.js",
-        "https://unpkg.com/geojson-vt@3.2.0/geojson-vt.js",
-        "leaflet-geojson-vt/index.js",
-        "constants.js",
-        "legend.js",
-        "leaflet.edgebuffer.js",
-        "tiles-vt.js",
-        insertHTML,
-        ()=>loadDoc(8)
-], 0);
+function replaceHtmlElementInnerContent(sourceHtmlElement, targetHtmlElement) {
+    targetHtmlElement.innerHTML = "";
+    for (const childElement of Array.from(sourceHtmlElement.children)) {
+        if (childElement.tagName.toUpperCase() === "SCRIPT") {
+            targetHtmlElement.appendChild(recreateScriptElement(childElement));
+        } else {
+            targetHtmlElement.appendChild(childElement);
+        }
+    }
 }
 
+fetch(`${SCRIPT_ROOT}/client/dist/index.html`).then(response => response.text()).then(data => {
+    const htmlContent = new DOMParser().parseFromString(data, "text/html");
+    replaceHtmlElementInnerContent(htmlContent.body, document.body);
+    replaceHtmlElementInnerContent(htmlContent.head, document.head);
+});
