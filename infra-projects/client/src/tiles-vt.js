@@ -228,7 +228,7 @@ function loadDoc(zoom) {
     };
 
     const limitIcon = L.icon({
-        iconUrl: config.URL_PUM_API+ "/maps/images/pin.png",
+        iconUrl: config.URL_PUM_API + "/maps/images/pin.png",
         iconSize: [25, 25], // width and height of the image in pixels
         iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
@@ -246,9 +246,9 @@ function loadDoc(zoom) {
         }
     });
 
-    fetch(config.URL_PUM_API+ "/maps/data/lot_limits.json").then(r => r.json()).then(function (data) { lotLimits.addData(data); });
+    fetch(config.URL_PUM_API + "/maps/data/lot_limits.json").then(r => r.json()).then(function (data) { lotLimits.addData(data); });
 
-    fetch(config.URL_PUM_API+ "/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
+    fetch(config.URL_PUM_API + "/maps/data/data-sql-infra.geo.json").then(r => r.json()).then(function (data) {
         console.time("Preprocess geoJson");
         for (const feature of data.features) computeStatus(feature.properties);
         console.timeEnd("Preprocess geoJson");
@@ -270,8 +270,9 @@ function loadDoc(zoom) {
             },
             {
                 "Proiecte infrastructura": roadsLayer,
-                //                "Projects (server)": L.tileLayer(config.URL_PUM_API+'/infraGraphic/{z}/{x}/{y}.png'),
                 "Limite de lot": lotLimits,
+                // "Projects (server)": L.tileLayer(config.URL_PUM_API+'/infraGraphic/{z}/{x}/{y}.png')
+
             }
         ).addTo(map);
 
@@ -297,37 +298,7 @@ function loadDoc(zoom) {
     }
 
     map.setView(new L.LatLng(lat, lng), zoom);
-
-
     changeUrl();
-    /*    var pbfLayer= L.vectorGrid.protobuf(roadQUrl1, {
-            getFeatureId: function(f) {
-                console.log(f);
-                return f.properties.osm_id;
-            },
-            vectorTileLayerStyles:{
-                way:style
-            },
-    
-            onEachFeature: function (feature, layer) {
-                if (feature.properties) {
-                    var popupString = '<div class="popup">';
-                    for (var k in feature.properties) {
-                        var v = feature.properties[k];
-                        if(v)
-                            popupString += k + ': ' + v + '<br />';
-                    }
-                    popupString += '</div>';
-                    layer.bindPopup(popupString);
-                }
-    
-            }
-            
-        }
-                                           );
-    */
-    // map.addLayer(landMap);
-
 }
 
 L.Control.Logo = L.Control.extend({
