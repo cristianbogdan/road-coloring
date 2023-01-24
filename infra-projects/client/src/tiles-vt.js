@@ -167,7 +167,7 @@ function loadDoc(zoom) {
     // const  hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png';
 
     const googleMap = L.tileLayer(googleUrl, { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" });
-    const landMap = L.tileLayer(landUrl, { edgeBufferTiles: EDGE });
+    const landMap = L.tileLayer(landUrl, { edgeBufferTiles: EDGE, attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' });
     // const osmBwMap = L.tileLayer(osmBwUrl);
     // const osmMap = L.tileLayer(osmUrl, { edgeBufferTiles:2 });
     // const osmHikeBikeMap = L.tileLayer(hikeBikeUrl, { attribution: thunAttrib });
