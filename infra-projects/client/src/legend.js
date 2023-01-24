@@ -1,5 +1,6 @@
-import L from 'leaflet'; 
-import {legend} from './road-style'
+import L from 'leaflet';
+import { legend } from './road-style';
+import { roadsLayer } from './tiles-vt';
 
 const ShowLegendButtonText = {
     SHOW: ">>",

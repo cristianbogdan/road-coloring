@@ -9,7 +9,7 @@ import './leaflet-geojson-vt';
 // larger values tend to block Safari on iPhone after lots of panning and deep zoom-in
 const EDGE = 1;
 var map = undefined;
-var roadsLayer = undefined;
+export var roadsLayer = undefined;
 
 function computeStatus(props) {
     if (!props.status) return;
