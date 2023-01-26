@@ -1,5 +1,5 @@
-import geojsonvt from "geojson-vt";
-import config from "../config";
+import geojsonvt from 'geojson-vt';
+import config from '../config';
 const tileLayer = false;
 const MAX = 200;
 
@@ -78,117 +78,106 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
     },
 
     drawFeature: function (ctx, feature) {
-        if (this.options.filter instanceof Function) {
-            if (!this.options.filter(feature)) {
-                return;
-            }
+        if (!this.shouldDrawFeature(feature)) {
+            return;
         }
-        const { type, geometry } = feature;
-
-        let style = this.options.style instanceof Function ? this.options.style(feature) : this.options.style;
-        if (!style) style = [{}];
-        else if (!Array.isArray(style)) style = [style];
-
-        for (const currentStyle of style) {
-            ctx.save()
+    
+        const styles = this.getStyles(feature);
+    
+        for (const currentStyle of styles) {
+            ctx.save();
             ctx.beginPath();
-
-            this.setStyle(ctx, currentStyle)
-            if (type === 2 || type === 3) {
-                for (const ring of geometry) {
-                    for (var k = 0; k < ring.length; k++) {
-                        var p = ring[k];
-                        if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
-                        else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
-                    }
-                }
-            } else if (type === 1) {
-                for (const point of geometry) {
-                    const [x, y] = point;
-                    ctx.arc(x / 16.0, y / 16.0, 2, 0, Math.PI * 2, true);
-                }
-            }
-            if (type === 3 && currentStyle.fill) ctx.fill(currentStyle.fillRule || "evenodd");
+    
+            this.setStyle(ctx, currentStyle);
+            this.drawGeometry(ctx, feature.type, feature.geometry);
 
             ctx.stroke();
             ctx.restore();
+        }
+    },
+    
+    shouldDrawFeature: function (feature) {
+        return !this.options.filter || (this.options.filter instanceof Function && this.options.filter(feature));
+    },
+    
+    getStyles: function (feature) {
+        let style = this.options.style instanceof Function ? this.options.style(feature) : this.options.style;
+        if (!style) {
+            return [{}];
+        } else if (!Array.isArray(style)) {
+            return [style];
+        }
+        return style;
+    },
+    
+    drawGeometry: function (ctx, type, geometry) {
+        switch (type) {
+            case 2:
+            case 3:
+                this.drawPolygon(ctx, geometry);
+                break;
+            case 1:
+                this.drawPoint(ctx, geometry);
+                break;
+        }
+    },
+    
+    drawPolygon: function (ctx, geometry) {
+        for (const ring of geometry) {
+            ctx.moveTo(ring[0][0] / 16.0, ring[0][1] / 16.0);
+            for (let i = 1; i < ring.length; i++) {
+                ctx.lineTo(ring[i][0] / 16.0, ring[i][1] / 16.0);
+            }
+        }
+    },
+    
+    drawPoint: function (ctx, geometry) {
+        for (const point of geometry) {
+            const [x, y] = point;
+            ctx.arc(x / 16.0, y / 16.0, 2, 0, Math.PI * 2, true);
         }
     },
 
     setStyle: function (ctx, style = {}) {
         const {
             stroke = true,
-            fill = false,
-            color = "#000",
+            color = "#3388ff",
             weight = 1,
             opacity,
             dashArray = [],
-            dashOffset = 0
+            dashOffset = 0,
+            // fill = false,
+            // fillColor,
+            // fillOpacity = 0.2,
+            // fillRule = "evenodd",
         } = style;
 
         ctx.setLineDash(dashArray);
         ctx.lineDashOffset = dashOffset;
-        ctx.strokeStyle = color;
+        ctx.strokeStyle = opacity ? this.setOpacity(color, opacity) : color;
         ctx.lineWidth = weight;
 
         if (!stroke) ctx.strokeStyle = "rgba(0,0,0,0)";
 
-
-        if (fill) {
-            ctx.fillStyle = style.fillColor || "#03f";
-            ctx.fillStyle = this.setOpacity(style.fillColor, style.fillOpacity);
-        } else {
-            ctx.fillStyle = {};
-        }
     },
 
-    setOpacity: function (color, opacity) {
-        if (opacity) {
-            var color = color || "#03f";
-            if (color.iscolorHex()) {
-                var colorRgb = color.colorRgb();
-                return (
-                    "rgba(" +
-                    colorRgb[0] +
-                    "," +
-                    colorRgb[1] +
-                    "," +
-                    colorRgb[2] +
-                    "," +
-                    opacity +
-                    ")"
-                );
-            } else {
-                return color;
-            }
+    setOpacity: function (hexColor, opacity) {
+        var r, g, b;
+
+        if (hexColor.length === 4) {
+            r = `0x${hexColor[1]}${hexColor[1]}`;
+            g = `0x${hexColor[2]}${hexColor[2]}`;
+            b = `0x${hexColor[3]}${hexColor[3]}`;
         } else {
-            return color;
+            r = `0x${hexColor[1]}${hexColor[2]}`;
+            g = `0x${hexColor[3]}${hexColor[4]}`;
+            b = `0x${hexColor[5]}${hexColor[6]}`;
         }
+        // return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        return `rgba(${[r, g, b].map(c => parseInt(c))}, ${opacity})`;
     },
 });
 
 L.geoJson.vt = function (geojson, options) {
     return new L.GeoJSON.VT(geojson, options);
-};
-
-String.prototype.iscolorHex = function () {
-    var sColor = this.toLowerCase();
-    var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-    return reg.test(sColor);
-};
-
-String.prototype.colorRgb = function () {
-    var sColor = this.toLowerCase();
-    if (sColor.length === 4) {
-        var sColorNew = "#";
-        for (var i = 1; i < 4; i += 1) {
-            sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
-        }
-        sColor = sColorNew;
-    }
-    var sColorChange = [];
-    for (var i = 1; i < 7; i += 2) {
-        sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
-    }
-    return sColorChange;
 };

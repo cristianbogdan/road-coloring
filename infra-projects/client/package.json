@@ -7,12 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-
-    "build-pum": "vite build --base /maps/infra-projects/client/dist"
+    "build-docker-env": "vite build --base /maps/infra-projects/client/dist",
+    "build-pum": "vite build --base https://pum.project-online.se/maps/infra-projects/client/dist"
   },
   "dependencies": {
     "geojson-vt": "^3.2.1",
-    "leaflet": "^1.9.3"
+    "leaflet": "^1.9.3",
+    "leaflet-edgebuffer": "^1.0.6"
   },
   "devDependencies": {
     "vite": "^4.0.0"

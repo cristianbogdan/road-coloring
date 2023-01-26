@@ -1,3 +1,6 @@
+.env
+leaflet-1.9.3.css
+
 # Logs
 logs
 *.log

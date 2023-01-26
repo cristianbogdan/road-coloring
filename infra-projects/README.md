@@ -1,5 +1,5 @@
 - `_index.js` loads the sub-project. You can test it with `test-leaflet.html` 
-- `tiles-vt.js` renders the sub-project at the client. 
+- `client/*` contains the client (front-end) application. 
   * the only part rendered at the server is the years over the segments, see  `nginx-infra.conf`   below
 - `osmimport` takes care of fetching from OSM (overpass) the infrastructure project data, mostly runs in the [docker-osmimport](../docker-osmimport) container 
   * `osmimport/read-overpass.sh` reads data from OSM and places it in the `/data` folder
@@ -9,6 +9,6 @@
   * in principle it maps `/infra` URIs to `tilestache` to write the years on the project map
   * it maps /click to deal with clicks on the map
   * `tilestache/infra.cfg` is the tilestache configuration for the project years. It makes use of the mapnik file `tilestache/osm_infra-noent.xml` 
-  * JS files are served from `/work/maps/infra-projects`  
+  * HTML, CSS and JS files are served from `/work/maps/infra-projects/client/dist` after `npm run build` is run 
   * data is served from `/data` as per the general `docker-mapnik` nginx configuration
 

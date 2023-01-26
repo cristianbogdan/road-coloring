@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { legend } from './road-style';
-import { roadsLayer } from './tiles-vt';
+import { legend } from '../road-style';
+import { roadsLayer } from '../tiles-vt';
 
 const ShowLegendButtonText = {
     SHOW: ">>",
@@ -9,20 +9,12 @@ const ShowLegendButtonText = {
 let isLegendVisible = true;
 let showLegendButtonText = ShowLegendButtonText.SHOW;
 
-const contributors =
-    '<div style="text-align:left;line-height:115%;">'
-    + '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors<br>'
-    + '<a href="https://proinfrastructura.ro">API</a>, <a href="http://forum.peundemerg.ro">peundemerg.ro</a><br>'
-    + '</div>';
-
 const legendText =
     '<div class="legend-content-element">'
     + '<div style="position:relative; display:inline-block; font-size:12px; font-weight:bold; color:blue;">2023</div> - Deschidere (estimată)<br>'
     + '<div style="position:relative; display:inline-block; font-size:12px; font-weight:bold; color:red;">2023</div> - Deschidere fără acces<br>'
     + 'AC - Autorizație de Construire<br>PT - Proiect Tehnic<br>AM - Acord de Mediu'
     + '</div>'
-
-const getInvolved = '<a href=http://forum.peundemerg.ro/index.php?topic=836.msg161436#msg161436>Get involved!</a><br>';
 
 const filters =
     '<div class="legend-content-element" onclick="legendFilterClickHandler(event, this)">'

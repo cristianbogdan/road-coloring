@@ -1,132 +1,27 @@
 import L from 'leaflet';
 import config from './config';
-import createLegend from './legend';
+import createLegend from './component/legend';
+import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine } from './road-style';
-import { Color, zoomPrecisionMap } from './constants';
-import './leaflet-geojson-vt';
-
+import { computeStatus } from './data-processing';
+import { zoomPrecisionMap } from './constants';
+import { version } from '../package.json';
+import './leaflet-plugin/control-logo';
+import './leaflet-plugin/geojson-vt';
+import './style/leaflet-1.9.3.css';
+import './style/global.css';
+import 'leaflet-edgebuffer';
 
 // larger values tend to block Safari on iPhone after lots of panning and deep zoom-in
 const EDGE = 1;
 var map = undefined;
 export var roadsLayer = undefined;
 
-function computeStatus(props) {
-    if (!props.status) return;
-    for (const prop of props.status.split(',')) {
-        const [prop_key, prop_value] = prop.split(':');
-        if (prop_value) {
-            props[prop_key] = prop_value;
-            if (prop_key == 'progress') {
-                props.progress = prop_value.split(' ');
-                props.latestProgress = parseFloat(props.progress[0].split('%')[0]);
-            } else if (prop_key == 'progress_estimate') {
-                props.progress_estimate = prop_value.split(' ');
-                props.latestProgress = parseFloat(props.progress_estimate[0].split('%')[0]);
-            } else if (prop_key == 'signal_progress') {
-                props.signal_progress = prop_value.split(' ');
-                props.latestSignalProgress = parseFloat(props.signal_progress[0].split('%')[0]);
-            }
-        } else
-            props[prop_key] = true;
-    };
-    //if(p.progress_estimate)
-    //p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);
-    props.hadStatus = true;
-    props.status = null;
-};
-
-function getPopupHtmlContent(props) {
-    if (!props.osm_id) props.osm_id = props.id.split('/')[1];
-
-    if (props.comentarii_problema) {
-        return '<b>' + props.nume + '</b><br/>'
-            + props.comentarii_problema + '<br/><br/>'
-            + props.comentarii_rezolvare_curenta + '<br/>'
-            + 'Estimare: ' + props.estimare_rezolvare +
-            (props.link ? ('<br/><a href="' + props.link + '" target="PUM">detalii</a>') : '');
-
-
-    }
-    if (props.highway == 'lot_limit' || props.railway == 'lot_limit')
-        return 'Limita lot ' + (props.highway ? 'autostrada' : 'CF') + ' <a href=\"https://openstreetmap.org/node/' + props.osm_id + '\" target="OSM">' + props.name + '</a>';
-
-    var x = (props.highway ? props.highway : props.railway)
-        + ' <a href=\"https://openstreetmap.org/way/' + props.osm_id + '\" target="OSM">'
-        + (props.ref ? props.ref + (props.name ? ('(' + props.name + ')') : '') : (props.name ? props.name : props.osm_id))
-        + "</a>"
-        //+"[<a href=\"https://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
-        //    +"</a> [<a href=\"https://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
-        ;
-
-    if (props.status) computeStatus(props);
-
-    if (props.highway == 'construction' || props.highway == 'proposed' || (props.railway && props.latestProgress != 100)) {
-        x += (props.opening_date ? "<br>Estimarea terminarii constructiei: " + props.opening_date : '');
-        x += (props.access == 'no' ? "<br><font color='red'>Inchis traficului la terminarea constructiei</font>" : '');
-
-        if (props.hadStatus)
-            if (props.highway) x += "<br>" + (props.AC ? '<font color=' + Color.DEEP_SKY_BLUE + '>Autorizatie de construire</font>' : props.PTE ? '<font color=' + Color.ORANGE + '>Are Proiect Tehnic aprobat dar nu Autorizatie de Construire</font>' : props.AM ? '<font color=' + Color.ORANGE_RED + '>Are Acord de Mediu dar nu Proiect Tehnic aprobat, deci nu are Autorizatie de Construire</font>' : '<font color=' + Color.RED + '>Nu are Acord de Mediu, deci nu are Autorizatie de Construire</font>');
-            else x += (props.AC ? "<br>" + '<font color=' + Color.DEEP_SKY_BLUE + '>Autorizatie de construire</font>' : '');
-        else if (props.highway)
-            x += "<br>Progresul constructiei necunoscut";
-        if (props.tender) {
-            x += "<br>In licitatie " + props.tender;
-            if (props.winner) x += "<br> castigator " + props.winner;
-        }
-        x += (props.builder ? "<br>Constructor: " + props.builder : '');
-        x += (props.severance ? "<br>Reziliat: " + props.severance : '');
-        x += (props.financing ? "<br>Finantare: " + props.financing : '');
-
-        if (props.progress) {
-            var color = props.latestProgress > 75 ? Color.DODGER_BLUE : props.latestProgress > 50 ? Color.DEEP_SKY_BLUE : props.latestProgress > 25 ? Color.LIGHT_SKY_BLUE : props.latestProgress > 0 ? Color.POWDER_BLUE : Color.GRAY;
-            x += "<br>Stadiul lucrarilor: <font color=" + color + "><b>" + props.progress[0] + "</b></font><font size=-2>"
-                + props.progress.slice(1).reduce(function (s, e) {
-                    return s + " " + e.trim();
-                }, "")
-                + "</font>";
-        }
-        if (props.progress_estimate) {
-            var color_e = props.latestProgress > 75 ? Color.DODGER_BLUE : props.latestProgress > 50 ? Color.DEEP_SKY_BLUE : props.latestProgress > 25 ? Color.LIGHT_SKY_BLUE : props.latestProgress > 0 ? Color.POWDER_BLUE : Color.GRAY;
-            x += "<br>Estimare stadiu: <font color=" + color_e + "><b>" + props.progress_estimate[0] + "</b></font><font size=-2>"
-                + props.progress_estimate.slice(1).reduce(function (s, e) {
-                    return s + " " + e.trim();
-                }, "")
-                + "</font>";
-        }
-    } else {
-        if (props.highway) {
-            x += (props.start_date ? "<br>Data terminarii constructiei: " + props.start_date : '');
-            x += (props.access_note ? "<br>Dat in circulatie: " + props.access_note.split(' ').pop() : '');
-
-        } else if (props.railway) {
-            x += (props.start_date ? "<br>Data terminarii variantei noi: " + props.start_date : '');
-            x += (props.start_date_note ? "<br>Data terminarii reabilitarii: " + props.start_date_note.split(' ').pop() : '');
-        }
-        x += props.access == 'no' ? "<br><font color='red'>Inchis traficului</font>" : "";
-    }
-
-    if (props.railway) {
-        if (props.signal_progress && !props["railway:etcs"]) {
-            x += "<br>Semnalizare ETCS: <font color=" + Color.ORANGE + "><b>" + props.signal_progress[0] + "</b></font><font size=-2><br>"
-                + props.signal_progress.slice(1).reduce(function (s, e) {
-                    return s + " " + e.trim();
-                }, "")
-        } else if (props["railway:etcs"]) x += "<br>Semnalizare ETCS: nivel " + props["railway:etcs"];
-        else if (props["construction:railway:etcs"]) x += "<br>Semnalizare ETCS: implementare impreuna cu reabilitarea liniei, nivel " + props["construction:railway:etcs"];
-        else x += "<br>Semnalizare ETCS: neimplementat";
-    }
-
-    x += props.bridge == 'yes' ? "<br>Pod" : "";
-    x += props.tunnel == 'yes' ? "<br>Tunel" : "";
-    return x;
-}
-
 
 function showPopupDetails(latlng, props) {
     L.popup()
         .setLatLng(latlng)
-        .setContent(getPopupHtmlContent(props))
+        .setContent(generatePopupHtmlContent(props))
         .openOn(map);
 }
 
@@ -153,25 +48,14 @@ function loadDoc(zoom) {
     map.attributionControl.addAttribution('<a href="https://proinfrastructura.ro">API</a>');
     map.attributionControl.addAttribution('<a href="http://forum.peundemerg.ro">PUM</a>');
 
-    L.DomUtil.addClass(map._container, 'default-cursor');
+    L.DomUtil.addClass(map.getContainer(), 'default-cursor');
     createLegend().addTo(map);
-
-    const landUrl = `https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFROST}`;
+    
+    const landUrl = `https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`;
     const googleUrl = 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}';
-    // const osmLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
-    // const thunLink = '<a href="https://thunderforest.com/">Thunderforest</a>';
-    // const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    // const roadQUrl1 = config.URL_PUM_API+ '/infraPbf/{z}/{x}/{y}.pbf';
-    // const osmBwUrl= 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png';
-    // const landUrl = 'https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png';
-    // const  hikeBikeUrl='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png';
 
     const googleMap = L.tileLayer(googleUrl, { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" });
     const landMap = L.tileLayer(landUrl, { edgeBufferTiles: EDGE, attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' });
-    // const osmBwMap = L.tileLayer(osmBwUrl);
-    // const osmMap = L.tileLayer(osmUrl, { edgeBufferTiles:2 });
-    // const osmHikeBikeMap = L.tileLayer(hikeBikeUrl, { attribution: thunAttrib });
-    // const roadQMap1= L.tileLayer(roadQUrl1);
 
     function changeUrl() {
         window.location.replace("#map=" + map.getZoom() + "/"
@@ -236,7 +120,7 @@ function loadDoc(zoom) {
     const lotLimits = L.geoJSON(null, {
         onEachFeature: function (feature, layer) {
             if (feature.properties) {
-                const popupHtmlContent = getPopupHtmlContent(feature.properties);
+                const popupHtmlContent = generatePopupHtmlContent(feature.properties);
                 layer.bindPopup(popupHtmlContent);
             }
         },
@@ -265,8 +149,6 @@ function loadDoc(zoom) {
                 "Google satellite": L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" }),
                 "Google satellite & labels": L.tileLayer("http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}", { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" }),
                 "Thunderforest Landscape": landMap,
-                // "Hike & bike": osmHikeBikeMap,
-                // "OSM B&W":osmBwMap
             },
             {
                 "Proiecte infrastructura": roadsLayer,
@@ -301,30 +183,6 @@ function loadDoc(zoom) {
     changeUrl();
 }
 
-L.Control.Logo = L.Control.extend({
-    options: {
-        position: "bottomleft",
-        url: "",
-        logoUrl: ""
-    },
 
-    initialize(options) {
-        L.setOptions(this, options);
-    },
-    onAdd: function (map) {
-        const a = L.DomUtil.create('a', 'leaflet-control-layers logo-container');
-        a.innerHTML = `<img id="api" src="${this.options.logoUrl}" width="50"/>`;
-        if (this.options.url) {
-            a.setAttribute('href', this.options.url);
-            L.DomUtil.addClass(a, 'clickable')
-        }
-        return a;
-    },
-    onRemove: function (map) { },
-});
-
-L.control.logo = function (opts) {
-    return new L.Control.Logo(opts);
-}
 
 loadDoc()
