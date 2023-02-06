@@ -8,7 +8,7 @@ import { zoomPrecisionMap } from './constants';
 import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/geojson-vt';
-import './style/leaflet-1.9.3.css';
+import './../node_modules/leaflet/dist/leaflet.css';
 import './style/global.css';
 import 'leaflet-edgebuffer';
 
@@ -44,12 +44,26 @@ function loadDoc(zoom) {
         maxZoom: 18,
     });
 
+    // map.addControl(new L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
+    // map.addControl(new L.control.attribution({ position: 'bottomleft', prefix: false }));
+
     map.attributionControl.addAttribution('© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
     map.attributionControl.addAttribution('<a href="https://proinfrastructura.ro">API</a>');
     map.attributionControl.addAttribution('<a href="http://forum.peundemerg.ro">PUM</a>');
 
     L.DomUtil.addClass(map.getContainer(), 'default-cursor');
     createLegend().addTo(map);
+
+    // const appVersion = L.control({ position: 'topright' });
+    // appVersion.onAdd = function (map) {
+    //     const div = L.DomUtil.create('div', 'leaflet-control-attribution');
+    //     L.DomEvent.disableClickPropagation(div)
+    //     div.innerText = `v${version}`;
+    //     return div;
+    // }
+    // appVersion.addTo(map);
+    // map.zoomControl.setPosition('topleft');
+    // map.attributionControl.setPrefix(false);
     
     const landUrl = `https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`;
     const googleUrl = 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}';
@@ -112,7 +126,7 @@ function loadDoc(zoom) {
     };
 
     const limitIcon = L.icon({
-        iconUrl: config.URL_PUM_API + "/maps/images/pin.png",
+        iconUrl: `${config.URL_PUM_API}/maps/images/pin.png`,
         iconSize: [25, 25], // width and height of the image in pixels
         iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor

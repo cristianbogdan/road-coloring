@@ -112,7 +112,7 @@ export const legend = {
             canHide: true
         },
         {
-            symbol: 'background-color:' + Color.LIGHT_SKY_BLUE + ';',
+            symbol: `background-color: ${Color.LIGHT_SKY_BLUE};`,
             text: 'în construire, cu AC, stadiu:<br>'
                 + '<font color=' + Color.BLIZZARD_BLUE + '>0%</font> <font color=' + Color.POWDER_BLUE + '>&lt;25%</font> <font color=' + Color.LIGHT_SKY_BLUE + '>&lt;50%</font> <font color=' + Color.DEEP_SKY_BLUE + '>&lt;75%</font> <font color=' + Color.DODGER_BLUE + '>&lt;100%</font>',
             condition: (p) => p.highway && p.construction && p.AC && p.builder,
@@ -215,7 +215,6 @@ export const legend = {
             lineType: (p) => [shipCoveLine],
             canHide: true,
             hidden: true
-        },
-
+        }
     ]
 }
