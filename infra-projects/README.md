@@ -1,5 +1,9 @@
 - `_index.js` loads the sub-project. You can test it with `test-leaflet.html` 
 - `client/*` contains the client (front-end) application. 
+  * before building the application, make sure there's a `.env` file inside `/client` and it is completed with the appropriate configurations. The available configurations can be found in `.env.local` 
+  * to build the application and serve it locally, the `npm run build` commands needs to be executed
+  * to build the application and serve it within the docker-compose infrastructure, the `npm run build-docker-env` commands needs to be executed
+  * to build the application and serve it within the docker-compose infrastructure and use it for the https://proinfrastructura.ro domain, the `npm run build-docker-env` commands needs to be executed
   * the only part rendered at the server is the years over the segments, see  `nginx-infra.conf`   below
 - `osmimport` takes care of fetching from OSM (overpass) the infrastructure project data, mostly runs in the [docker-osmimport](../docker-osmimport) container 
   * `osmimport/read-overpass.sh` reads data from OSM and places it in the `/data` folder
