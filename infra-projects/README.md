@@ -1,6 +1,6 @@
 - `_index.js` loads the sub-project. You can test it with `test-leaflet.html` 
 - `client/*` contains the client (front-end) application. 
-  * before building the application, make sure there's a `.env` file inside `/client` and it is completed with the appropriate configurations. The available configurations can be found in `.env.local` 
+  * before building the application, make sure there's a `.env` file inside `/client` and it is completed with the appropriate configurations. The available configurations can be found in `.env.example` 
   * to build the application and serve it locally, the `npm run build` commands needs to be executed
   * to build the application and serve it within the docker-compose infrastructure, the `npm run build-docker-env` commands needs to be executed
   * to build the application and serve it within the docker-compose infrastructure and use it for the https://proinfrastructura.ro domain, the `npm run build-docker-env` commands needs to be executed
