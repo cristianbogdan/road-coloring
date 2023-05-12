@@ -1,50 +1,26 @@
-SCRIPT_ROOT+="/infra-projects/";
-document.title='Harta proiectelor de infrastructură din România';
+SCRIPT_ROOT += "/infra-projects/";
 
-var yr= new Date().getFullYear();
-
-document.head.insertAdjacentHTML
-( 'afterbegin','<style>'
-+'body,html{height:100%;width:100%;}'
-+'.map {  height:100%;width:100%;}'
-+'.popover{width:300px;}'
-+'div.ol-attribution button{position: absolute; bottom: 12px;right: 0;  }'
-  +'#text{  position:absolute; left:50%; bottom:0px;}'
-  +'#api{  position:absolute; right:10px; top:10px; background-color:rgba(255, 255, 255, 0.4);}'
-+'</style>'
-);
-
-function insertHTML(){
-document.body.insertAdjacentHTML
-( 'afterbegin',
-  '<div id="map" class="map"> '
-+'<div id="gmap" class="map"></div>'
-  +'<div id="olmap" class="map"><div id="popup"></div></div>'
-  +'</div>'
-  +'  <div id="text"></div>'
-  +'  <a href="https://proinfrastructura.ro"><img id="api" src="https://proinfrastructura.ro/images/logos/api/logo_api_portrait_big.png" width="50"/></a>'
-
-
-)  ;
+function recreateScriptElement(scriptElement) {
+    const newScriptElement = document.createElement("script");
+    for (const attribute of scriptElement.attributes) newScriptElement.setAttribute(attribute.name, attribute.value);
+    const scriptText = document.createTextNode(scriptElement.textContent);
+    newScriptElement.appendChild(scriptText);
+    return newScriptElement;
 }
 
-loadScript(["../common/googleMapsKey.js", loadAll],0);
-
-function loadAll(){
-loadScript([
-    "https://unpkg.com/jquery@1.11.2/dist/jquery.min.js",
-    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", 
-    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",
-    insertHTML,
-//    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css",
-//   "https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/openlayers/3.15.1/ol.js",
-//    "https://tyrasd.github.io/osmtogeojson/osmtogeojson.js",
-    "https://maps.google.com/maps/api/js?v=3&sensor=false&key="+window.googleMapsKey,
-    "../common/gmap.js",
-    "project-colors.js",
-    "projects-legend.js",
-    "vector-gmaps.js"
-], 0);
+function replaceHtmlElementInnerContent(sourceHtmlElement, targetHtmlElement) {
+    targetHtmlElement.innerHTML = "";
+    for (const childElement of Array.from(sourceHtmlElement.children)) {
+        if (childElement.tagName.toUpperCase() === "SCRIPT") {
+            targetHtmlElement.appendChild(recreateScriptElement(childElement));
+        } else {
+            targetHtmlElement.appendChild(childElement);
+        }
+    }
 }
+
+fetch(`${SCRIPT_ROOT}/client/dist/index.html`).then(response => response.text()).then(data => {
+    const htmlContent = new DOMParser().parseFromString(data, "text/html");
+    replaceHtmlElementInnerContent(htmlContent.body, document.body);
+    replaceHtmlElementInnerContent(htmlContent.head, document.head);
+});

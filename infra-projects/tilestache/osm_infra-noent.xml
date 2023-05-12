@@ -98,7 +98,6 @@ ls `python -c "import mapnik;print mapnik.fontscollectionpath"`-->
 <Style name="roads-text-name">
     <Rule>
       <MaxScaleDenominator>1500000</MaxScaleDenominator>
-      <MinScaleDenominator>2500</MinScaleDenominator>
       <TextSymbolizer repeat-distance="50" margin="20" avoid-edges="true" size="11" fill="[color]" halo-fill="white" placement="line" fontset-name="book-fonts" halo-radius="2">[date]</TextSymbolizer>
     </Rule>
     <Rule>
@@ -113,11 +112,15 @@ ls `python -c "import mapnik;print mapnik.fontscollectionpath"`-->
      <StyleName>roads-text-name</StyleName>
      <Datasource>
       <Parameter name="table">
-	(select way,
-	case when opening_date is null then start_date else opening_date end as date,
-	case when construction is null and proposed is null  and opening_date&gt; start_date or construction is not null and access='no' then 'red' else 'blue' end as color
+        (select way,
+        case when (access_note is null and opening_date is null)
+        then  (case when start_date_note is null then start_date else regexp_replace(start_date_note, '^.* ', '') end)
+        else (case when access_note is not null then regexp_replace(access_note, '^.* ', '') else opening_date end)
+        end as date,
+        case when construction is null and proposed is null  and regexp_replace(access_note, '^.* ', '') &gt; (case when start_date_note is null then start_date else regexp_replace(start_date_note, '^.* ', '') end)
+              or access='no' then 'red' else 'blue' end as color
        from planet_osm_line1
-       where (opening_date is not null or start_date is not null ) and (highway in ('motorway', 'motorway_link') or highway in ('trunk', 'primary')  or construction in ('motorway', 'trunk', 'primary') or proposed in ('motorway', 'trunk', 'primary'))
+       where (opening_date is not null or access_note is not null or start_date is not null ) and (highway in ('motorway', 'motorway_link') or railway is not null or highway in ('trunk', 'primary')  or construction in ('motorway', 'trunk', 'primary') or proposed in ('motorway', 'trunk', 'primary'))
       ) as roads
       </Parameter>
       <!--
