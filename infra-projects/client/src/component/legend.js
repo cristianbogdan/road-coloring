@@ -2,15 +2,15 @@ import L from 'leaflet';
 import { legend } from '../road-style';
 import { roadsLayer } from '../map';
 
+const ShowLegendButtonText = {
+    SHOW: ">>",
+    HIDE: "<<"
+}
+
 let isLegendVisible = true;
+let showLegendButtonText = ShowLegendButtonText.SHOW;
 
 function legendContent() {
-    const ShowLegendButtonText = {
-        SHOW: ">>",
-        HIDE: "<<"
-    }
-    let showLegendButtonText = ShowLegendButtonText.SHOW;
-
     const legendText =
         '<div class="legend-content-element">'
         + '<div style="position:relative; display:inline-block; font-size:12px; font-weight:bold; color:blue;">2023</div> - Deschidere (estimată)<br>'
