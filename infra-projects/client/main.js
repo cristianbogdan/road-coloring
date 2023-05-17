@@ -1,4 +1,4 @@
-import { loadMap } from "./src/tiles-vt";
+import { loadMap } from "./src/map";
 import { legend } from "./src/road-style";
 
 function getQueryParams() {

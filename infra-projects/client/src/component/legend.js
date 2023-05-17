@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { legend } from '../road-style';
-import { roadsLayer } from '../tiles-vt';
+import { roadsLayer } from '../map';
 
 let isLegendVisible = true;
 
