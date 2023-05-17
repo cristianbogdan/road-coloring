@@ -36,8 +36,6 @@ function mapClick(event) {
 }
 
 function loadDoc(zoom) {
-    zoom = zoom || 7;
-
     map = new L.Map("leaflet-map", {
         minZoom: 7,
         maxZoom: 18,
@@ -101,12 +99,12 @@ function loadDoc(zoom) {
 
     const locationQueryParams = window.location.getQueryParams()
     const queryParams = {
-        zoom: locationQueryParams.get('zoom') ?? 7,
-        lat: locationQueryParams.get('lat') ?? 46,
-        lng: locationQueryParams.get('lng') == 'null' ? 25 : locationQueryParams.get('lng'),
+        zoom:parseInt(locationQueryParams.get('zoom')) || 7,
+        lat: parseInt(locationQueryParams.get('lat')) || 46,
+        lng: parseInt(locationQueryParams.get('lng')) || 25,
         legend: locationQueryParams.get('legend') ?? legend.getVisibleProjectTypes().map(el => el.id).join('_'),
     }
-
+    
     var options = {
         maxZoom: 18,
         pane: 'overlayPane',
