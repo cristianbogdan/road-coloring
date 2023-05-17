@@ -92,12 +92,29 @@ export const blackDashLine = {
     dashArray: DashArray.DENSE
 }
 
+
 export const legend = {
     basicStyle: "position: relative; display: inline-block; width: 35px; height: 3px; bottom: 2px;",
+    getVisibleProjectTypes: function () {
+        return this.projectTypes.filter(p => !p.hidden);
+    },
+    hideProjectTypeByIds: function (ids) {
+        for (const projectType of this.projectTypes) {
+            if (ids.includes(projectType.id) && projectType.canHide) projectType.hidden = true;
+            else projectType.hidden = false;
+        }
+    },
+    showProjectTypeByIds: function (ids) {
+        for (const projectType of this.projectTypes) {
+            if (ids.includes(projectType.id)) projectType.hidden = false;
+            else projectType.hidden = true;
+        }
+    },
     projectTypes: [
 
         /* Highway */
         {
+            id: "a-finalizata",
             symbol: `background-color: ${Color.BLUE};`,
             text: "în circulație",
             condition: (p) => p.highway && !p.construction && !p.proposed && p.access != 'no',
@@ -105,6 +122,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-fara-acces",
             symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.RED};`,
             text: "recepționat/circulabil fără acces",
             condition: (p) => p.highway && !p.construction && !p.proposed && p.access == 'no',
@@ -112,6 +130,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-in-construire",
             symbol: `background-color: ${Color.LIGHT_SKY_BLUE};`,
             text: 'în construire, cu AC, stadiu:<br>'
                 + '<font color=' + Color.BLIZZARD_BLUE + '>0%</font> <font color=' + Color.POWDER_BLUE + '>&lt;25%</font> <font color=' + Color.LIGHT_SKY_BLUE + '>&lt;50%</font> <font color=' + Color.DEEP_SKY_BLUE + '>&lt;75%</font> <font color=' + Color.DODGER_BLUE + '>&lt;100%</font>',
@@ -120,6 +139,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-neatribuita",
             symbol: `border-top: dotted ${Color.DEEP_SKY_BLUE};`,
             text: "neatribuit sau reziliat, cu AC",
             condition: (p) => p.highway && (p.proposed || !p.builder) && p.AC,
@@ -127,6 +147,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-atribuita-fara-am",
             symbol: `background-color: ${Color.RED};`,
             text: "atribuit, lipsă AM",
             condition: (p) => p.highway && p.builder && !p.AM && !p.PTE,
@@ -134,6 +155,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-atribuita-fara-pt",
             symbol: `background-color: ${Color.ORANGE_RED};`,
             text: "cu AM, fără PT aprobat",
             condition: (p) => p.highway && p.construction && p.builder && !p.PTE && p.AM,
@@ -141,6 +163,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-atribuita-fara-ac",
             symbol: `background-color: ${Color.AMBER};`,
             text: "cu PT aprobat, fără AC",
             condition: (p) => p.highway && p.builder && !p.AC && p.PTE,
@@ -148,6 +171,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "a-neatribuita-fara-avize",
             symbol: `border-top: dotted ${Color.ORANGE_RED};`,
             text: "neatribuit, lipsă AC/PT/AM",
             condition: (p) => p.highway && p.hadStatus && (!p.AC || !p.PTE || !p.AM),
@@ -157,6 +181,7 @@ export const legend = {
 
         /* Railway */
         {
+            id: "cf-noua",
             symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.BLACK};`,
             text: "CF nouă finalizată",
             condition: (p) => p.railway && p.latestProgress === 100 && p.start_date,
@@ -164,6 +189,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "cf-reabilitata",
             symbol: `border-top: dotted ${Color.BLACK};`,
             text: "CF cu reabilitare finalizată",
             condition: (p) => p.railway && p.latestProgress === 100 && p.start_date_note,
@@ -171,6 +197,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "cf-noua-in-construire",
             symbol: `background-color: ${Color.RED}; border-top: dotted ${Color.POWDER_BLUE};`,
             text: "CF nouă cu AC, în construire",
             condition: (p) => p.railway && p.railway == 'construction',
@@ -178,6 +205,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "cf-in-reabilitare",
             symbol: `background-color: ${Color.BLACK}; border-top: dotted ${Color.POWDER_BLUE};`,
             text: "CF cu AC, în reabilitare",
             condition: (p) => p.railway && p.railway !== 'proposed' && !p.tender,
@@ -185,6 +213,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "cf-noua-neatribuita",
             symbol: `background-color: ${Color.RED}; border-top: dotted ${Color.ROSE_PINK};`,
             text: "CF nouă, neatribuită",
             condition: (p) => p.railway === 'proposed' /*&& p.tender*/,
@@ -192,6 +221,7 @@ export const legend = {
             canHide: true
         },
         {
+            id: "cf-reabilitare-neatribuita",
             symbol: `background-color: ${Color.BLACK}; border-top: dotted ${Color.ROSE_PINK};`,
             text: "CF vechi, neatribuită",
             condition: (p) => p.railway === 'rail' && p.tender,
@@ -201,6 +231,7 @@ export const legend = {
 
         /* Proposed projects */
         {
+            id: "proiecte-propuse",
             symbol: `border-top: dotted ${Color.ROSE_PINK};`,
             text: "proiecte propuse",
             condition: (p) => p.highway && (p.proposed || p.hadStatus && !p.AC && !p.AM && !p.PTE),
@@ -209,6 +240,7 @@ export const legend = {
             hidden: true
         },
         {
+            id: "status-necunoscut",
             symbol: `background-color: ${Color.SHIP_COVE};`,
             text: "status necunoscut",
             condition: (p) => p.highway && p.construction && !p.hadStatus,
@@ -216,5 +248,34 @@ export const legend = {
             canHide: true,
             hidden: true
         }
-    ]
+    ],
+
 }
+
+
+// legend.projectTypes.map(l => l.id)
+// console.log(`legend:${legend.projectTypes.map(l => l.id)}`)
+
+
+
+
+
+// // automatically generated IDs for legend project types
+// for (const projectType of legend.projectTypes) {
+//     projectType.id = pickFirstLetterOfEachWord(convertsStringToLatin(projectType.text))
+// }
+
+// console.log(legend.projectTypes.map(l => l.id))
+
+// function pickFirstLetterOfEachWord(str) {
+//     return str.split(" ").map(word => word[0]).join("")
+// }
+
+
+
+// function convertsStringToLatin(str) {
+//     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+// }
+
+// // let en = btoa(strin)
+// // let dec = JSON.parse(atob(en))

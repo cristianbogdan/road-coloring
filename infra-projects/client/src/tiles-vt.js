@@ -28,7 +28,6 @@ function showPopupDetails(latlng, props) {
 function mapClick(event) {
     const { lat, lng } = event.latlng;
     const latlngStr = `${lat},${lng}`;
-    //    console.log(zoomPrecisionMap[map.getZoom()])
 
     fetch(`${config.URL_PUM_API}/click?latLng=${latlngStr}&max=${zoomPrecisionMap[map.getZoom()]}`).then(response => response.json()).then(data => {
         if (data === null) return
@@ -52,7 +51,7 @@ function loadDoc(zoom) {
     map.attributionControl.addAttribution('<a href="http://forum.peundemerg.ro">PUM</a>');
 
     L.DomUtil.addClass(map.getContainer(), 'default-cursor');
-    createLegend().addTo(map);
+    // createLegend().addTo(map);
 
     // const appVersion = L.control({ position: 'topright' });
     // appVersion.onAdd = function (map) {
@@ -64,29 +63,48 @@ function loadDoc(zoom) {
     // appVersion.addTo(map);
     // map.zoomControl.setPosition('topleft');
     // map.attributionControl.setPrefix(false);
-    
+
     const landUrl = `https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`;
     const googleUrl = 'https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}';
 
     const googleMap = L.tileLayer(googleUrl, { edgeBufferTiles: EDGE, attribution: "Map data ©2023 Google" });
     const landMap = L.tileLayer(landUrl, { edgeBufferTiles: EDGE, attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' });
 
-    function changeUrl() {
-        window.location.replace("#map=" + map.getZoom() + "/"
-            + Math.round(map.getCenter().lat * 1000) / 1000 + "/"
-            + Math.round(map.getCenter().lng * 1000) / 1000);
+    window.location.updateQueryParams = function () {
+        const queryParamsToSet = new URLSearchParams();
+        queryParamsToSet.append('zoom', map.getZoom());
+        queryParamsToSet.append('lat', Math.round(map.getCenter().lat * 1000) / 1000);
+        queryParamsToSet.append('lng', Math.round(map.getCenter().lng * 1000) / 1000);
+        queryParamsToSet.append('legend', legend.getVisibleProjectTypes().map(el => el.id).join('_'));
+
+        const newUrl = new URL(window.location.pathname, window.location.origin);
+        newUrl.search = queryParamsToSet.toString();
+        window.history.replaceState(null, '', newUrl);
     };
 
+    window.location.getQueryParams = function () {
+        // backwards compatibility
+        if (window.location.href.includes('#map=')) {
+            const [zoom=null, lat=null, lng=null] = window.location.href.split('#map=')[1].split('/');
 
-    var lat = 46;
-    var lng = 25;
+            const urlParams = new URLSearchParams();
+            urlParams.append('zoom', zoom);
+            urlParams.append('lat', lat);
+            urlParams.append('lng', lng);
 
-    var x = window.location.href.split('#map=');
-    if (x.length == 2) {
-        var y = x[1].split("/");
-        zoom = y[0];
-        lat = y[1];
-        lng = y[2];
+            return urlParams;
+        }
+
+        // new format
+        return new URLSearchParams(window.location.search)
+    }
+
+    const locationQueryParams = window.location.getQueryParams()
+    const queryParams = {
+        zoom: locationQueryParams.get('zoom') ?? 7,
+        lat: locationQueryParams.get('lat') ?? 46,
+        lng: locationQueryParams.get('lng') == 'null' ? 25 : locationQueryParams.get('lng'),
+        legend: locationQueryParams.get('legend') ?? legend.getVisibleProjectTypes().map(el => el.id).join('_'),
     }
 
     var options = {
@@ -181,8 +199,8 @@ function loadDoc(zoom) {
 
     let selectedMapLayer = "Google";
     map.addLayer(googleMap);
-    map.on('dragend', changeUrl);
-    map.on('zoomend', changeUrl);
+    map.on('dragend', window.location.updateQueryParams);
+    map.on('zoomend', window.location.updateQueryParams);
     map.on("baselayerchange", function (event) {
         // const wasSatelliteLayerSelected = isSatelliteLayerSelected();
         // selectedMapLayer = event.name;
@@ -193,8 +211,13 @@ function loadDoc(zoom) {
         return selectedMapLayer.toLowerCase().includes("satellite");
     }
 
-    map.setView(new L.LatLng(lat, lng), zoom);
-    changeUrl();
+
+    legend.showProjectTypeByIds(queryParams.legend.split('_'));
+    createLegend().addTo(map);
+
+    // queryParams.legend = queryParams.legend.split('_')
+    map.setView(new L.LatLng(queryParams.lat, queryParams.lng), queryParams.zoom);
+    window.location.updateQueryParams();
 }
 
 
