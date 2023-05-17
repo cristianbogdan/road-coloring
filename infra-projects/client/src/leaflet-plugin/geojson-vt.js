@@ -24,6 +24,12 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
         this.cache = new Map();
         this.keys = [];
     },
+
+    addData(geojson) {
+        this.initialize(geojson);
+        this.redraw()
+    },
+
     createTile: function (coords, done) {
         const strKey = `${config.URL_PUM_API}/infra/${coords.z}/${coords.x}/${coords.y}.png`;
 
@@ -36,6 +42,7 @@ L.GeoJSON.VT = (tileLayer ? L.TileLayer : L.GridLayer).extend({
         var tile = L.DomUtil.create("canvas", "leaflet-tile");
 
         function drawLater() {
+            if (!this.tileIndex) return;
             // setup tile width and height according to the options
             var size = this.getTileSize();
             tile.width = size.x;
