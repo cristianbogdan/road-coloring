@@ -7,19 +7,19 @@ const ShowLegendButtonText = {
     HIDE: "<<"
 }
 
-let isLegendVisible = true;
+let isLegendVisible = window.innerWidth > 600;  // or !L.Browser.mobile;
 let showLegendButtonText = ShowLegendButtonText.SHOW;
 
 function legendContent() {
     const legendText =
-        '<div class="legend-content-element">'
+        `<div class="legend-content-element" style="display: ${isLegendVisible ? "contents" : "none"};">`
         + '<div style="position:relative; display:inline-block; font-size:12px; font-weight:bold; color:blue;">2023</div> - Deschidere (estimată)<br>'
         + '<div style="position:relative; display:inline-block; font-size:12px; font-weight:bold; color:red;">2023</div> - Deschidere fără acces<br>'
         + 'AC - Autorizație de Construire<br>PT - Proiect Tehnic<br>AM - Acord de Mediu'
         + '</div>'
 
     const filters =
-        '<div class="legend-content-element" onclick="legendFilterClickHandler(event, this)">'
+        `<div class="legend-content-element" onclick="legendFilterClickHandler(event, this)" style="display: ${isLegendVisible ? "contents" : "none"};">`
         + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input style="margin:1pt" type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
         + '</div>';
 
