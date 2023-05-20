@@ -44,8 +44,6 @@ export function loadMap(mapOptions) {
     // map.addControl(new L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
     // map.addControl(new L.control.attribution({ position: 'bottomleft', prefix: false }));
 
-    // createLegend().addTo(map);
-
     // const appVersion = L.control({ position: 'topright' });
     // appVersion.onAdd = function (map) {
     //     const div = L.DomUtil.create('div', 'leaflet-control-attribution');
@@ -111,18 +109,20 @@ export function loadMap(mapOptions) {
             "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { edgeBufferTiles: EDGE_BUFFER_TILES, attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' })
         },
         {
-            "Proiecte infrastructura": roadsLayer,   // added later
-            "Limite de lot": lotLimitsLayer,  // added later
+            "Proiecte infrastructura": roadsLayer,
+            "Limite de lot": lotLimitsLayer,
         }
     ).addTo(map);
 
+    let lotLimitsData = {};
     fetch(`${config.URL_PUM_API}/maps/data/lot_limits.json`).then(r => r.json())
-        .then(function (data) { lotLimitsLayer.addData(data); });
+        .then(function (data) { lotLimitsData = data });
 
     fetch(`${config.URL_PUM_API}/maps/data/data-sql-infra.geo.json`)
         .then(r => r.json()).then(function (data) {
             for (const feature of data.features) computeStatus(feature.properties);
             roadsLayer.addData(data);
+            lotLimitsLayer.addData(lotLimitsData);
         });
 }
 
