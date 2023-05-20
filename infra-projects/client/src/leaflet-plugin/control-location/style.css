@@ -1,0 +1,16 @@
+.action {
+    height: 26px;
+    width: 26px;
+    padding: 2px;
+}
+
+/* displays a tiny red circle in the upper right part of the container */
+.active {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    border-radius: 50%;
+}

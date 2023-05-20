@@ -7,6 +7,7 @@ import { computeStatus } from './data-processing';
 import { zoomPrecisionMap } from './constants';
 import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
+import './leaflet-plugin/control-location';
 import './leaflet-plugin/geojson-vt';
 import './../node_modules/leaflet/dist/leaflet.css';
 import './style/global.css';
@@ -39,7 +40,7 @@ export function loadMap(mapOptions) {
     map.attributionControl.addAttribution('© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
     map.attributionControl.addAttribution('<a href="https://proinfrastructura.ro">API</a>');
     map.attributionControl.addAttribution('<a href="http://forum.peundemerg.ro">PUM</a>');
-
+    L.control.location({ position: 'topleft', iconUrl: "images/current-location-icon.png" }).addTo(map);
     // map.addControl(new L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
     // map.addControl(new L.control.attribution({ position: 'bottomleft', prefix: false }));
 
