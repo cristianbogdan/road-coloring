@@ -2,7 +2,6 @@ import './style.css';
 
 L.Control.Logo = L.Control.extend({
     options: {
-        position: "bottomleft",
         url: "",
         logoUrl: ""
     },
