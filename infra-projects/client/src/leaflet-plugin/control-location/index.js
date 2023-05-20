@@ -17,7 +17,7 @@ L.Control.Location = L.Control.extend({
         buttonElement.href = "#"
         buttonElement.title = "Show current location"
 
-        const iconElement = L.DomUtil.create('img', 'action-action', buttonElement);
+        const iconElement = L.DomUtil.create('img', 'action', buttonElement);
         iconElement.src = this.options.iconUrl;
 
         const isGeoLiveElement = L.DomUtil.create('div', null, buttonElement);
