@@ -25,7 +25,7 @@ const mapOptions = {
     zoom: parseFloat(queryParams.get('zoom')) || 7,
     lat: parseFloat(queryParams.get('lat')) || 46,
     lng: parseFloat(queryParams.get('lng')) || 25,
-    selectedLegendFilterIDs: queryParams.get('legend') ?? legend.getVisibleProjectTypes().map(el => el.id),
+    selectedLegendFilterIDs: queryParams.get('legend')?.split("_") ?? legend.getVisibleProjectTypes().map(el => el.id),
 }
 
 loadMap(mapOptions);
