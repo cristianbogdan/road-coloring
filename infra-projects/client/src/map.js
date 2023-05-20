@@ -25,6 +25,8 @@ export function loadMap(mapOptions) {
     });
 
     map.setView(new L.LatLng(mapOptions.lat, mapOptions.lng), mapOptions.zoom);
+    window.location.updateQueryParams()
+
     map.on('dragend', window.location.updateQueryParams);
     map.on('zoomend', window.location.updateQueryParams);
     map.on('click', mapClick);
