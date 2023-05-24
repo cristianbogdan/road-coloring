@@ -5,17 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "build-docker-env": "vite build --base /maps/infra-projects/client/dist",
-    "build-pum": "vite build --base https://pum.project-online.se/maps/infra-projects/client/dist"
+    "build-docker-env": "tsc && vite build --base /maps/infra-projects/client/dist",
+    "build-pum": "tsc && vite build --base https://pum.project-online.se/maps/infra-projects/client/dist"
   },
   "dependencies": {
     "geojson-vt": "^3.2.1",
-    "leaflet": "^1.9.3",
+    "leaflet": "1.9.3",
     "leaflet-edgebuffer": "^1.0.6"
   },
   "devDependencies": {
+    "@types/geojson-vt": "^3.2.0",
+    "@types/leaflet": "1.9.3",
+    "typescript": "^5.0.2",
     "vite": "^4.3.2"
   }
 }

@@ -4,8 +4,8 @@ import { legend } from "./src/road-style";
 function getQueryParams() {
     // backwards compatibility
     if (window.location.href.includes('#map=')) {
-        const [zoom = null, lat = null, lng = null] = window.location.href.split('#map=')[1].split('/');
-
+        const [zoom, lat, lng] = window.location.href.split('#map=')[1].split('/');
+        
         const urlParams = new URLSearchParams();
         urlParams.append('zoom', zoom);
         urlParams.append('lat', lat);
@@ -22,9 +22,9 @@ const queryParams = getQueryParams()
 
 const mapOptions = {
     id: "leaflet-map",
-    zoom: parseFloat(queryParams.get('zoom')) || 7,
-    lat: parseFloat(queryParams.get('lat')) || 46,
-    lng: parseFloat(queryParams.get('lng')) || 25,
+    zoom: parseFloat(queryParams.get('zoom') as string) || 7,
+    lat: parseFloat(queryParams.get('lat') as string) || 46,
+    lng: parseFloat(queryParams.get('lng') as string) || 25,
     selectedLegendFilterIDs: queryParams.get('legend')?.split("_") ?? legend.getVisibleProjectTypes().map(el => el.id),
 }
 

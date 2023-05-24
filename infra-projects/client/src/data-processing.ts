@@ -1,4 +1,6 @@
-export function computeStatus(props) {
+import { Props } from "./road-style";
+
+export function computeStatus(props: Props) {
     if (!props.status) return;
     for (const prop of props.status.split(',')) {
         const [prop_key, prop_value] = prop.split(':');
@@ -14,8 +16,10 @@ export function computeStatus(props) {
                 props.signal_progress = prop_value.split(' ');
                 props.latestSignalProgress = parseFloat(props.signal_progress[0].split('%')[0]);
             }
-        } else
+        } else {
+            // PTE, AM, AC    
             props[prop_key] = true;
+        }
     };
     //if(p.progress_estimate)
     //p.latestProgress=parseFloat(p.progress_estimate.split('%')[0]);

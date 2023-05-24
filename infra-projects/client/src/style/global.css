@@ -2,6 +2,13 @@
   --transition: all .5s ease-in-out;
 }
 
+/* overwrite layers icon */
+/* .leaflet-retina .leaflet-control-layers-toggle {
+  background-image: url(images/layer-icon.svg);
+  width: 36px;
+  height: 36px;
+} */
+
 .default-cursor {
   cursor: default;
 }

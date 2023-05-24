@@ -32,17 +32,16 @@ export const DashArray = {
     SPARSE: [10, 10]
 }
 
-export const zoomPrecisionMap = {
-    7: 8000,
-    8: 4000,
-    9: 2000,
-    10: 1000,
-    11: 500,
-    12: 300,
-    13: 200,
-    14: 100,
-    15: 50,
-    16: 25,
-    17: 15,
-    18: 10
-}
+export const zoomPrecisionMap = new Map<number, number>();
+zoomPrecisionMap.set(7, 8000);
+zoomPrecisionMap.set(8, 4000);
+zoomPrecisionMap.set(9, 2000);
+zoomPrecisionMap.set(10, 1000);
+zoomPrecisionMap.set(11, 500);
+zoomPrecisionMap.set(12, 300);
+zoomPrecisionMap.set(13, 200);
+zoomPrecisionMap.set(14, 100);
+zoomPrecisionMap.set(15, 50);
+zoomPrecisionMap.set(16, 25);
+zoomPrecisionMap.set(17, 15);
+zoomPrecisionMap.set(18, 10);

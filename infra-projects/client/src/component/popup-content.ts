@@ -1,9 +1,11 @@
 import { Color } from '../constants';
 import { computeStatus } from '../data-processing';
+import { Props } from '../road-style';
 
-export default function generatePopupHtmlContent(props) {
-    if (!props.osm_id) props.osm_id = props.id.split('/')[1];
-
+function getProgressColor(percent?: number) {
+    return !percent ? Color.BLIZZARD_BLUE : percent > 75 ? Color.DODGER_BLUE : percent > 50 ? Color.DEEP_SKY_BLUE : percent > 25 ? Color.LIGHT_SKY_BLUE : percent > 0 ? Color.POWDER_BLUE : Color.GRAY;
+}
+export default function generatePopupHtmlContent(props: Props) {
     if (props.comentarii_problema) {
         return '<b>' + props.nume + '</b><br/>'
             + props.comentarii_problema + '<br/><br/>'
@@ -44,7 +46,7 @@ export default function generatePopupHtmlContent(props) {
         x += (props.financing ? "<br>Finantare: " + props.financing : '');
 
         if (props.progress) {
-            var color = props.latestProgress > 75 ? Color.DODGER_BLUE : props.latestProgress > 50 ? Color.DEEP_SKY_BLUE : props.latestProgress > 25 ? Color.LIGHT_SKY_BLUE : props.latestProgress > 0 ? Color.POWDER_BLUE : Color.GRAY;
+            var color = getProgressColor(props.latestProgress);
             x += "<br>Stadiul lucrarilor: <font color=" + color + "><b>" + props.progress[0] + "</b></font><font size=-2>"
                 + props.progress.slice(1).reduce(function (s, e) {
                     return s + " " + e.trim();
@@ -52,7 +54,7 @@ export default function generatePopupHtmlContent(props) {
                 + "</font>";
         }
         if (props.progress_estimate) {
-            var color_e = props.latestProgress > 75 ? Color.DODGER_BLUE : props.latestProgress > 50 ? Color.DEEP_SKY_BLUE : props.latestProgress > 25 ? Color.LIGHT_SKY_BLUE : props.latestProgress > 0 ? Color.POWDER_BLUE : Color.GRAY;
+            var color_e = getProgressColor(props.latestProgress);
             x += "<br>Estimare stadiu: <font color=" + color_e + "><b>" + props.progress_estimate[0] + "</b></font><font size=-2>"
                 + props.progress_estimate.slice(1).reduce(function (s, e) {
                     return s + " " + e.trim();

@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import L, { DomEvent } from 'leaflet';
 import { legend } from '../road-style';
 import { roadsLayer } from '../map';
 
@@ -34,25 +34,27 @@ window.showLegendClicked = () => {
     const showLegendButtonText = isLegendVisible ? ShowLegendButtonText.SHOW : ShowLegendButtonText.HIDE;
 
     const showLegendButton = document.getElementById("show-legend-button");
-    showLegendButton.innerHTML = showLegendButtonText;
+    if (showLegendButton) showLegendButton.innerHTML = showLegendButtonText;
+    else console.warn("showLegendButton not found");
 
-    const legendContentElements = document.getElementsByClassName("legend-content-element");
+    const legendContentElements = document.querySelectorAll<HTMLElement>(".legend-content-element") ;
+    
     for (const legendContentElement of legendContentElements) {
         legendContentElement.style.display = isLegendVisible ? "contents" : "none";
     }
 }
 
-window.legendFilterClickHandler = (e, div) => {
+window.legendFilterClickHandler = (e: DomEvent.PropagableEvent, element: HTMLElement) => {
     if (e.target.type !== "checkbox") return;
-    const indexFilter = [...div.children].findIndex(x => x.firstChild === e.target);
+    const indexFilter = [...element.children].findIndex(x => x.firstChild === e.target);
     legend.projectTypes[indexFilter].hidden = !e.target.checked;
     roadsLayer.reinitialize();
     window.location.updateQueryParams();
 }
 
 export default function createLegend() {
-    const legend = L.control({ position: 'bottomright' });
-    legend.onAdd = function (map) {
+    const legend = new L.Control({ position: 'bottomright' });
+    legend.onAdd = function (_map: L.Map) {
         const div = L.DomUtil.create('div', 'leaflet-control-layers legend-container');
         L.DomEvent.disableClickPropagation(div)
         div.innerHTML = legendContent();
