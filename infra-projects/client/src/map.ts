@@ -59,7 +59,7 @@ export function loadMap(mapOptions: MapOptions) {
 
     map.attributionControl.addAttribution('© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
     map.attributionControl.addAttribution('<a href="https://proinfrastructura.ro">API</a>');
-    map.attributionControl.addAttribution('<a href="http://forum.peundemerg.ro">PUM</a>');
+    map.attributionControl.addAttribution('<a href="https://forum.peundemerg.ro">PUM</a>');
     L.control.location({ position: 'topleft', iconUrl: "images/accurate-icon.svg" }).addTo(map);
     // map.addControl(new L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
     // map.addControl(new L.control.attribution({ position: 'bottomleft', prefix: false }));
