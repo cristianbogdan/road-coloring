@@ -81,7 +81,7 @@ export function loadMap(mapOptions: MapOptions) {
         logoUrl: "https://proinfrastructura.ro/images/logos/api/logo_api_portrait_big.png"
     }).addTo(map);
 
-    const googleMapTileLayer = L.tileLayer("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }).addTo(map);
+    const googleMapTileLayer = L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }).addTo(map);
 
 
     const lotLimitIcon = L.icon({
@@ -122,9 +122,9 @@ export function loadMap(mapOptions: MapOptions) {
     L.control.layers(
         {
             "Google": googleMapTileLayer,
-            "Google terrain": L.tileLayer("http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-            "Google satellite": L.tileLayer("http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-            "Google satellite & labels": L.tileLayer("http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+            "Google terrain": L.tileLayer("https://mt0.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+            "Google satellite": L.tileLayer("https://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+            "Google satellite & labels": L.tileLayer("https://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
             "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' }),
         },
         {
