@@ -27,7 +27,6 @@ export interface Props extends RawProps {
     PTE?: boolean,
     AM?: boolean,
     AC?: boolean,
-    PT?: boolean,   // check number of occurrences
     severance?: string
     progress?: string[],    // data has only one element 
     signal_progress?: string[],   // data has only one element
