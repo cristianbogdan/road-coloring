@@ -11,6 +11,7 @@
     "build-pum": "tsc && vite build --base https://pum.project-online.se/maps/infra-projects/client/dist"
   },
   "dependencies": {
+    "@turf/turf": "^6.5.0",
     "geojson-vt": "^3.2.1",
     "leaflet": "1.9.3",
     "leaflet-edgebuffer": "^1.0.6"
@@ -18,7 +19,7 @@
   "devDependencies": {
     "@types/geojson-vt": "^3.2.0",
     "@types/leaflet": "1.9.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.2"
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9"
   }
 }
