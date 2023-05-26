@@ -5,7 +5,7 @@ import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine, } from './road-style';
 import type { Props, LegendStateOptions, LotLimitProps } from './road-style'
 import { computeStatus } from './data-processing';
-import { Color, zoomPrecisionMap } from './constants';
+import { zoomPrecisionMap } from './constants';
 // import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
