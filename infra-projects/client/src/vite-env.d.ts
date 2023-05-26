@@ -21,6 +21,6 @@ interface Window {
 }
 
 // todo
-interface L {
-    Control: any
-}
+// interface L {
+//     Control: any
+// }

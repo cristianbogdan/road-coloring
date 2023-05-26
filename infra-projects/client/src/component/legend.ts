@@ -20,7 +20,7 @@ function legendContent() {
 
     const filters =
         `<div class="legend-content-element" onclick="legendFilterClickHandler(event, this)" style="display: ${isLegendVisible ? "contents" : "none"};">`
-        + legend.projectTypes.map(x => '<span>' + (x.canHide ? '<input style="margin:1pt" type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' : ' ') + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
+        + legend.filters.map(x => '<span>' + '<input style="margin:1pt" type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
         + '</div>';
 
     const showLegendButton = `<button id="show-legend-button" onclick="showLegendClicked()" class="show-legend-button">${showLegendButtonText}</button>`;
@@ -37,22 +37,27 @@ window.showLegendClicked = () => {
     if (showLegendButton) showLegendButton.innerHTML = showLegendButtonText;
     else console.warn("showLegendButton not found");
 
-    const legendContentElements = document.querySelectorAll<HTMLElement>(".legend-content-element") ;
-    
+    const legendContentElements = document.querySelectorAll<HTMLElement>(".legend-content-element");
+
     for (const legendContentElement of legendContentElements) {
         legendContentElement.style.display = isLegendVisible ? "contents" : "none";
     }
+    legend.setState({ hidden: !isLegendVisible })
+    window.location.updateQueryParams();
 }
 
 window.legendFilterClickHandler = (e: DomEvent.PropagableEvent, element: HTMLElement) => {
     if (e.target.type !== "checkbox") return;
     const indexFilter = [...element.children].findIndex(x => x.firstChild === e.target);
-    legend.projectTypes[indexFilter].hidden = !e.target.checked;
+    legend.filters[indexFilter].hidden = !e.target.checked;
     roadsLayer.reinitialize();
     window.location.updateQueryParams();
 }
 
-export default function createLegend() {
+export default function createLegend(options?: { hidden?: boolean }) {
+    isLegendVisible = !options?.hidden ?? true;
+    showLegendButtonText = isLegendVisible ? ShowLegendButtonText.SHOW : ShowLegendButtonText.HIDE;
+
     const legend = new L.Control({ position: 'bottomright' });
     legend.onAdd = function (_map: L.Map) {
         const div = L.DomUtil.create('div', 'leaflet-control-layers legend-container');

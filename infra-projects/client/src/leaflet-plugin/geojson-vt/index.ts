@@ -1,7 +1,7 @@
 import geojsonvt from 'geojson-vt';
 import config from '../../config';
 import { Coords, DoneCallback } from 'leaflet';
-
+import L from 'leaflet';
 
 // interface APIFeature extends GeoJSON.Feature<GeoJSON.Geometry, any> { }
 interface APIGeoJSON extends GeoJSON.FeatureCollection<GeoJSON.Geometry, any> { }
@@ -21,16 +21,12 @@ class GeoJSONVT extends L.GridLayer {
     declare options: GeoJSONVTOptions;
 
     initialize(data?: APIGeoJSON, options?: GeoJSONVTOptions) {
-        console.log('initialize data', data);
-        console.log('initialize options', options);
-
         if (options) L.setOptions(this, options);
         if (data) this.tileIndex = geojsonvt(data, this.options);
         this.initCache();
     }
 
     reinitialize() {
-        console.log('reinitialize');
         this.initialize();
         this.redraw();
         return this;
@@ -38,21 +34,17 @@ class GeoJSONVT extends L.GridLayer {
 
     initCache() {
         // TODO: should be a WeakMap
-        console.log("initCache()");
         this.cache = new Map();
         this.keys = [];
     }
 
     addData(geojson: APIGeoJSON) {
-        console.log('addData');
         this.initialize(geojson);
         this.redraw()
         return this;
     }
 
     createTile(coords: Coords, done: DoneCallback): HTMLElement {
-        console.log('createTile');
-
         const strKey = `${config.URL_PUM_API}/infra/${coords.z}/${coords.x}/${coords.y}.png`;
 
         // this.cache = new Map();

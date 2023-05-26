@@ -2,20 +2,23 @@ import L from 'leaflet';
 import config from './config';
 import createLegend from './component/legend';
 import generatePopupHtmlContent from './component/popup-content';
-import { legend, blackLine, thickerBlackLine, Props } from './road-style';
+import { legend, blackLine, thickerBlackLine, } from './road-style';
+import type { Props, LegendStateOptions, LotLimitProps } from './road-style'
 import { computeStatus } from './data-processing';
-import { zoomPrecisionMap } from './constants';
+import { Color, zoomPrecisionMap } from './constants';
 // import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
 import './leaflet-plugin/geojson-vt';
+import './leaflet-plugin/control-layers';
 import './../node_modules/leaflet/dist/leaflet.css';
 import './style/global.css';
 import 'leaflet-edgebuffer';
 import geojsonvt from 'geojson-vt';
+import * as storage from './storage';
 
-
-var map: L.Map | null = null;
+var controlLayers: L.Control.Layers;
+var map: L.Map;
 export var roadsLayer: L.GeoJSON.VT;;
 
 interface MapOptions {
@@ -23,7 +26,8 @@ interface MapOptions {
     lat: number;
     lng: number;
     zoom: number;
-    selectedLegendFilterIDs: string[];
+    legendState: LegendStateOptions;
+    layers: string[];
 }
 export function loadMap(mapOptions: MapOptions) {
     map = new L.Map(mapOptions.id, {
@@ -32,28 +36,11 @@ export function loadMap(mapOptions: MapOptions) {
     });
 
     map.setView(new L.LatLng(mapOptions.lat, mapOptions.lng), mapOptions.zoom);
-    window.location.updateQueryParams()
 
-    map.on('dragend', window.location.updateQueryParams);
-    map.on('zoomend', window.location.updateQueryParams);
-    map.on('click', mapClick);
-
-    map.on('baselayerchange', function (e) {
-        console.log(e);
-    });
-    map.on('overlayadd', function (e) {
-        console.log(e);
-    });
-    map.on('overlayremove', function (e) {
-        console.log(e);
-    });
-    map.eachLayer(function (layer) {
-        console.log(layer);
-    });
-
-
-    legend.showProjectTypeByIds(mapOptions.selectedLegendFilterIDs);
-    createLegend().addTo(map);
+    legend.setState(mapOptions.legendState);
+    createLegend({
+        hidden: mapOptions.legendState.hidden,
+    }).addTo(map);
 
     L.DomUtil.addClass(map.getContainer(), 'default-cursor');
 
@@ -81,7 +68,6 @@ export function loadMap(mapOptions: MapOptions) {
         logoUrl: "https://proinfrastructura.ro/images/logos/api/logo_api_portrait_big.png"
     }).addTo(map);
 
-    const googleMapTileLayer = L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }).addTo(map);
 
 
     const lotLimitIcon = L.icon({
@@ -101,7 +87,7 @@ export function loadMap(mapOptions: MapOptions) {
         pointToLayer: function (_feature, latlng) {
             return L.marker(latlng, { icon: lotLimitIcon });
         }
-    }).addTo(map);
+    });
 
 
     roadsLayer = L.geoJSON.VT(undefined, {
@@ -113,61 +99,54 @@ export function loadMap(mapOptions: MapOptions) {
         keepBuffer: 4,
         style: roadsLayerStyle,
         filter: function (feature: geojsonvt.Feature) {
-            const found = legend.projectTypes.find(p => p.condition(feature.tags as Props));
+            const found = legend.filters.find(p => p.condition(feature.tags as Props));
             if (found) return !found.hidden;
             return true;
         }
-    }).addTo(map);
+    });
 
-    L.control.layers(
-        {
-            "Google": googleMapTileLayer,
-            "Google terrain": L.tileLayer("https://mt0.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-            "Google satellite": L.tileLayer("https://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-            "Google satellite & labels": L.tileLayer("https://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-            "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' }),
-        },
-        {
-            "Proiecte infrastructura": roadsLayer,
-            "Limite de lot": lotLimitsLayer,
-        }
-    ).addTo(map);
+    const baseLayers =  {
+        "Google": L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+        "Google terrain": L.tileLayer("https://mt0.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+        "Google satellite": L.tileLayer("https://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+        "Google satellite & labels": L.tileLayer("https://mt0.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
+        "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' }),
+    };
 
-    // 
-    interface LotLimitProps {
-        highway: string | null,
-        name: string,
-        osm_id: number,
-        railway: string | null,
+    const overlays = {
+        "Proiecte infrastructura": roadsLayer,
+        "Limite de lot": lotLimitsLayer,
     }
+    
+    controlLayers = L.control.layers(baseLayers, overlays).addTo(map);
+    controlLayers.loadLayers(mapOptions.layers)
+
+    
+    // save the initial state of the map after all layers have been added
+    // window.location.updateQueryParams()
+
+
     let lotLimitsData: any = {};
     fetch(`${config.URL_PUM_API}/maps/data/lot_limits.json`).then(r => r.json())
-        .then(function (data) { lotLimitsData = data });
+        .then(function (data) {
+            lotLimitsData = data;
+            // console.log('lotLimitsData', lotLimitsData);
+        });
 
     fetch(`${config.URL_PUM_API}/maps/data/data-sql-infra.geo.json`)
         .then(r => r.json()).then(function (data) {
-            const mp2 = new Map()
-            for (const feature of data.features) {                
-                for (const [key, value] of Object.entries(feature.properties)) {
-                    if (!mp2.has(key)) mp2.set(key, new Set());
-                    else mp2.get(key).add(value);
-                }
-            }
-            console.log('o', mp2);
-
             for (const feature of data.features) computeStatus(feature.properties);
-            const mp = new Map()
-            for (const feature of data.features) {                
-                for (const [key, value] of Object.entries(feature.properties)) {
-                    if (!mp.has(key)) mp.set(key, new Set());
-                    else mp.get(key).add(value);
-                }
-            }
-            console.log('x', mp);
-            
+
             roadsLayer.addData(data);
             lotLimitsLayer.addData(lotLimitsData as GeoJSON.FeatureCollection<GeoJSON.Point, LotLimitProps>);
-        });
+        }); 
+
+    map.on('click', mapClick);
+    map.on('dragend', window.location.updateQueryParams);
+    map.on('zoomend', window.location.updateQueryParams);
+    map.on('baselayerchange', window.location.updateQueryParams);
+    map.on('overlayadd', window.location.updateQueryParams);
+    map.on('overlayremove', window.location.updateQueryParams);
 }
 
 function showPopupDetails(latlng: L.LatLng, props: Props, map: L.Map) {
@@ -183,7 +162,6 @@ function mapClick(event: L.LeafletMouseEvent) {
         console.warn("map not initialized for click event");
         return
     }
-
     const { lat, lng } = event.latlng;
     const latlngStr = `${lat},${lng}`;
     const precisionInMeters = zoomPrecisionMap.get(map.getZoom()) ?? 1000;
@@ -196,12 +174,10 @@ function mapClick(event: L.LeafletMouseEvent) {
 
 function roadsLayerStyle(feature: geojsonvt.Feature) {
     const tags: Props | undefined = feature.tags;
-    // console.log(tags?.osm_id);
-
     if (!tags) return [{ stroke: false }]; // todo: verify if this is correct
-    // const { tags } = feature;
+
     let styles: L.GeoJSONVTStyleOptions[] = [];
-    const found = legend.projectTypes.find(p => p.condition(tags));
+    const found = legend.filters.find(p => p.condition(tags));
     if (found && found.lineType) styles.push(...found.lineType(tags));
 
     if (map!.getZoom() > 10) {
@@ -215,21 +191,29 @@ function roadsLayerStyle(feature: geojsonvt.Feature) {
         }
     }
 
+    // if (tags.ref?.toLowerCase().includes("a10")) styles.unshift({ color: Color.YELLOW, weight: 20 });
     if (!styles.length) styles.push({ stroke: false });
     return styles;
 }
 
 window.location.updateQueryParams = function () {
+    if (!map) {
+        console.warn("updating query params before map is initialized")
+        return
+    }
     const queryParamsToSet = new URLSearchParams();
 
-    if (map) {
-        queryParamsToSet.append('zoom', `${map.getZoom()}`);
-        queryParamsToSet.append('lat', `${Math.round(map.getCenter().lat * 10000) / 10000}`);
-        queryParamsToSet.append('lng', `${Math.round(map.getCenter().lng * 10000) / 10000}`);
-        queryParamsToSet.append('legend', legend.getVisibleProjectTypes().map(el => el.id).join('_'));
-    } else {
-        console.warn("updating query params before map is initialized")
-    }
+    const zoom = map.getZoom();
+    const lat = Math.round(map.getCenter().lat * 10000) / 10000;
+    const lng = Math.round(map.getCenter().lng * 10000) / 10000;
+
+    storage.saveLegendToLocalStorage(legend.getState());
+        
+    storage.saveLayersToLocalStorage(controlLayers.getLayers().filter(l => l.visible).map(l => l.name));
+
+    queryParamsToSet.append('zoom', `${zoom}`);
+    queryParamsToSet.append('lat', `${lat}`);
+    queryParamsToSet.append('lng', `${lng}`);
 
     const newUrl = new URL(window.location.pathname, window.location.origin);
     newUrl.search = queryParamsToSet.toString();
