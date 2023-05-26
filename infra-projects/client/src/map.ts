@@ -1,9 +1,10 @@
+import type { LegendStateOptions } from './road-style'
+import type { LotLimitProps, Props } from './types';
 import L from 'leaflet';
 import config from './config';
 import createLegend from './component/legend';
 import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine, } from './road-style';
-import type { Props, LegendStateOptions, LotLimitProps } from './road-style'
 import { computeStatus } from './data-processing';
 import { zoomPrecisionMap } from './constants';
 // import { version } from '../package.json';

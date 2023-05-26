@@ -1,6 +1,6 @@
 import { Color } from '../constants';
 import { computeStatus } from '../data-processing';
-import { Props } from '../road-style';
+import { Props } from '../types';
 
 function getProgressColor(percent?: number) {
     return !percent ? Color.BLIZZARD_BLUE : percent > 75 ? Color.DODGER_BLUE : percent > 50 ? Color.DEEP_SKY_BLUE : percent > 25 ? Color.LIGHT_SKY_BLUE : percent > 0 ? Color.POWDER_BLUE : Color.GRAY;
