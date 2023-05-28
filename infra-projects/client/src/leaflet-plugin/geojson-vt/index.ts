@@ -123,7 +123,9 @@ class GeoJSONVT extends L.GridLayer {
 
         const drawLater = () => {
             if (!this.tileIndex) {
-                return;
+                // fine in case no data was added yet
+                done(undefined, tile);
+                return tile;
             }
             // setup tile width and height according to the options
             const size = this.getTileSize();
@@ -134,11 +136,10 @@ class GeoJSONVT extends L.GridLayer {
             const ctx = tile.getContext("2d");
             if (ctx === null) {
                 console.warn("Canvas is null");
-                return;
+                done(undefined, tile);
+                return tile;
             }
 
-            // ctx.font = "12px Arial";
-            // ctx.fillText(`${coords.z}/${coords.x}/${coords.y}`, 0, 10);
             const tileInfo = this.tileIndex.getTile(coords.z, coords.x, coords.y);
             const features = tileInfo ? tileInfo.features : [];
 
@@ -146,9 +147,10 @@ class GeoJSONVT extends L.GridLayer {
                 this.drawFeature(ctx, feature);
             }
 
+            // tile.style.backgroundImage = `url(${strKey})`;
             const img = new window.Image();
             img.addEventListener("load", function () {
-                ctx?.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0);
             });
             img.setAttribute("src", strKey);
 
@@ -167,7 +169,6 @@ class GeoJSONVT extends L.GridLayer {
         };
 
         //looks like if there's a few ms timeout, Leaflet will not have the "zoom level mix" problem
-        // setTimeout(drawLater.bind(this));
         setTimeout(drawLater);
         return tile;
     }
