@@ -15,7 +15,6 @@ import './leaflet-plugin/control-layers';
 import './../node_modules/leaflet/dist/leaflet.css';
 import './style/global.css';
 import 'leaflet-edgebuffer';
-import geojsonvt from 'geojson-vt';
 import * as storage from './storage';
 
 var controlLayers: L.Control.Layers;
@@ -70,7 +69,6 @@ export function loadMap(mapOptions: MapOptions) {
     }).addTo(map);
 
 
-
     const lotLimitIcon = L.icon({
         iconUrl: `${config.URL_PUM_API}/maps/images/pin.png`,
         iconSize: [25, 25], // width and height of the image in pixels
@@ -99,14 +97,14 @@ export function loadMap(mapOptions: MapOptions) {
         // solidChildren: true,
         keepBuffer: 4,
         style: roadsLayerStyle,
-        filter: function (feature: geojsonvt.Feature) {
-            const found = legend.filters.find(p => p.condition(feature.tags as Props));
+        filter: function (props: Props) {
+            const found = legend.filters.find(p => p.condition(props));
             if (found) return !found.hidden;
             return true;
         }
     });
 
-    const baseLayers =  {
+    const baseLayers = {
         "Google": L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
         "Google terrain": L.tileLayer("https://mt0.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
         "Google satellite": L.tileLayer("https://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
@@ -118,11 +116,11 @@ export function loadMap(mapOptions: MapOptions) {
         "Proiecte infrastructura": roadsLayer,
         "Limite de lot": lotLimitsLayer,
     }
-    
+
     controlLayers = L.control.layers(baseLayers, overlays).addTo(map);
     controlLayers.loadLayers(mapOptions.layers)
 
-    
+
     // save the initial state of the map after all layers have been added
     // window.location.updateQueryParams()
 
@@ -135,12 +133,12 @@ export function loadMap(mapOptions: MapOptions) {
         });
 
     fetch(`${config.URL_PUM_API}/maps/data/data-sql-infra.geo.json`)
-        .then(r => r.json()).then(function (data) {
+        .then(r => r.json()).then(function (data: GeoJSON.FeatureCollection<GeoJSON.LineString, Props>) {
             for (const feature of data.features) computeStatus(feature.properties);
 
             roadsLayer.addData(data);
             lotLimitsLayer.addData(lotLimitsData as GeoJSON.FeatureCollection<GeoJSON.Point, LotLimitProps>);
-        }); 
+        });
 
     map.on('click', mapClick);
     map.on('dragend', window.location.updateQueryParams);
@@ -163,29 +161,26 @@ function mapClick(event: L.LeafletMouseEvent) {
         console.warn("map not initialized for click event");
         return
     }
-    const { lat, lng } = event.latlng;
-    const latlngStr = `${lat},${lng}`;
-    const precisionInMeters = zoomPrecisionMap.get(map.getZoom()) ?? 1000;
 
-    fetch(`${config.URL_PUM_API}/click?latLng=${latlngStr}&max=${precisionInMeters}`).then(response => response.json()).then(data => {
-        if (data === null) return
-        showPopupDetails(event.latlng, data, map!);
-    });
+    const precisionInMeters = zoomPrecisionMap.get(map.getZoom()) ?? 1000;
+    const feature = roadsLayer.getClosestFeature(event.latlng, { maxDistance: precisionInMeters, units: 'meters' });
+    if (!feature) return;
+    showPopupDetails(event.latlng, feature.feature.properties, map);
+    // console.log(feature);
 }
 
-function roadsLayerStyle(feature: geojsonvt.Feature) {
-    const tags: Props | undefined = feature.tags;
-    if (!tags) return [{ stroke: false }]; // todo: verify if this is correct
+function roadsLayerStyle(props: Props) {
+    if (!props) return [{ stroke: false }]; // todo: verify if this is correct
 
     let styles: L.GeoJSONVTStyleOptions[] = [];
-    const found = legend.filters.find(p => p.condition(tags));
-    if (found && found.lineType) styles.push(...found.lineType(tags));
+    const found = legend.filters.find(p => p.condition(props));
+    if (found && found.lineType) styles.push(...found.lineType(props));
 
     if (map!.getZoom() > 10) {
-        if (tags.bridge) styles.unshift(thickerBlackLine);
-        else if (tags.tunnel) {
-            if (tags.highway) styles = [blackLine]
-            else if (tags.railway) {
+        if (props.bridge) styles.unshift(thickerBlackLine);
+        else if (props.tunnel) {
+            if (props.highway) styles = [blackLine]
+            else if (props.railway) {
                 styles.pop();
                 styles.unshift(thickerBlackLine);
             }
@@ -209,7 +204,6 @@ window.location.updateQueryParams = function () {
     const lng = Math.round(map.getCenter().lng * 10000) / 10000;
 
     storage.saveLegendToLocalStorage(legend.getState());
-        
     storage.saveLayersToLocalStorage(controlLayers.getLayers().filter(l => l.visible).map(l => l.name));
 
     queryParamsToSet.append('zoom', `${zoom}`);
