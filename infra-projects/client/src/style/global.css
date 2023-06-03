@@ -4,7 +4,7 @@
 
 /* overwrite layers icon */
 /* .leaflet-retina .leaflet-control-layers-toggle {
-  background-image: url(images/layer-icon.svg);
+  background-image: url(/images/layer-icon.svg);
   width: 36px;
   height: 36px;
 } */
@@ -33,7 +33,7 @@
 .show-legend-button {
   height: 21px;
   width: 21px;
-  background: url(images/double-arrow-left-icon.svg) no-repeat center center;
+  background: url(/images/double-arrow-left-icon.svg) no-repeat center center;
   background-size: 10px;
   background-color: rgba(0, 81, 186, 0.2);
   float: right;

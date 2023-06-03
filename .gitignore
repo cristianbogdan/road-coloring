@@ -8,7 +8,6 @@ test/
 .DS_Store
 \#*
 .#*
-images/
 mapnik.bak/
 leaflet.*
 mapnik/inc/bak

@@ -8,7 +8,7 @@ import createLegend from './component/legend';
 import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine, } from './road-style';
 import { computeStatus } from './data-processing';
-import { Color, zoomPrecisionMap } from './constants';
+import { zoomPrecisionMap } from './constants';
 // import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
@@ -203,22 +203,23 @@ function roadLabelName(props: Props) {
     };
 }
 
-function roadLabelYears(props: Props) {
-    const opening_date = props.opening_date;
-    const start_date = props.start_date;
-    const access_note = props?.access_note?.split(' ').pop();
+// used to display the opening date or the access note on the road, keeping this function for now
+// function roadLabelYears(props: Props) {
+//     const opening_date = props.opening_date;
+//     const start_date = props.start_date;
+//     const access_note = props?.access_note?.split(' ').pop();
 
-    const text = opening_date ?? access_note ?? start_date;
-    if (!text) return;
+//     const text = opening_date ?? access_note ?? start_date;
+//     if (!text) return;
 
-    const style = {
-        color: access_note && start_date && access_note > start_date ? Color.RED : Color.BLUE,
-    }
-    return {
-        text,
-        style
-    }
-}
+//     const style = {
+//         color: access_note && start_date && access_note > start_date ? Color.RED : Color.BLUE,
+//     }
+//     return {
+//         text,
+//         style
+//     }
+// }
 
 window.location.updateQueryParams = function () {
     if (!map) {
