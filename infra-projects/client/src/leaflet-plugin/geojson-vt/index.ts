@@ -341,7 +341,20 @@ class GeoJSONVT extends L.GridLayer {
             progress += letterWidth;
         }
 
-        // TODO: invalidate based on angles array?
+        // invalidate if one of the angles is too big relative to the prior one
+        for (let i = 1; i < elementsToDraw.length; i++) {
+            const currentAngle = elementsToDraw[i].angle;
+            const previousAngle = elementsToDraw[i - 1].angle;
+            const angleDifference = Math.abs(currentAngle - previousAngle);
+
+            if (angleDifference > turf.degrees2radians(20)) {
+                // ctx.strokeStyle = "#FF00FF";
+                // console.log("Filtered out text ", text, "because the angle difference between", elementsToDraw[i - 1].text, "and", elementsToDraw[i].text, "is", angleDifference);
+                ctx.restore();
+                return;
+            }
+        }
+
         // if available draw the stroke first so it will be drawn behind the text
         if (ctx.lineWidth) {
         for (const textToDraw of elementsToDraw) {
