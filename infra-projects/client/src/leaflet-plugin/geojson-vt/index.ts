@@ -108,6 +108,19 @@ class GeoJSONVT extends L.GridLayer {
         return closestFeature;
     }
 
+    isPointOnLine(latlng: L.LatLng) {
+        // console.time('is-point-on-line');
+        for (const feature of this.filteredData.features) {
+            if (turf.booleanPointOnLine([latlng.lng, latlng.lat], feature.geometry)) {
+                // console.timeEnd('is-point-on-line');
+                return true;
+            }
+        }
+        
+        // console.timeEnd('is-point-on-line');
+        return false;
+    }
+
     createTile(coords: Coords, done: DoneCallback): HTMLElement {
         const strKey = `${config.URL_PUM_API}/infra/${coords.z}/${coords.x}/${coords.y}.png`;
 
@@ -357,10 +370,10 @@ class GeoJSONVT extends L.GridLayer {
 
         // if available draw the stroke first so it will be drawn behind the text
         if (ctx.lineWidth) {
-        for (const textToDraw of elementsToDraw) {
-            ctx.save();
-            ctx.translate(textToDraw.x, textToDraw.y);
-            ctx.rotate(textToDraw.angle);
+            for (const textToDraw of elementsToDraw) {
+                ctx.save();
+                ctx.translate(textToDraw.x, textToDraw.y);
+                ctx.rotate(textToDraw.angle);
                 ctx.strokeText(textToDraw.text, 0, 0);
                 ctx.restore();
             }
@@ -462,6 +475,7 @@ declare module 'leaflet' {
                 distance: number,
                 feature: Feature<LineString, Props>
             } | null;
+            isPointOnLine(latlng: L.LatLng): boolean;
         }
     }
 

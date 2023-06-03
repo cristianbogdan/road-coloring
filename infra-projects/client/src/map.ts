@@ -1,6 +1,6 @@
 import type { LegendStateOptions } from './road-style'
 import type { LotLimitProps, Props } from './types';
-import type { Point, LineString, FeatureCollection } from 'geojson';
+import type { Point, LineString, FeatureCollection, Feature } from 'geojson';
 
 import L from 'leaflet';
 import config from './config';
@@ -21,7 +21,9 @@ import * as storage from './storage';
 
 var controlLayers: L.Control.Layers;
 var map: L.Map;
-export var roadsLayer: L.GeoJSON.VT;;
+export let roadsLayer: L.GeoJSON.VT;
+export let lotLimitsLayer: L.GeoJSON;
+export let lotLimitsData: FeatureCollection<Point, LotLimitProps>;
 
 interface MapOptions {
     id: string;
@@ -77,12 +79,17 @@ export function loadMap(mapOptions: MapOptions) {
         iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
     });
-    const lotLimitsLayer = L.geoJSON(undefined, {
+    lotLimitsLayer = L.geoJSON(undefined, {
         onEachFeature: function (feature, layer) {
             if (feature.properties) {
                 const popupHtmlContent = generatePopupHtmlContent(feature.properties);
                 layer.bindPopup(popupHtmlContent);
             }
+        },
+
+        filter: function (feature: Feature<Point, LotLimitProps>) {
+            const latlng = new L.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
+            return roadsLayer.isPointOnLine(latlng);
         },
 
         pointToLayer: function (_feature, latlng) {
@@ -128,7 +135,6 @@ export function loadMap(mapOptions: MapOptions) {
     // window.location.updateQueryParams()
 
 
-    let lotLimitsData: any = {};
     fetch(`${config.URL_PUM_API}/maps/data/lot_limits.json`).then(r => r.json())
         .then(function (data) {
             lotLimitsData = data;
@@ -138,11 +144,15 @@ export function loadMap(mapOptions: MapOptions) {
     fetch(`${config.URL_PUM_API}/maps/data/data-sql-infra.geo.json`)
         .then(r => r.json()).then(function (data: FeatureCollection<LineString, Props>) {
             // console.log('roadsData', data);
-
             for (const feature of data.features) computeStatus(feature.properties);
 
+            // console.time('add-road-data');
             roadsLayer.addData(data);
+            // console.timeEnd('add-road-data');
+
+            // console.time('add-lot-limits-data');
             lotLimitsLayer.addData(lotLimitsData as FeatureCollection<Point, LotLimitProps>);
+            // console.timeEnd('add-lot-limits-data');
         });
 
     map.on('click', mapClick);
@@ -169,7 +179,7 @@ function mapClick(event: L.LeafletMouseEvent) {
 
     const precisionInMeters = zoomPrecisionMap.get(map.getZoom()) ?? 1000;
     const feature = roadsLayer.getClosestFeature(event.latlng, { maxDistance: precisionInMeters, units: 'meters' });
-    
+
     if (!feature) return;
     showPopupDetails(event.latlng, feature.feature.properties, map);
     // console.log("map click", feature);

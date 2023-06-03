@@ -1,6 +1,6 @@
 import L, { DomEvent } from 'leaflet';
 import { legend } from '../road-style';
-import { roadsLayer } from '../map';
+import { roadsLayer, lotLimitsLayer, lotLimitsData } from '../map';
 
 
 let isLegendVisible = window.innerWidth > 600;  // or !L.Browser.mobile;
@@ -44,7 +44,10 @@ window.legendFilterClickHandler = (e: DomEvent.PropagableEvent, element: HTMLEle
     if (e.target.type !== "checkbox") return;
     const indexFilter = [...element.children].findIndex(x => x.firstChild === e.target);
     legend.filters[indexFilter].hidden = !e.target.checked;
+
     roadsLayer.reinitialize();
+    lotLimitsLayer.clearLayers();
+    lotLimitsLayer.addData(lotLimitsData);
     window.location.updateQueryParams();
 }
 
