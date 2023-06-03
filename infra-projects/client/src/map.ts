@@ -72,7 +72,7 @@ export function loadMap(mapOptions: MapOptions) {
 
 
     const lotLimitIcon = L.icon({
-        iconUrl: `${config.URL_PUM_API}/maps/images/pin.png`,
+        iconUrl: `/images/pin.png`,
         iconSize: [25, 25], // width and height of the image in pixels
         iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
