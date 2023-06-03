@@ -2,13 +2,8 @@ import L, { DomEvent } from 'leaflet';
 import { legend } from '../road-style';
 import { roadsLayer } from '../map';
 
-const ShowLegendButtonText = {
-    SHOW: ">>",
-    HIDE: "<<"
-}
 
 let isLegendVisible = window.innerWidth > 600;  // or !L.Browser.mobile;
-let showLegendButtonText = ShowLegendButtonText.SHOW;
 
 function legendContent() {
     const legendText =
@@ -23,7 +18,7 @@ function legendContent() {
         + legend.filters.map(x => '<span>' + '<input style="margin:1pt" type=checkbox' + (x.hidden ? '' : ' checked ') + '> ' + '<div style="' + legend.basicStyle + ' ' + x.symbol + '"></div> ' + x.text + "<br></span>").join('')
         + '</div>';
 
-    const showLegendButton = `<button id="show-legend-button" onclick="showLegendClicked()" class="show-legend-button">${showLegendButtonText}</button>`;
+    const showLegendButton = `<button id="show-legend-button" onclick="showLegendClicked()" class="show-legend-button" style="transform:rotate(${isLegendVisible ? 180 : 0}deg) "></button>`;
 
     return filters + legendText + showLegendButton;
 }
@@ -31,10 +26,9 @@ function legendContent() {
 
 window.showLegendClicked = () => {
     isLegendVisible = !isLegendVisible;
-    const showLegendButtonText = isLegendVisible ? ShowLegendButtonText.SHOW : ShowLegendButtonText.HIDE;
 
     const showLegendButton = document.getElementById("show-legend-button");
-    if (showLegendButton) showLegendButton.innerHTML = showLegendButtonText;
+    if (showLegendButton) showLegendButton.style.transform = `rotate(${isLegendVisible ? 180 : 0}deg)`
     else console.warn("showLegendButton not found");
 
     const legendContentElements = document.querySelectorAll<HTMLElement>(".legend-content-element");
@@ -56,7 +50,6 @@ window.legendFilterClickHandler = (e: DomEvent.PropagableEvent, element: HTMLEle
 
 export default function createLegend(options?: { hidden?: boolean }) {
     isLegendVisible = !options?.hidden ?? true;
-    showLegendButtonText = isLegendVisible ? ShowLegendButtonText.SHOW : ShowLegendButtonText.HIDE;
 
     const legend = new L.Control({ position: 'bottomright' });
     legend.onAdd = function (_map: L.Map) {
