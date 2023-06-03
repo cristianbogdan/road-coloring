@@ -4,15 +4,16 @@ import { Coords, DoneCallback } from 'leaflet';
 import L from 'leaflet';
 import * as turf from '@turf/turf';
 import { Props } from '../../types';
-import type { Feature, LineString } from '@turf/turf';
+import type { FeatureCollection, Feature, LineString, Position } from '@turf/turf';
 
 
 // interface APIFeature extends GeoJSON.Feature<GeoJSON.Geometry, any> { }
-interface APIGeoJSON extends GeoJSON.FeatureCollection<GeoJSON.LineString, Props> { }
+interface APIGeoJSON extends FeatureCollection<LineString, Props> { }
 interface GeoJSONVTOptions extends L.GridLayerOptions, geojsonvt.Options {
     async?: boolean;    // not used anymore
     filter?: (feature: Props) => boolean;
     style?: L.GeoJSONVTStyleOptions | ((feature: Props) => L.GeoJSONVTStyleOptions[]);
+    lineLabel?: (feature: Props) => L.GeoJSONVTlineLabel | undefined;
 };
 
 interface ClosestFeatureOptions {
@@ -23,12 +24,11 @@ const CACHE_MAX_SIZE = 200;
 
 
 class GeoJSONVT extends L.GridLayer {
-    private tileIndex?: ReturnType<typeof geojsonvt>;
-    private cache: Map<string, HTMLCanvasElement> = new Map();
-    private keys: string[] = [];
-    private filteredData: APIGeoJSON = { features: [], type: "FeatureCollection" };
-    private originalData: APIGeoJSON = { features: [], type: "FeatureCollection" };
-
+    protected tileIndex?: ReturnType<typeof geojsonvt>;
+    protected cache: Map<string, HTMLCanvasElement> = new Map();
+    protected keys: string[] = [];
+    protected filteredData: APIGeoJSON = { features: [], type: "FeatureCollection" };
+    protected originalData: APIGeoJSON = { features: [], type: "FeatureCollection" };
     declare options: GeoJSONVTOptions;
 
     initialize(data?: APIGeoJSON, options?: GeoJSONVTOptions) {
@@ -83,7 +83,6 @@ class GeoJSONVT extends L.GridLayer {
 
     getClosestFeature(latlng: L.LatLng, options?: ClosestFeatureOptions) {
         // console.time('getting-closest-feature');
-
         let closestFeature = {
             distance: Infinity,
             feature: undefined
@@ -118,9 +117,8 @@ class GeoJSONVT extends L.GridLayer {
             setTimeout(function () { done(undefined, cachedTile); });
             return cachedTile;
         }
-        // create a <canvas> element for drawing       
-        var tile = L.DomUtil.create("canvas", "leaflet-tile");
 
+        var tile = L.DomUtil.create("canvas", "leaflet-tile");
         const drawLater = () => {
             if (!this.tileIndex) {
                 // fine in case no data was added yet
@@ -128,9 +126,9 @@ class GeoJSONVT extends L.GridLayer {
                 return tile;
             }
             // setup tile width and height according to the options
-            const size = this.getTileSize();
-            tile.width = size.x;
-            tile.height = size.y;
+            const tileSize = this.getTileSize();
+            tile.width = tileSize.x;
+            tile.height = tileSize.y;
 
             // get a canvas context and draw something on it using coords.x, coords.y and coords.z
             const ctx = tile.getContext("2d");
@@ -147,12 +145,41 @@ class GeoJSONVT extends L.GridLayer {
                 this.drawFeature(ctx, feature);
             }
 
+
+            if (this.options.lineLabel) {
+                let longestFeatureLine: {
+                    distance: number,
+                    feature: geojsonvt.Feature,
+                    lineLabel: L.GeoJSONVTlineLabel
+                } | undefined;
+
+                for (const feature of features) {
+                    const distance = this.lineLength(feature.geometry[0] as any as Position[]);
+                    const lineLabel = this.options.lineLabel(feature.tags as Props);
+                    if (!lineLabel) continue;
+
+                    if (distance > (longestFeatureLine?.distance ?? 0)) {
+                        longestFeatureLine = {
+                            distance,
+                            feature,
+                            lineLabel
+                        }
+                    }
+                }
+
+                if (longestFeatureLine) {
+                    this.drawLineLabel(ctx,
+                        longestFeatureLine.feature.geometry[0] as any as Position[],
+                        longestFeatureLine.lineLabel);
+                }
+            }
+
             // tile.style.backgroundImage = `url(${strKey})`;
-            const img = new window.Image();
-            img.addEventListener("load", function () {
-                ctx.drawImage(img, 0, 0);
-            });
-            img.setAttribute("src", strKey);
+            // const img = new window.Image();
+            // img.addEventListener("load", function () {
+            //     ctx.drawImage(img, 0, 0);
+            // });
+            // img.setAttribute("src", strKey);
 
             if (coords.z < 12) {
                 this.cache.set(strKey, tile);
@@ -209,7 +236,7 @@ class GeoJSONVT extends L.GridLayer {
             // line string
             case 3:
                 // "as any" to disable type checking, geojsonvt.Geometry or geojsonvt.Feature are having some problems
-                this.drawPolygon(ctx, feature.geometry as any as geojsonvt.Geometry[][]);
+                this.drawPolygon(ctx, feature.geometry as any as Position[][]);
                 break;
             case 1:
                 this.drawPoint(ctx, feature.geometry);
@@ -217,7 +244,125 @@ class GeoJSONVT extends L.GridLayer {
         }
     }
 
-    drawPolygon(ctx: CanvasRenderingContext2D, geometry: geojsonvt.Geometry[][]) {
+    angleBetweenPoints(startPoint: Position, endPoint: Position) {
+        const dx = endPoint[0] / 16.0 - startPoint[0] / 16.0;
+        const dy = endPoint[1] / 16.0 - startPoint[1] / 16.0;
+        return Math.atan2(dy, dx);
+    }
+
+    distanceBetweenPoints(startPoint: Position, endPoint: Position) {
+        const dx = endPoint[0] / 16.0 - startPoint[0] / 16.0;
+        const dy = endPoint[1] / 16.0 - startPoint[1] / 16.0;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    interpolatePoint(startPoint: Position, endPoint: Position, distance: number) {
+        const dx = endPoint[0] / 16.0 - startPoint[0] / 16.0;
+        const dy = endPoint[1] / 16.0 - startPoint[1] / 16.0;
+        const distanceBetweenPoints = Math.sqrt(dx * dx + dy * dy);
+        const interpolationRatio = distance / distanceBetweenPoints;
+        return [
+            startPoint[0] / 16.0 + dx * interpolationRatio,
+            startPoint[1] / 16.0 + dy * interpolationRatio
+        ] as Position;
+    }
+
+    getTextCanvasMetrics(ctx: CanvasRenderingContext2D, text: string) {
+        const metrics = ctx.measureText(text);
+        const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        const width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+        return { width, height };
+    }
+
+    lineLength(lineGeometry: Position[]) {
+        let distance = 0;
+        for (let i = 0; i < lineGeometry.length - 1; i++) {
+            distance += this.distanceBetweenPoints(lineGeometry[i], lineGeometry[i + 1]);
+        }
+        return distance;
+    }
+
+    drawLineLabel(ctx: CanvasRenderingContext2D, lineGeometry: Position[], lineLabel: L.GeoJSONVTlineLabel) {
+        const { text } = lineLabel;
+
+        ctx.save()
+        this.setLabelStyle(ctx, lineLabel.style);
+
+        let textDistance = this.getTextCanvasMetrics(ctx, text).width;
+        const lineDistance = this.lineLength(lineGeometry);
+
+        // if the text is longer than the line, don't draw it
+        if (textDistance + ctx.lineWidth > lineDistance) {
+            // console.log("Filtered out text ", text, "with distance", textDistance, "because it's longer than the line", lineDistance);
+            ctx.restore();
+            return;
+        }
+
+        // ensures the text is not upside down
+        const firstPoint = lineGeometry[0];
+        const lastPoint = lineGeometry[lineGeometry.length - 1];
+        if (firstPoint[0] > lastPoint[0]) {
+            lineGeometry.reverse(); // TODO: don't reverse the original geometry?
+        }
+        // try this one if the above implementation for upside down text has problems
+        // if (!turf.booleanClockwise(feature.geometry)) {
+        //     geometry.reverse();
+        // }
+
+        let progress = (lineDistance - textDistance) / 2;
+        let currentPointIdx = 1;
+
+        let distanceTraveledSoFar = 0;
+        let distBetweenCurrentPoints = this.distanceBetweenPoints(lineGeometry[currentPointIdx], lineGeometry[currentPointIdx - 1]);
+
+        const elementsToDraw = [];
+        for (const letter of text) {
+            const letterWidth = this.getTextCanvasMetrics(ctx, letter).width;
+            const requestedDistanceOnLine = progress + letterWidth / 2;
+
+            // verify and increment distance and line points until we reach the next desired distance and point intervals on the line
+            while (distanceTraveledSoFar + distBetweenCurrentPoints < requestedDistanceOnLine) {
+                distanceTraveledSoFar += distBetweenCurrentPoints;
+                currentPointIdx += 1;
+                distBetweenCurrentPoints = this.distanceBetweenPoints(lineGeometry[currentPointIdx], lineGeometry[currentPointIdx - 1]);
+            }
+
+            const interpolationDistance = requestedDistanceOnLine - distanceTraveledSoFar;
+            const letterPosition = this.interpolatePoint(lineGeometry[currentPointIdx - 1], lineGeometry[currentPointIdx], interpolationDistance);
+            const letterAngle = this.angleBetweenPoints(lineGeometry[currentPointIdx - 1], lineGeometry[currentPointIdx]);
+
+            elementsToDraw.push({
+                text: letter,
+                x: letterPosition[0],
+                y: letterPosition[1],
+                angle: letterAngle,
+            });
+
+            progress += letterWidth;
+        }
+
+        // TODO: invalidate based on angles array?
+        // if available draw the stroke first so it will be drawn behind the text
+        if (ctx.lineWidth) {
+        for (const textToDraw of elementsToDraw) {
+            ctx.save();
+            ctx.translate(textToDraw.x, textToDraw.y);
+            ctx.rotate(textToDraw.angle);
+                ctx.strokeText(textToDraw.text, 0, 0);
+                ctx.restore();
+            }
+        }
+        for (const textToDraw of elementsToDraw) {
+            ctx.save();
+            ctx.translate(textToDraw.x, textToDraw.y);
+            ctx.rotate(textToDraw.angle);
+            ctx.fillText(textToDraw.text, 0, 0);
+            ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    drawPolygon(ctx: CanvasRenderingContext2D, geometry: Position[][]) {
         for (const ring of geometry) {
             ctx.moveTo(ring[0][0] / 16.0, ring[0][1] / 16.0);
             for (let i = 1; i < ring.length; i++) {
@@ -226,33 +371,44 @@ class GeoJSONVT extends L.GridLayer {
         }
     }
 
-    drawPoint(ctx: CanvasRenderingContext2D, geometry: geojsonvt.Geometry[]) {
+    drawPoint(ctx: CanvasRenderingContext2D, geometry: Position[]) {
         for (const point of geometry) {
             const [x, y] = point;
             ctx.arc(x / 16.0, y / 16.0, 2, 0, Math.PI * 2, true);
         }
     }
 
-    setStyle(ctx: CanvasRenderingContext2D, style: L.GeoJSONVTStyleOptions) {
+    setStyle(ctx: CanvasRenderingContext2D, style?: L.GeoJSONVTStyleOptions) {
         const {
-            stroke = true,
-            color = "#3388ff",
+            color = "#000",
             weight = 1,
             opacity,
-            dashArray = [],
-            dashOffset = 0,
-            // fill = false,
-            // fillColor,
-            // fillOpacity = 0.2,
-            // fillRule = "evenodd",
-        } = style;
-        ctx.setLineDash(dashArray);
-        ctx.lineDashOffset = dashOffset;
+            dashArray,
+            dashOffset,
+        } = style ?? {};
+
+        if (dashArray) ctx.setLineDash(dashArray);
+        if (dashOffset) ctx.lineDashOffset = dashOffset;
         ctx.strokeStyle = opacity ? setOpacity(color, opacity) : color;
         ctx.lineWidth = weight;
+    }
 
-        if (!stroke) ctx.strokeStyle = "rgba(0,0,0,0)";
+    setLabelStyle(ctx: CanvasRenderingContext2D, style?: L.GeoJSONVTLabelStyleOptions) {
+        const {
+            font = "bold 11px Calibri",
+            color = "#000",
+            borderSize = 2.5,
+            borderColor = "#fff",
+            textBaseline = "middle",
+            textAlign = "center",
+        } = style ?? {};
 
+        ctx.font = font;
+        ctx.fillStyle = color;
+        ctx.lineWidth = borderSize;
+        ctx.strokeStyle = borderColor;
+        ctx.textBaseline = textBaseline;
+        ctx.textAlign = textAlign;
     }
 }
 
@@ -296,13 +452,26 @@ declare module 'leaflet' {
         }
     }
 
-    // todo: with export or without?
+    // TODO: with export or without?
     namespace geoJSON {
         function VT(geojson?: APIGeoJSON, options?: GeoJSONVTOptions): L.GeoJSON.VT;
     }
 
+    interface GeoJSONVTlineLabel {
+        text: string;
+        style?: GeoJSONVTLabelStyleOptions;
+    }
+
+    interface GeoJSONVTLabelStyleOptions {
+        font?: string;
+        color?: string;
+        borderSize?: number;
+        borderColor?: string;
+        textBaseline?: CanvasTextBaseline;
+        textAlign?: CanvasTextAlign;
+    }
+
     interface GeoJSONVTStyleOptions {
-        stroke?: boolean;
         color?: string;
         weight?: number;
         opacity?: number;

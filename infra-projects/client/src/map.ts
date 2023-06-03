@@ -1,12 +1,14 @@
 import type { LegendStateOptions } from './road-style'
 import type { LotLimitProps, Props } from './types';
+import type { Point, LineString, FeatureCollection } from 'geojson';
+
 import L from 'leaflet';
 import config from './config';
 import createLegend from './component/legend';
 import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine, } from './road-style';
 import { computeStatus } from './data-processing';
-import { zoomPrecisionMap } from './constants';
+import { Color, zoomPrecisionMap } from './constants';
 // import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
@@ -94,8 +96,9 @@ export function loadMap(mapOptions: MapOptions) {
         pane: 'overlayPane',
         tolerance: 5,
         debug: 0,
-        // solidChildren: true,
-        keepBuffer: 4,
+        // keepBuffer: 1,
+        lineLabel: roadLabelName,
+        // lineLabel: roadLabelYears,
         style: roadsLayerStyle,
         filter: function (props: Props) {
             const found = legend.filters.find(p => p.condition(props));
@@ -133,11 +136,13 @@ export function loadMap(mapOptions: MapOptions) {
         });
 
     fetch(`${config.URL_PUM_API}/maps/data/data-sql-infra.geo.json`)
-        .then(r => r.json()).then(function (data: GeoJSON.FeatureCollection<GeoJSON.LineString, Props>) {
+        .then(r => r.json()).then(function (data: FeatureCollection<LineString, Props>) {
+            // console.log('roadsData', data);
+
             for (const feature of data.features) computeStatus(feature.properties);
 
             roadsLayer.addData(data);
-            lotLimitsLayer.addData(lotLimitsData as GeoJSON.FeatureCollection<GeoJSON.Point, LotLimitProps>);
+            lotLimitsLayer.addData(lotLimitsData as FeatureCollection<Point, LotLimitProps>);
         });
 
     map.on('click', mapClick);
@@ -164,14 +169,13 @@ function mapClick(event: L.LeafletMouseEvent) {
 
     const precisionInMeters = zoomPrecisionMap.get(map.getZoom()) ?? 1000;
     const feature = roadsLayer.getClosestFeature(event.latlng, { maxDistance: precisionInMeters, units: 'meters' });
+    
     if (!feature) return;
     showPopupDetails(event.latlng, feature.feature.properties, map);
-    // console.log(feature);
+    // console.log("map click", feature);
 }
 
 function roadsLayerStyle(props: Props) {
-    if (!props) return [{ stroke: false }]; // todo: verify if this is correct
-
     let styles: L.GeoJSONVTStyleOptions[] = [];
     const found = legend.filters.find(p => p.condition(props));
     if (found && found.lineType) styles.push(...found.lineType(props));
@@ -188,8 +192,32 @@ function roadsLayerStyle(props: Props) {
     }
 
     // if (tags.ref?.toLowerCase().includes("a10")) styles.unshift({ color: Color.YELLOW, weight: 20 });
-    if (!styles.length) styles.push({ stroke: false });
     return styles;
+}
+
+function roadLabelName(props: Props) {
+    const text = props.ref;
+    if (!text) return;
+    return {
+        text
+    };
+}
+
+function roadLabelYears(props: Props) {
+    const opening_date = props.opening_date;
+    const start_date = props.start_date;
+    const access_note = props?.access_note?.split(' ').pop();
+
+    const text = opening_date ?? access_note ?? start_date;
+    if (!text) return;
+
+    const style = {
+        color: access_note && start_date && access_note > start_date ? Color.RED : Color.BLUE,
+    }
+    return {
+        text,
+        style
+    }
 }
 
 window.location.updateQueryParams = function () {
