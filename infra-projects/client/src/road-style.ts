@@ -182,6 +182,7 @@ const defaultLegendFilters = [
         style: [blueLine, blackDashLine],
         text: "CF nouă finalizată",
         condition: (p: Props) => p.railway && p.latestProgress === 100 && p.start_date,
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
