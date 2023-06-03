@@ -28,6 +28,7 @@ export const LineWeight = {
 }
 
 export const DashArray = {
+    DENSER: [4, 6],
     DENSE: [5, 7],
     SPARSE: [10, 10]
 }

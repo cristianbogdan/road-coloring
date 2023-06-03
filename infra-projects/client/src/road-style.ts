@@ -4,75 +4,89 @@ import type { Props } from './types'
 
 export const blackLine = {
     weight: LineWeight.THICK,
-    color: Color.BLACK
+    color: Color.BLACK,
+    dashArray: undefined
 }
 
 export const thickerBlackLine = {
     weight: LineWeight.THICKER,
-    color: Color.BLACK
+    color: Color.BLACK,
+    dashArray: undefined
 }
 
 export const thickerWhiteLine = {
     weight: LineWeight.THICKER,
-    color: Color.WHITE
+    color: Color.WHITE,
+    dashArray: undefined
 }
 
 export const blueLine = {
     weight: LineWeight.THICK,
-    color: Color.BLUE
+    color: Color.BLUE,
+    dashArray: undefined
 }
 
 export const lightBlueLine = {
     weight: LineWeight.THICK,
-    color: Color.DEEP_SKY_BLUE
+    color: Color.DEEP_SKY_BLUE,
+    dashArray: undefined
 }
 
 export const orangeLine = {
     weight: LineWeight.THICK,
-    color: Color.ORANGE
+    color: Color.ORANGE,
+    dashArray: undefined
 }
 
 export const yellowLine = {
     weight: LineWeight.THICK,
-    color: Color.YELLOW
+    color: Color.YELLOW,
+    dashArray: undefined
 }
 
 export const amberLine = {
     weight: LineWeight.THICK,
-    color: Color.AMBER
+    color: Color.AMBER,
+    dashArray: undefined
 }
 
 export const orangeRedLine = {
     weight: LineWeight.THICK,
-    color: Color.ORANGE_RED
+    color: Color.ORANGE_RED,
+    dashArray: undefined
 }
 
 export const redLine = {
     weight: LineWeight.THICK,
-    color: Color.RED
+    color: Color.RED,
+    dashArray: undefined
 }
 
 export const rosePinkLine = {
     weight: LineWeight.THICK,
-    color: Color.ROSE_PINK
+    color: Color.ROSE_PINK,
+    dashArray: undefined
 }
 
 export const shipCoveLine = {
     weight: LineWeight.THICK,
-    color: Color.SHIP_COVE
+    color: Color.SHIP_COVE,
+    dashArray: undefined
 }
 
 export const progressLine = (percent?: number) => {
     return {
         weight: LineWeight.THICK,
-        color: !percent ? Color.BLIZZARD_BLUE : percent > 75 ? Color.DODGER_BLUE : percent > 50 ? Color.DEEP_SKY_BLUE : percent > 25 ? Color.LIGHT_SKY_BLUE : percent > 0 ? Color.POWDER_BLUE : Color.GRAY
+        color: !percent ? Color.BLIZZARD_BLUE : percent > 75 ? Color.DODGER_BLUE : percent > 50 ? Color.DEEP_SKY_BLUE : percent > 25 ? Color.LIGHT_SKY_BLUE : percent > 0 ? Color.POWDER_BLUE : Color.GRAY,
+        dashArray: undefined
     }
 }
 
 export const statusLine = (props: Props) => {
     return {
         weight: LineWeight.THICK,
-        color: props.PTE ? Color.AMBER : props.AM ? Color.ORANGE_RED : Color.RED
+        color: props.PTE ? Color.AMBER : props.AM ? Color.ORANGE_RED : Color.RED,
+        dashArray: undefined
     }
 }
 
@@ -98,23 +112,23 @@ const defaultLegendFilters = [
     /* Highway */
     {
         id: "a-finalizata",
-        symbol: `background-color: ${Color.BLUE};`,
+        style: [blueLine],
         text: "în circulație",
         condition: (p: Props) => p.highway && !p.construction && !p.proposed && p.access != 'no',
-        lineType: (_p: Props) => [blueLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "a-fara-acces",
-        symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.RED};`,
+        style: [blueLine, redDashLine],
         text: "recepționat/circulabil fără acces",
         condition: (p: Props) => p.highway && !p.construction && !p.proposed && p.access == 'no',
-        lineType: (_p: Props) => [blueLine, redDashLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "a-in-construire",
-        symbol: `background-color: ${Color.LIGHT_SKY_BLUE};`,
+        style: [progressLine(25)],
         text: 'în construire, cu AC, stadiu:<br>'
             + '<font color=' + Color.BLIZZARD_BLUE + '>0%</font> <font color=' + Color.POWDER_BLUE + '>&lt;25%</font> <font color=' + Color.LIGHT_SKY_BLUE + '>&lt;50%</font> <font color=' + Color.DEEP_SKY_BLUE + '>&lt;75%</font> <font color=' + Color.DODGER_BLUE + '>&lt;100%</font>',
         condition: (p: Props) => p.highway && p.construction && p.AC && p.builder,
@@ -123,7 +137,7 @@ const defaultLegendFilters = [
     },
     {
         id: "a-neatribuita",
-        symbol: `border-top: dotted ${Color.DEEP_SKY_BLUE};`,
+        style: [progressLine(25), whiteDashLine],
         text: "neatribuit sau reziliat, cu AC",
         condition: (p: Props) => p.highway && (p.proposed || !p.builder) && p.AC,
         lineType: (p: Props) => [progressLine(p.latestProgress), whiteDashLine],
@@ -131,31 +145,31 @@ const defaultLegendFilters = [
     },
     {
         id: "a-atribuita-fara-am",
-        symbol: `background-color: ${Color.RED};`,
+        style: [redLine],
         text: "atribuit, lipsă AM",
         condition: (p: Props) => p.highway && p.builder && !p.AM && !p.PTE,
-        lineType: (_p: Props) => [redLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "a-atribuita-fara-pt",
-        symbol: `background-color: ${Color.ORANGE_RED};`,
+        style: [orangeRedLine],
         text: "cu AM, fără PT aprobat",
         condition: (p: Props) => p.highway && p.construction && p.builder && !p.PTE && p.AM,
-        lineType: (_p: Props) => [orangeRedLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "a-atribuita-fara-ac",
-        symbol: `background-color: ${Color.AMBER};`,
+        style: [amberLine],
         text: "cu PT aprobat, fără AC",
         condition: (p: Props) => p.highway && p.builder && !p.AC && p.PTE,
-        lineType: (_p: Props) => [amberLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "a-neatribuita-fara-avize",
-        symbol: `border-top: dotted ${Color.ORANGE_RED};`,
+        style: [statusLine({ AM: true }), whiteDashLine],
         text: "neatribuit, lipsă AC/PT/AM",
         condition: (p: Props) => p.highway && p.hadStatus && (!p.AC || !p.PTE || !p.AM),
         lineType: (p: Props) => [statusLine(p), whiteDashLine],
@@ -165,23 +179,22 @@ const defaultLegendFilters = [
     /* Railway */
     {
         id: "cf-noua",
-        symbol: `background-color: ${Color.BLUE}; border-top: dotted ${Color.BLACK};`,
+        style: [blueLine, blackDashLine],
         text: "CF nouă finalizată",
         condition: (p: Props) => p.railway && p.latestProgress === 100 && p.start_date,
-        lineType: (_p: Props) => [blueLine, blackDashLine],
         hidden: false
     },
     {
         id: "cf-reabilitata",
-        symbol: `border-top: dotted ${Color.BLACK};`,
+        style: [blackLine, whiteDashLine],
         text: "CF cu reabilitare finalizată",
         condition: (p: Props) => p.railway && p.latestProgress === 100 && p.start_date_note,
-        lineType: (_p: Props) => [blackLine, whiteDashLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "cf-noua-in-construire",
-        symbol: `background-color: ${Color.RED}; border-top: dotted ${Color.POWDER_BLUE};`,
+        style: [progressLine(25), redDashLine],
         text: "CF nouă cu AC, în construire",
         condition: (p: Props) => p.railway && p.railway == 'construction',
         lineType: (p: Props) => [progressLine(p.latestProgress), redDashLine],
@@ -189,7 +202,7 @@ const defaultLegendFilters = [
     },
     {
         id: "cf-in-reabilitare",
-        symbol: `background-color: ${Color.BLACK}; border-top: dotted ${Color.POWDER_BLUE};`,
+        style: [progressLine(25), blackDashLine],
         text: "CF cu AC, în reabilitare",
         condition: (p: Props) => p.railway && p.railway !== 'proposed' && !p.tender,
         lineType: (p: Props) => [progressLine(p.latestProgress), blackDashLine],
@@ -197,36 +210,36 @@ const defaultLegendFilters = [
     },
     {
         id: "cf-noua-neatribuita",
-        symbol: `background-color: ${Color.RED}; border-top: dotted ${Color.ROSE_PINK};`,
+        style: [rosePinkLine, redDashLine],
         text: "CF nouă, neatribuită",
         condition: (p: Props) => p.railway === 'proposed' /*&& p.tender*/,
-        lineType: (_p: Props) => [rosePinkLine, redDashLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
     {
         id: "cf-reabilitare-neatribuita",
-        symbol: `background-color: ${Color.BLACK}; border-top: dotted ${Color.ROSE_PINK};`,
+        style: [rosePinkLine, blackDashLine],
         text: "CF vechi, neatribuită",
         condition: (p: Props) => p.railway === 'rail' && p.tender,
-        lineType: (_p: Props) => [rosePinkLine, blackDashLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: false
     },
 
     /* Proposed projects */
     {
         id: "proiecte-propuse",
-        symbol: `border-top: dotted ${Color.ROSE_PINK};`,
+        style: [rosePinkLine, whiteDashLine],
         text: "proiecte propuse",
         condition: (p: Props) => p.highway && (p.proposed || p.hadStatus && !p.AC && !p.AM && !p.PTE),
-        lineType: (_p: Props) => [rosePinkLine, whiteDashLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: true
     },
     {
         id: "status-necunoscut",
-        symbol: `background-color: ${Color.SHIP_COVE};`,
+        style: [shipCoveLine],
         text: "status necunoscut",
         condition: (p: Props) => p.highway && p.construction && !p.hadStatus,
-        lineType: (_p: Props) => [shipCoveLine],
+        lineType: function (_p: Props) { return this.style },
         hidden: true
     }
 ]
