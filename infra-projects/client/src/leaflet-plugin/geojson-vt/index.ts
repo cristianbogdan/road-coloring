@@ -283,7 +283,7 @@ class GeoJSONVT extends L.GridLayer {
     getTextCanvasMetrics(ctx: CanvasRenderingContext2D, text: string) {
         const metrics = ctx.measureText(text);
         const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-        const width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+        const width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;        
         return { width, height };
     }
 
@@ -336,6 +336,9 @@ class GeoJSONVT extends L.GridLayer {
             // verify and increment distance and line points until we reach the next desired distance and point intervals on the line
             while (distanceTraveledSoFar + distBetweenCurrentPoints < requestedDistanceOnLine) {
                 distanceTraveledSoFar += distBetweenCurrentPoints;
+                if (currentPointIdx >= lineGeometry.length - 1) {
+                    break;
+                }
                 currentPointIdx += 1;
                 distBetweenCurrentPoints = this.distanceBetweenPoints(lineGeometry[currentPointIdx], lineGeometry[currentPointIdx - 1]);
             }
