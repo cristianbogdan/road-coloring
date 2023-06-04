@@ -51,7 +51,7 @@ export function loadMap(mapOptions: MapOptions) {
     map.attributionControl.addAttribution('© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
     map.attributionControl.addAttribution('<a href="https://proinfrastructura.ro">API</a>');
     map.attributionControl.addAttribution('<a href="https://forum.peundemerg.ro">PUM</a>');
-    L.control.location({ position: 'topleft', iconUrl: "images/accurate-icon.svg" }).addTo(map);
+    L.control.location({ position: 'topleft', iconUrl: "/accurate-icon.svg" }).addTo(map);
     // map.addControl(new L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
     // map.addControl(new L.control.attribution({ position: 'bottomleft', prefix: false }));
 
@@ -74,7 +74,7 @@ export function loadMap(mapOptions: MapOptions) {
 
 
     const lotLimitIcon = L.icon({
-        iconUrl: `/images/pin.png`,
+        iconUrl: `/pin.png`,
         iconSize: [25, 25], // width and height of the image in pixels
         iconAnchor: [12, 25], // point of the icon which will correspond to marker's location
         popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
