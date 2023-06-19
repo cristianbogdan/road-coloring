@@ -28,7 +28,7 @@ export class Location extends L.Control {
         const isGeoLiveElement = L.DomUtil.create('div', undefined, buttonElement);
 
         map.on('locationfound', (e) => {
-            console.log(e);
+            // console.log(e);
             if (this.marker === undefined) {
                 this.marker = L.circleMarker(e.latlng, { radius: 10, color: "red" }).addTo(map);
                 const element = this.marker.getElement() as HTMLElement;
