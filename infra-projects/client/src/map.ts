@@ -2,13 +2,14 @@ import type { LegendStateOptions } from './road-style'
 import type { LotLimitProps, Props } from './types';
 import type { Point, LineString, FeatureCollection, Feature } from 'geojson';
 
+// import * as turf from '@turf/turf';
 import L from 'leaflet';
 import config from './config';
 import createLegend from './component/legend';
 import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine, } from './road-style';
 import { computeStatus } from './data-processing';
-import { zoomPrecisionMap } from './constants';
+import { Color, zoomPrecisionMap } from './constants';
 // import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
@@ -53,19 +54,7 @@ export function loadMap(mapOptions: MapOptions) {
     map.attributionControl.addAttribution('<a href="https://forum.peundemerg.ro">PUM</a>');
     L.control.location({ position: 'topleft', iconUrl: `${import.meta.env.BASE_URL}accurate-icon.svg` }).addTo(map);
 
-    // map.addControl(new L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
-    // map.addControl(new L.control.attribution({ position: 'bottomleft', prefix: false }));
-
-    // const appVersion = L.control({ position: 'topright' });
-    // appVersion.onAdd = function (map) {
-    //     const div = L.DomUtil.create('div', 'leaflet-control-attribution');
-    //     L.DomEvent.disableClickPropagation(div)
-    //     div.innerText = `v${version}`;
-    //     return div;
-    // }
-    // appVersion.addTo(map);
-    // map.zoomControl.setPosition('topleft');
-    // map.attributionControl.setPrefix(false);
+    map.addControl(L.control.scale({ position: 'bottomleft', imperial: false, updateWhenIdle: true }))
 
     L.control.logo({
         position: "bottomleft",
@@ -139,7 +128,7 @@ export function loadMap(mapOptions: MapOptions) {
             lotLimitsData = data;
             // console.log('lotLimitsData', lotLimitsData);
         });
-
+        
     fetch(`${config.URL_PUM_API}/maps/data/data-sql-infra.geo.json`)
         .then(r => r.json()).then(function (data: FeatureCollection<LineString, Props>) {
             // console.log('roadsData', data);
@@ -153,6 +142,37 @@ export function loadMap(mapOptions: MapOptions) {
             lotLimitsLayer.addData(lotLimitsData as FeatureCollection<Point, LotLimitProps>);
             // console.timeEnd('add-lot-limits-data');
         });
+    // fetch(`/overpass-data.json`)
+    //     .then(r => r.json()).then(function (data: FeatureCollection<any, any>) {
+    //         console.log('roadsData', data);
+
+    //         const { roads, lots } = data.features.reduce((acc, feature) => {
+    //             if (feature.geometry.type === 'Point') {
+    //                 if (feature.properties?.highway === 'lot_limit' || feature.properties?.railway === 'lot_limit') {
+    //                     acc.lots.push(feature);
+    //                 }
+    //                 else {
+    //                     // console.log('Point', feature.properties);
+    //                     // highway: "crossing"
+    //                     // railway: "crossing"    
+    //                     // railway: "level_crossing"    
+    //                 }
+    //             }
+    //             else {
+    //                 acc.roads.push(feature);
+    //             }
+    //             return acc;
+    //         }, { roads: [] as Feature<LineString, Props>[], lots: [] as Feature<Point, LotLimitProps>[] });
+
+    //         for (const feature of roads) {
+    //             computeStatus(feature.properties);
+    //         }
+    //         lotLimitsData = turf.featureCollection(lots);
+    //         data = turf.featureCollection(roads);
+
+    //         roadsLayer.addData(data);
+    //         lotLimitsLayer.addData(lotLimitsData as FeatureCollection<Point, LotLimitProps>);
+    //     });
 
     map.on('click', mapClick);
     map.on('dragend', window.location.updateQueryParams);
