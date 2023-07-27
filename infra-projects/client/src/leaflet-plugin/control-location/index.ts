@@ -53,6 +53,7 @@ export class Location extends L.Control {
                 window.alert("Nu am putut determina locatia curenta. Verifica daca ai permis aplicatiei sa acceseze locatia ta.")
                 L.DomUtil.removeClass(isGeoLiveElement, 'active');
                 this.marker?.remove()
+                this.isActive = false;
             }
         });
         
