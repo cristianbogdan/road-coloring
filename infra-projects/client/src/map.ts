@@ -2,7 +2,6 @@ import type { LegendStateOptions } from './road-style'
 import type { LotLimitProps, Props } from './types';
 import type { Point, LineString, FeatureCollection, Feature } from 'geojson';
 
-// import * as turf from '@turf/turf';
 import L from 'leaflet';
 import config from './config';
 import createLegend from './component/legend';
@@ -10,7 +9,6 @@ import generatePopupHtmlContent from './component/popup-content';
 import { legend, blackLine, thickerBlackLine, } from './road-style';
 import { computeStatus } from './data-processing';
 import { Color, zoomPrecisionMap } from './constants';
-// import { version } from '../package.json';
 import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
 import './leaflet-plugin/geojson-vt';
@@ -142,37 +140,6 @@ export function loadMap(mapOptions: MapOptions) {
             lotLimitsLayer.addData(lotLimitsData as FeatureCollection<Point, LotLimitProps>);
             // console.timeEnd('add-lot-limits-data');
         });
-    // fetch(`/overpass-data.json`)
-    //     .then(r => r.json()).then(function (data: FeatureCollection<any, any>) {
-    //         console.log('roadsData', data);
-
-    //         const { roads, lots } = data.features.reduce((acc, feature) => {
-    //             if (feature.geometry.type === 'Point') {
-    //                 if (feature.properties?.highway === 'lot_limit' || feature.properties?.railway === 'lot_limit') {
-    //                     acc.lots.push(feature);
-    //                 }
-    //                 else {
-    //                     // console.log('Point', feature.properties);
-    //                     // highway: "crossing"
-    //                     // railway: "crossing"    
-    //                     // railway: "level_crossing"    
-    //                 }
-    //             }
-    //             else {
-    //                 acc.roads.push(feature);
-    //             }
-    //             return acc;
-    //         }, { roads: [] as Feature<LineString, Props>[], lots: [] as Feature<Point, LotLimitProps>[] });
-
-    //         for (const feature of roads) {
-    //             computeStatus(feature.properties);
-    //         }
-    //         lotLimitsData = turf.featureCollection(lots);
-    //         data = turf.featureCollection(roads);
-
-    //         roadsLayer.addData(data);
-    //         lotLimitsLayer.addData(lotLimitsData as FeatureCollection<Point, LotLimitProps>);
-    //     });
 
     map.on('click', mapClick);
     map.on('dragend', window.location.updateQueryParams);
