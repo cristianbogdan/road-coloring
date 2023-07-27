@@ -20,7 +20,7 @@ export default function generatePopupHtmlContent(props: Props) {
 
     var x = (props.highway ? props.highway : props.railway)
         + ' <a href=\"https://openstreetmap.org/way/' + props.osm_id + '\" target="OSM">'
-        + (props.ref ? props.ref + (props.name ? ('(' + props.name + ')') : '') : (props.name ? props.name : props.osm_id))
+        + (props.ref ? props.ref + (props.name ? (' - ' + props.name ) : '') : (props.name ? props.name : props.osm_id))
         + "</a>"
         //+"[<a href=\"https://openstreetmap.org/edit?way="+prop.osm_id+"\" target=\"OSMEdit\">edit</a>] "
         //    +"</a> [<a href=\"https://openstreetmap.org/edit?editor=potlatch2&way="+prop.osm_id+"\" target=\"OSMEdit\">edit-potlach</a>]"
@@ -33,7 +33,7 @@ export default function generatePopupHtmlContent(props: Props) {
         x += (props.access == 'no' ? "<br><font color='red'>Inchis traficului la terminarea constructiei</font>" : '');
 
         if (props.hadStatus)
-            if (props.highway) x += "<br>" + (props.AC ? '<font color=' + Color.DEEP_SKY_BLUE + '>Autorizatie de construire</font>' : props.PTE ? '<font color=' + Color.ORANGE + '>Are Proiect Tehnic aprobat dar nu Autorizatie de Construire</font>' : props.AM ? '<font color=' + Color.ORANGE_RED + '>Are Acord de Mediu dar nu Proiect Tehnic aprobat, deci nu are Autorizatie de Construire</font>' : '<font color=' + Color.RED + '>Nu are Acord de Mediu, deci nu are Autorizatie de Construire</font>');
+            if (props.highway) x += "<br>" + (props.AC ? '<font color=' + Color.DEEP_SKY_BLUE + '>Autorizatie de construire</font>' : props.PTE ? '<font color=' + Color.ORANGE + '>Are Proiect Tehnic aprobat, dar nu Autorizatie de Construire</font>' : props.AM ? '<font color=' + Color.ORANGE_RED + '>Are Acord de Mediu, dar nu Proiect Tehnic aprobat, deci nu are Autorizatie de Construire</font>' : '<font color=' + Color.RED + '>Nu are Acord de Mediu, deci nu are Autorizatie de Construire</font>');
             else x += (props.AC ? "<br>" + '<font color=' + Color.DEEP_SKY_BLUE + '>Autorizatie de construire</font>' : '');
         else if (props.highway)
             x += "<br>Progresul constructiei necunoscut";

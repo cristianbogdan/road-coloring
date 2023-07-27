@@ -104,7 +104,7 @@ export function loadMap(mapOptions: MapOptions) {
         tolerance: 5,
         debug: 0,
         // keepBuffer: 1,
-        lineLabel: roadLabelName,
+        lineLabel: roadLabelYears,
         // lineLabel: roadLabelYears,
         style: roadsLayerStyle,
         filter: function (props: Props) {
@@ -133,7 +133,6 @@ export function loadMap(mapOptions: MapOptions) {
 
     // save the initial state of the map after all layers have been added
     // window.location.updateQueryParams()
-
 
     fetch(`${config.URL_PUM_API}/maps/data/lot_limits.json`).then(r => r.json())
         .then(function (data) {
@@ -214,22 +213,22 @@ function roadLabelName(props: Props) {
 }
 
 // used to display the opening date or the access note on the road, keeping this function for now
-// function roadLabelYears(props: Props) {
-//     const opening_date = props.opening_date;
-//     const start_date = props.start_date;
-//     const access_note = props?.access_note?.split(' ').pop();
+function roadLabelYears(props: Props) {
+    const opening_date = props.opening_date;
+    const start_date = props.start_date;
+    const access_note = props?.access_note?.split(' ').pop();
 
-//     const text = opening_date ?? access_note ?? start_date;
-//     if (!text) return;
+    const text = opening_date ?? access_note ?? start_date;
+    if (!text) return;
 
-//     const style = {
-//         color: access_note && start_date && access_note > start_date ? Color.RED : Color.BLUE,
-//     }
-//     return {
-//         text,
-//         style
-//     }
-// }
+    const style = {
+        color: access_note && start_date && access_note > start_date ? Color.RED : Color.BLUE,
+    }
+    return {
+        text,
+        style
+    }
+}
 
 window.location.updateQueryParams = function () {
     if (!map) {
