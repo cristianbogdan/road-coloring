@@ -34,7 +34,7 @@ interface MapOptions {
 }
 export function loadMap(mapOptions: MapOptions) {
     map = new L.Map(mapOptions.id, {
-        minZoom: 7,
+        minZoom: window.innerWidth > 600 ? 7 : 6,
         maxZoom: 18,
     });
 
