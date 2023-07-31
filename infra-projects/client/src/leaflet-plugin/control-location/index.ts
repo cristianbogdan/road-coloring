@@ -41,7 +41,7 @@ export class Location extends L.Control {
             }
             if (this.locationJustInitiated) {
                 this.locationJustInitiated = false;
-                map.locate({  maxZoom: 13, watch: true, setView: false, enableHighAccuracy: false });
+                map.locate({  maxZoom: 13, watch: true, setView: false, enableHighAccuracy: true });
             }
         });
 
