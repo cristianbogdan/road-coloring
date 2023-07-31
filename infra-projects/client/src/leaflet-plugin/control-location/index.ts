@@ -50,7 +50,7 @@ export class Location extends L.Control {
             // console.log(e);
             // code: 1, message: 'Geolocation error: User denied Geolocation.', type: 'locationerror',
             if (e.code === 1) {
-                window.alert("Nu am putut determina locatia curenta. Verifica daca ai permis aplicatiei sa acceseze locatia ta.")
+                window.alert("Nu am putut determina locatia curenta. Verifica daca ai permis aplicatiei sa acceseze locatia.")
                 L.DomUtil.removeClass(isGeoLiveElement, 'active');
                 this.marker?.remove()
                 this.isActive = false;
