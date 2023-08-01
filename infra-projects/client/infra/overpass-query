@@ -1,0 +1,14 @@
+[timeout:420];(area[boundary=administrative]["name:en"=Romania];)->.ro;
+(
+way(area.ro)[highway=proposed][proposed];  node(w);
+way(area.ro)[highway=construction][construction];  node(w);
+way(area.ro)[highway~motorway];  node(w);
+way(area.ro)[highway~trunk][ref~"^A"];  node(w);
+way(area.ro)[highway~trunk](if:is_date(t["start_date"])&&date(t["start_date"])>='2010'); node(w);
+way(area.ro)[highway~"^(tertiary|tertiary_link|secondary|secondary_link|primary|primary_link|residential)$"](if:is_date(t["start_date"])&&date(t["start_date"])>='2018'); node(w);
+way(area.ro)[highway~"^(rest_area|services)$"][start_date]; node(w);
+way(area.ro)[railway=proposed]; node(w);
+way(area.ro)[railway=construction]; node(w);
+way(area.ro)[railway=rail][usage~"^(main|branch)$"][status]; node(w);
+);
+out geom;
