@@ -191,13 +191,13 @@ function roadsLayerStyle(props: Props) {
     return styles;
 }
 
-function roadLabelName(props: Props) {
-    const text = props.ref;
-    if (!text) return;
-    return {
-        text
-    };
-}
+// function roadLabelName(props: Props) {
+//     const text = props.ref;
+//     if (!text) return;
+//     return {
+//         text
+//     };
+// }
 
 // used to display the opening date or the access note on the road, keeping this function for now
 function roadLabelYears(props: Props) {
