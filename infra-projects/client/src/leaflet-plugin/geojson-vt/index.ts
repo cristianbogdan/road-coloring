@@ -420,9 +420,14 @@ class GeoJSONVT extends L.GridLayer {
         ctx.lineWidth = weight;
     }
 
+    // good candidate fonts to use
+    // Helvetica (sans-serif)
+    // Arial (sans-serif)
+    // Tahoma (sans-serif)
+    // Trebuchet MS (sans-serif)
     setLabelStyle(ctx: CanvasRenderingContext2D, style?: L.GeoJSONVTLabelStyleOptions) {
         const {
-            font = "bold 11px Calibri",
+            font = "bold 11px sans-serif",
             color = "#000",
             borderSize = 2.5,
             borderColor = "#fff",
