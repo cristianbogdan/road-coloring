@@ -163,6 +163,9 @@ function mapClick(event: L.LeafletMouseEvent) {
         return
     }
 
+    // hide legend on mobile when clicking on the map
+    if (L.Browser.mobile && window.innerWidth < 768 && !legend.hidden) window.showLegendClicked()
+
     const precisionInMeters = zoomPrecisionMap.get(map.getZoom()) ?? 1000;
     const feature = roadsLayer.getClosestFeature(event.latlng, { maxDistance: precisionInMeters, units: 'meters' });
 
