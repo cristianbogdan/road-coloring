@@ -13,6 +13,8 @@ import './leaflet-plugin/control-logo';
 import './leaflet-plugin/control-location';
 import './leaflet-plugin/geojson-vt';
 import './leaflet-plugin/control-layers';
+// @ts-ignore
+import {grayscale} from './leaflet-plugin/grayscale';
 import './../node_modules/leaflet/dist/leaflet.css';
 import './style/global.css';
 import 'leaflet-edgebuffer';
@@ -106,8 +108,11 @@ export function loadMap(mapOptions: MapOptions) {
         "Google terrain": L.tileLayer("https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
         "Google satellite": L.tileLayer("https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
         "Google satellite & labels": L.tileLayer("https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-        "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' }),
-    };
+//        "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' }),
+	"OSM alb-negru": grayscale('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	             attribution: 'Map data &copy; <a href="http://openstreetmap.org/">OpenStreetMap</a> contributors',
+	    })
+	    };
 
     const overlays = {
         "Proiecte infrastructura": roadsLayer,
