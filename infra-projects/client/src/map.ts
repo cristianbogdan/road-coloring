@@ -108,7 +108,8 @@ export function loadMap(mapOptions: MapOptions) {
         "Google terrain": L.tileLayer("https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
         "Google satellite": L.tileLayer("https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
         "Google satellite & labels": L.tileLayer("https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
-//        "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' }),
+//        "Thunderforest Landscape": L.tileLayer(`https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${config.KEY_THUNDERFOREST}`, { attribution: 'Maps © <a href="https://www.thunderforest.com/">Thunderforest</a>' })
+        "Google terrain alb-negru": grayscale("https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}", { attribution: "Map data ©2023 Google" }),
 	"OSM alb-negru": grayscale('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	             attribution: 'Map data &copy; <a href="http://openstreetmap.org/">OpenStreetMap</a> contributors',
 	    })
