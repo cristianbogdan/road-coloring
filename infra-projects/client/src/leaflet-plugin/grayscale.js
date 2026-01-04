@@ -1,3 +1,5 @@
+// adapted from https://github.com/Zverik/leaflet-grayscale?tab=readme-ov-file, since it's not available as npm package
+
 import L from 'leaflet';
 L.TileLayer.Grayscale = L.TileLayer.extend({
 	options: {
