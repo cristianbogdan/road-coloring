@@ -4,7 +4,7 @@ createdb -Upostgres -E UTF-8 gis1 && psql -Upostgres -d gis1 -c "CREATE EXTENSIO
 
 echo Reading from overpass. This may take some time
 cd /work/maps/infra-projects/osmimport
-curl --insecure --fail-with-body --silent  --show-error -d @overpass-infra.txt https://www.overpass-api.de/api/interpreter > /data/data-overpass-infra.osm.new
+curl -A peundemerg.ro --insecure --fail-with-body --silent  --show-error -d @overpass-infra.txt https://www.overpass-api.de/api/interpreter > /data/data-overpass-infra.osm.new
 if [ $(stat -c%s /data/data-overpass-infra.osm.new) -gt 5000 ] ; then
     mv /data/data-overpass-infra.osm.new /data/data-overpass-infra.osm
 else
