@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harta calității drumurilor din România @OSM </title>
+  <link rel="stylesheet" href="leaflet.css" />
+  <link rel="stylesheet" href="index2.css" />
+  <script src="leaflet.js"></script>
+  <script src="../common/thunderforestKey.js"></script>
+  <script src="tiles.js"></script>
+  <script src="smoothness.js"></script>
+  <script src="analytics.js"></script>
+  <script src="index2.js"></script>
+</head>
+
+<body onLoad="loadDoc()">
+  <div id="mymap"></div>
+
+  <div id="legend" class="card">
+    <div class="card-title">
+      <span>
+        <a>Legenda:</a>
+      </span>
+      <a class="btn-small" id="btn-help-legend" target="_blank"
+        href="https://wiki.openstreetmap.org/wiki/Key:smoothness"><img src="../images/svg/help.svg" alt="help"></a>
+      <span class="btn-small" id="btn-hide-legend"><img src="../images/svg/cross.svg" alt="close"><span>
+    </div>
+    <div class="row"><span class="indicator color-excellent"></span>excellent</div>
+    <div class="row"><span class="indicator color-good"></span>good</div>
+    <div class="row"><span class="indicator color-intermediate"></span>intermediate</div>
+    <div class="row"><span class="indicator color-bad"></span>bad/very_bad</div>
+    <div class="row"><span class="indicator color-worst"></span>horrible/very_horrible/impassable</div>
+  </div>
+
+  <div id="btn-holder">
+    <button class="btn-large" id="btn-info"><img src="../images/svg/info.svg" alt="info"></button>
+  </div>
+
+  <dialog id="info" class="card">
+    <div class="card-title">
+      <h1>Info</h1>
+      <span class="btn-small" id="btn-close-info"><img src="../images/svg/cross.svg" alt="close"><span>
+    </div>
+    <p>Lipsește drumul tău "favorit"? Treci în <a href="../road-quality-edit/edit.html" id="editlink"
+        onmouseover="this.href= '../road-quality-edit/edit.html#map='+window.location.href.split('#map=')[1]">modul de
+        editare!</a> (ai nevoie de un cont OSM).</p>
+    <h2>Harta calității drumurilor din România, varianta Open Data / OSM</h2>
+    <p>
+      Harta se actualizează automat la fiecare 24h cu date despre calitatea drumurilor preluate din 
+      <a href="https://openstreetmap.org">OpenStreetMap</a>.
+    </p>Puteți discuta harta și calitatea drumurilor pe <a
+      href="http://forum.peundemerg.ro/index.php?topic=199">peundemerg.ro</a> :)
+
+    <img src="https://i.imgur.com/QBc6ren.png" width="162" style="float:right;" />
+
+    <a name="mobile"></a>
+    <h3>Mobile</h3>
+
+    <ul>
+      <li>Instalați app-urile: <a href="https://galileo-app.com">Galileo Offline Maps</a>, Dropbox
+      <li>Click pe acest link: <a href="https://www.dropbox.com/s/8liiw8s1e5voa9z/hartaCalitatii.xml?dl=0">map
+          description</a>
+      <li>Se va deschide app-ul Dropbox. Apăsați <b>Export (sau share)</b>, <b>Open in...</b><br />
+      <li>Alegeți <b>Galileo Offline Maps</b>
+    </ul>
+
+    <h3>See also</h3>
+    Hărți actualizate manual pe baza rapoartelor scrise:
+    <a href="http://enjoymaps.ro/harta-interactiva-calitatii-drumurilor-din-romania/">enjoymaps.ro</a>,
+    <a href="http://forum.peundemerg.ro/index.php?topic=199.0">peundemerg.ro</a> (@Vancouver)
+    </ul>
+    <h3>Source code</h3>
+    <a href="https://github.com/cristianbogdan/road-coloring">github</a>
+
+    <h3>Copyright</h3>
+    CreativeCommons, <a href="http://forum.peundemerg.ro/index.php?action=profile;u=2034">@cristi5</a>
+  </dialog>
+</body>
+
+</html>
